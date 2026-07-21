@@ -36,7 +36,6 @@ export function LoadAuth() {
 }
 
 export default function App() {
-  const token = useSelector((state: RootState) => state.token)
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const routes = getRoutes(userInfo?.role)
 
@@ -50,7 +49,7 @@ export default function App() {
             <Route path="/*" element={<LoadAuth />} />
           ) : (
             <Route path={RoutePath.Home} element={<Layout />}>
-              <Route path={RoutePath.Home} element={<Navigate to={routes[0]?.path || RoutePath.Home} />} />
+              <Route path={RoutePath.Home} element={<Navigate to={routes[0]?.path} />} />
               {routes.map(({ path, Component }) => (
                 <Route key={path} path={path} element={<Component />} />
               ))}

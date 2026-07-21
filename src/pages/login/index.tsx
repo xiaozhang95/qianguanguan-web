@@ -3,7 +3,7 @@ import Icon from '@/components/icon'
 import { RoutePath } from '@/router/routes'
 import { setToken } from '@/store/token'
 import { LockOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons'
-import { App, Button, Flex, Form, Input, theme } from 'antd'
+import { Button, Flex, Form, Input, theme } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -12,7 +12,6 @@ export default function Page() {
   const { token } = theme.useToken()
   const nav = useNavigate()
   const dispatch = useDispatch()
-  const { message } = App.useApp()
 
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
@@ -71,8 +70,7 @@ export default function Page() {
               captchaKey,
               captchaCode: values.captchaCode
             })
-              .then(({ data, msg }) => {
-                message.success(msg)
+              .then(({ data }) => {
                 dispatch(setToken(data.token))
                 nav(RoutePath.Home, { replace: true })
               })
