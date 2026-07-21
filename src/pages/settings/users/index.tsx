@@ -1,5 +1,5 @@
 import { userList, userToggle, type UserInfo } from '@/api/user'
-import { Role, RoleLabel } from '@/constants'
+import { Role, RoleLabel, UserStatus, UserStatusLabel } from '@/constants'
 import { DefaultPagination } from '@/utils/request'
 import { Button, Flex, Input, message, Popconfirm, Select, Space, Table, Tag, theme } from 'antd'
 import dayjs from 'dayjs'
@@ -64,8 +64,8 @@ export default function UserListPage() {
             value={filterStatus}
             onChange={(v) => { setFilterStatus(v); setPageNum(1) }}
             options={[
-              { label: '启用', value: 1 },
-              { label: '禁用', value: 0 },
+              { label: UserStatusLabel[UserStatus.ENABLED], value: UserStatus.ENABLED },
+              { label: UserStatusLabel[UserStatus.DISABLED], value: UserStatus.DISABLED },
             ]}
           />
         </Space>
@@ -92,7 +92,7 @@ export default function UserListPage() {
             dataIndex: 'status',
             width: 80,
             render: (s: number) => (
-              <Tag color={s === 1 ? 'success' : 'error'}>{s === 1 ? '启用' : '禁用'}</Tag>
+              <Tag color={s === UserStatus.ENABLED ? 'success' : 'error'}>{UserStatusLabel[s as UserStatus]}</Tag>
             )
           },
           {
@@ -107,7 +107,7 @@ export default function UserListPage() {
             width: 100,
             render: (_: unknown, record: UserInfo & { status: number }) => (
               <Popconfirm
-                title={record.status === 1 ? '确定禁用该用户？' : '确定启用该用户？'}
+                title={record.status === UserStatus.ENABLED ? '确定禁用该用户？' : '确定启用该用户？'}
                 onConfirm={() => {
                   userToggle(record.id).then(() => {
                     message.success('操作成功')
@@ -115,8 +115,8 @@ export default function UserListPage() {
                   })
                 }}
               >
-                <Button type="link" size="small" danger={record.status === 1}>
-                  {record.status === 1 ? '禁用' : '启用'}
+                <Button type="link" size="small" danger={record.status === UserStatus.ENABLED}>
+                  {record.status === UserStatus.ENABLED ? '禁用' : '启用'}
                 </Button>
               </Popconfirm>
             )

@@ -1,24 +1,27 @@
 import { billList, billStats, type BillVO } from '@/api/bill'
-import { Card, Flex, Statistic, theme } from 'antd'
+import { Card, DatePicker, Flex, Statistic, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
+const { MonthPicker } = DatePicker
+
 export default function HomePage() {
   const { token } = theme.useToken()
   const location = useLocation()
+  const [filterMonth, setFilterMonth] = useState<dayjs.Dayjs>(dayjs())
   const [stats, setStats] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 })
   const [chartData, setChartData] = useState<{ date: string; income: number; expense: number }[]>([])
   const [loading, setLoading] = useState(false)
-  const month = dayjs().format('M')
+  const month = filterMonth.format('M')
+  const year = filterMonth.format('YYYY')
+  const monthText = filterMonth.format('YYYY年M月')
 
   useEffect(() => {
-    const now = dayjs()
-    const year = now.format('YYYY')
-    const startDate = now.startOf('month').format('YYYY-MM-DD')
-    const endDate = now.endOf('month').format('YYYY-MM-DD')
-    const daysInMonth = now.daysInMonth()
+    const startDate = filterMonth.startOf('month').format('YYYY-MM-DD')
+    const endDate = filterMonth.endOf('month').format('YYYY-MM-DD')
+    const daysInMonth = filterMonth.daysInMonth()
 
     setLoading(true)
 
@@ -31,7 +34,7 @@ export default function HomePage() {
 
         const dailyMap = new Map<string, { income: number; expense: number }>()
         for (let i = 1; i <= daysInMonth; i++) {
-          const d = now.date(i).format('YYYY-MM-DD')
+          const d = filterMonth.date(i).format('YYYY-MM-DD')
           dailyMap.set(d, { income: 0, expense: 0 })
         }
         listRes.data.records.forEach((b: BillVO) => {
@@ -50,14 +53,18 @@ export default function HomePage() {
         )
       })
       .finally(() => setLoading(false))
-  }, [location.pathname])
+  }, [location.pathname, filterMonth])
 
   return (
     <Flex vertical gap={token.marginLG}>
+      <Flex justify="space-between" align="center">
+        <MonthPicker value={filterMonth} onChange={(v) => { if (v) setFilterMonth(v) }} allowClear={false} />
+      </Flex>
+
       <Flex gap={token.marginLG}>
         <Card style={{ flex: 1 }}>
           <Statistic
-            title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>{`${month}月收入`}</span>}
+            title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>收入</span>}
             value={stats.totalIncome}
             prefix="¥"
             precision={2}
@@ -66,7 +73,7 @@ export default function HomePage() {
         </Card>
         <Card style={{ flex: 1 }}>
           <Statistic
-            title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>{`${month}月支出`}</span>}
+            title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>支出</span>}
             value={stats.totalExpense}
             prefix="¥"
             precision={2}
@@ -75,7 +82,7 @@ export default function HomePage() {
         </Card>
         <Card style={{ flex: 1 }}>
           <Statistic
-            title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>{`${month}月结余`}</span>}
+            title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>结余</span>}
             value={stats.balance}
             prefix="¥"
             precision={2}
@@ -84,7 +91,7 @@ export default function HomePage() {
         </Card>
       </Flex>
 
-      <Card title={`${month}月收支趋势`} loading={loading}>
+      <Card title={`${monthText}收支趋势`} loading={loading}>
         <ResponsiveContainer width="100%" height={320}>
           <AreaChart data={chartData} margin={{ top: 8, right: 16, bottom: 0, left: -8 }}>
             <defs>

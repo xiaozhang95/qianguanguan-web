@@ -167,8 +167,8 @@ export default function BillPage() {
         </Button>
       </Flex>
 
-      <Card>
-        <Flex gap={token.marginXL}>
+      <Flex gap={token.marginLG}>
+        <Card style={{ flex: 1 }}>
           <Statistic
             title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>收入</span>}
             value={stats.totalIncome}
@@ -176,6 +176,8 @@ export default function BillPage() {
             precision={2}
             styles={{ value: { color: token.colorSuccess, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
           />
+        </Card>
+        <Card style={{ flex: 1 }}>
           <Statistic
             title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>支出</span>}
             value={stats.totalExpense}
@@ -183,6 +185,8 @@ export default function BillPage() {
             precision={2}
             styles={{ value: { color: token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
           />
+        </Card>
+        <Card style={{ flex: 1 }}>
           <Statistic
             title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>结余</span>}
             value={stats.balance}
@@ -190,8 +194,8 @@ export default function BillPage() {
             precision={2}
             styles={{ value: { color: stats.balance >= 0 ? token.colorSuccess : token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
           />
-        </Flex>
-      </Card>
+        </Card>
+      </Flex>
 
       <Table
         rowKey="id"
