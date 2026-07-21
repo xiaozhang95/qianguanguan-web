@@ -28,7 +28,7 @@ export function LoadAuth() {
         }, 500)
       })
       .catch(() => {
-        nav('/login')
+        nav(RoutePath.Login)
       })
   }, [])
 
