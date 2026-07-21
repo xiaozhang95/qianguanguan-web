@@ -11,11 +11,6 @@ export const userInfoSlice = createSlice({
   initialState: initialState as UserInfo | null,
   reducers: {
     setUserInfo: (_, action: PayloadAction<UserInfo | null>) => {
-      if (action.payload) {
-        localStorage.setItem('userInfo', JSON.stringify(action.payload))
-      } else {
-        localStorage.removeItem('userInfo')
-      }
       return action.payload
     }
   }

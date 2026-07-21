@@ -1,17 +1,19 @@
 import { LockOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons'
-import { Button, Flex, Form, Input, message } from 'antd'
+import { App, Button, Flex, Form, Input, theme } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { captcha, login } from '../../api/login'
+import Icon from '../../components/icon'
 import { RoutePath } from '../../router/routes'
 import { useAppDispatch } from '../../store'
 import { setToken } from '../../store/token'
 import { setUserInfo } from '../../store/userInfo'
 
 export default function Page() {
+  const { token } = theme.useToken()
   const nav = useNavigate()
   const dispatch = useAppDispatch()
-  const [messageApi, conextHolder] = message.useMessage()
+  const { message } = App.useApp()
 
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
@@ -31,58 +33,89 @@ export default function Page() {
   }, [fetchCaptcha])
 
   return (
-    <>
-      {conextHolder}
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#f0f2f5' }}>
-        <div style={{ width: 400, padding: '40px 32px 24px', background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-          <h2 style={{ textAlign: 'center', marginBottom: 32, color: '#1890ff' }}>钱罐罐</h2>
-          <Form
-            size="large"
-            form={form}
-            onFinish={(values: { username: string; password: string; captchaCode: string }) => {
-              setLoading(true)
-              login({
-                username: values.username,
-                password: values.password,
-                captchaKey,
-                captchaCode: values.captchaCode
+    <Flex
+      vertical
+      justify="center"
+      align="center"
+      style={{
+        minHeight: '100vh',
+        background: token.colorPrimaryBg,
+        padding: token.padding
+      }}
+    >
+      <Flex
+        vertical
+        align="center"
+        style={{
+          width: 400,
+          background: token.colorBgContainer,
+          borderRadius: token.borderRadiusLG,
+          boxShadow: token.boxShadowSecondary
+        }}
+      >
+        <Icon name="logo" style={{ width: 72, height: 72, marginBottom: token.marginSM, color: token.colorPrimary }} />
+        <Flex vertical align="center" style={{ marginBottom: token.marginXL }}>
+          <span style={{ fontSize: token.fontSizeHeading3, fontWeight: 600, color: token.colorText }}>钱罐罐</span>
+          <span style={{ fontSize: token.fontSize, color: token.colorTextSecondary, marginTop: token.marginXXS }}>小而美的记账应用</span>
+        </Flex>
+
+        <Form
+          size="large"
+          form={form}
+          onFinish={(values: { username: string; password: string; captchaCode: string }) => {
+            setLoading(true)
+            login({
+              username: values.username,
+              password: values.password,
+              captchaKey,
+              captchaCode: values.captchaCode
+            })
+              .then(({ data, msg }) => {
+                message.success(msg)
+                dispatch(setToken(data.token))
+                dispatch(setUserInfo(data.userInfo))
+                nav(RoutePath.Home, { replace: true })
               })
-                .then(({ data, msg }) => {
-                  messageApi.success(msg)
-                  dispatch(setToken(data.token))
-                  dispatch(setUserInfo(data.userInfo))
-                  nav(RoutePath.Home, { replace: true })
-                })
-                .catch(() => {
-                  fetchCaptcha()
-                })
-                .finally(() => {
-                  setLoading(false)
-                })
-            }}
-          >
-            <Form.Item name="username" rules={[{ required: true, message: '请输入用户名' }]}>
-              <Input prefix={<UserOutlined />} placeholder="用户名" />
-            </Form.Item>
-            <Form.Item name="password" rules={[{ required: true, message: '请输入密码' }]}>
-              <Input.Password prefix={<LockOutlined />} placeholder="密码" />
-            </Form.Item>
-            <Form.Item>
-              <Flex>
-                <Form.Item noStyle name="captchaCode" rules={[{ required: true, message: '请输入验证码' }]}>
-                  <Input prefix={<SafetyOutlined />} placeholder="验证码" style={{ flex: 1 }} />
-                </Form.Item>
-                <img src={captchaImage} alt="验证码" onClick={fetchCaptcha} style={{ width: 120, cursor: 'pointer', border: '1px solid #d9d9d9', borderRadius: 6 }} />
-              </Flex>
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" loading={loading} block>
-                登录
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-      </div>
-    </>
+              .catch(() => {
+                fetchCaptcha()
+              })
+              .finally(() => {
+                setLoading(false)
+              })
+          }}
+        >
+          <Form.Item name="username" rules={[{ required: true, message: '请输入用户名' }]}>
+            <Input prefix={<UserOutlined />} placeholder="用户名" />
+          </Form.Item>
+          <Form.Item name="password" rules={[{ required: true, message: '请输入密码' }]}>
+            <Input.Password prefix={<LockOutlined />} placeholder="密码" />
+          </Form.Item>
+          <Form.Item>
+            <Flex gap={token.marginSM}>
+              <Form.Item noStyle name="captchaCode" rules={[{ required: true, message: '请输入验证码' }]}>
+                <Input prefix={<SafetyOutlined />} placeholder="验证码" style={{ flex: 1 }} />
+              </Form.Item>
+              <img
+                alt="验证码"
+                src={captchaImage}
+                onClick={fetchCaptcha}
+                style={{
+                  height: token.controlHeightLG,
+                  width: 120,
+                  cursor: 'pointer',
+                  borderRadius: token.borderRadius,
+                  border: `1px solid ${token.colorBorder}`
+                }}
+              />
+            </Flex>
+          </Form.Item>
+          <Form.Item style={{ marginBottom: token.marginSM }}>
+            <Button type="primary" htmlType="submit" loading={loading} block>
+              登录
+            </Button>
+          </Form.Item>
+        </Form>
+      </Flex>
+    </Flex>
   )
 }
