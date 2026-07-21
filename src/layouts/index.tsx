@@ -10,7 +10,7 @@ import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
 import { DownOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { Button, Dropdown, Flex, Layout, Menu, theme } from 'antd'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
@@ -27,6 +27,18 @@ export default function AdminLayout() {
   const [activeKey, setActiveKey] = useState(location.pathname)
   const [openKeys, setOpenKeys] = useState<string[]>([])
   const [profileOpen, setProfileOpen] = useState(false)
+  const [pigRun, setPigRun] = useState(false)
+  const pigClicks = useRef(0)
+  const pigRef = useRef<HTMLDivElement>(null)
+
+  const playPig = () => {
+    pigClicks.current += 1
+    if (pigClicks.current >= 5) {
+      pigClicks.current = 0
+      setPigRun(true)
+      setTimeout(() => setPigRun(false), 5000)
+    }
+  }
 
   useEffect(() => {
     setActiveKey(location.pathname)
@@ -68,11 +80,34 @@ export default function AdminLayout() {
           style={{
             height: 64,
             borderBottom: `1px solid ${token.colorBorderSecondary}`,
-            padding: `0 ${token.paddingMD}px`
+            padding: `0 ${token.paddingMD}px`,
+            userSelect: 'none'
           }}
         >
-          <Icon name="logo" size={32} fill={token.colorPrimary} />
-          <span style={{ fontWeight: 700, fontSize: token.fontSizeHeading5, whiteSpace: 'nowrap', color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
+          <div ref={pigRef} onClick={playPig} style={{ cursor: 'pointer', position: 'relative', width: 32, height: 32 }}>
+            {pigRun && pigRef.current && (
+              <div
+                style={{
+                  position: 'fixed',
+                  left: pigRef.current.getBoundingClientRect().left,
+                  top: pigRef.current.getBoundingClientRect().top,
+                  zIndex: 9999,
+                  animation: 'pigRun 5s ease-in-out forwards',
+                  pointerEvents: 'none'
+                }}
+              >
+                <Icon name="logo" size={32} fill={token.colorPrimary} />
+              </div>
+            )}
+            <Icon name="logo" size={32} fill={token.colorPrimary} style={{ visibility: pigRun ? 'hidden' : 'visible' }} />
+          </div>
+          <style>{`
+            @keyframes pigRun {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(calc(-100vw + 200px)); }
+            }
+          `}</style>
+          <span style={{ fontWeight: 700, fontSize: token.fontSizeHeading5, whiteSpace: 'nowrap', color: token.colorText, userSelect: 'none' }}>{import.meta.env.VITE_NAME}</span>
         </Flex>
         <Menu
           mode="inline"
@@ -143,12 +178,7 @@ export default function AdminLayout() {
         </Content>
       </Layout>
 
-      <ProfileModal
-        open={profileOpen}
-        userInfo={userInfo}
-        onClose={() => setProfileOpen(false)}
-        onSuccess={(info) => dispatch(setUserInfo(info))}
-      />
+      <ProfileModal open={profileOpen} userInfo={userInfo} onClose={() => setProfileOpen(false)} onSuccess={(info) => dispatch(setUserInfo(info))} />
     </Layout>
   )
 }
