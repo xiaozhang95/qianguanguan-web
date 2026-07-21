@@ -3,7 +3,8 @@ export const RoutePath = {
   Login: '/login',
   HomePage: '/home',
   Bill: '/bill',
-  Category: '/category'
+  Category: '/category',
+  Users: '/settings/users'
 }
 
 export type RoutePath = (typeof RoutePath)[keyof typeof RoutePath]

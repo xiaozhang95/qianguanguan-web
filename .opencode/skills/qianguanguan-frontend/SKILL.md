@@ -45,49 +45,58 @@ export const BillTypeLabel: Record<BillType, string> = {
   [BillType.INCOME]: '收入',
   [BillType.EXPENSE]: '支出'
 }
+
+export const Role = {
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  ADMIN: 'ADMIN',
+  USER: 'USER'
+} as const
+
+export type Role = (typeof Role)[keyof typeof Role]
+
+export const RoleLabel: Record<Role, string> = {
+  [Role.SUPER_ADMIN]: '超级管理员',
+  [Role.ADMIN]: '管理员',
+  [Role.USER]: '用户'
+}
 ```
 
 使用示例：
 ```typescript
-import { BillType, BillTypeLabel } from '@/constants'
+import { BillType, BillTypeLabel, Role, RoleLabel } from '@/constants'
 
-// 比较
+// BillType 比较
 record.type === BillType.INCOME
 
-// 显示标签
+// BillType 标签
 BillTypeLabel[type as BillType]
 
-// 表单默认值
-form.setFieldsValue({ type: BillType.EXPENSE })
+// Role 比较
+record.role === Role.SUPER_ADMIN
+
+// Role 标签（Tag 展示）
+<Tag color={role === Role.SUPER_ADMIN ? 'red' : role === Role.ADMIN ? 'blue' : 'default'}>
+  {RoleLabel[role as Role]}
+</Tag>
 ```
 
 ## 路由与权限
 
 **所有路由路径必须从 `RoutePath` 常量引用**，禁止硬编码路径字符串。
 
-```typescript
-// router/routes.ts
-export const RoutePath = {
-  Home: '/',
-  Login: '/login',
-  Bill: '/bill',
-  Category: '/category'
-} as const
-```
+路由配置使用 `Role` 常量控制菜单可见性，字段名为 `roles`（`Role[]`）。
 
 ```typescript
 // router/index.tsx - 路由定义
-const routes = [
-  { path: RoutePath.Bill, meta: { title: '账单', Icon: WalletOutlined, permissions: [...] }, Component: Bill },
-]
+{ path: RoutePath.Users, meta: { title: '用户列表', Icon: TeamOutlined, roles: [Role.SUPER_ADMIN, Role.ADMIN] }, Component: Users }
 
-// 页面跳转
-nav(RoutePath.Login, { replace: true })
+// 支持路由分组
+{
+  type: 'group',
+  meta: { title: '系统设置', Icon: SettingOutlined, roles: [Role.SUPER_ADMIN, Role.ADMIN] },
+  children: [...]
+}
 ```
-
-- 新增路由必须先添加 `RoutePath` 常量，再在 routes 数组中引用
-- 页面组件使用 `React.lazy()` 懒加载
-- `meta.permissions` 控制角色可见性
 
 ## Ant Design 主题
 

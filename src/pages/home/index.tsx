@@ -2,10 +2,12 @@ import { billList, billStats, type BillVO } from '@/api/bill'
 import { Card, Flex, Statistic, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 export default function HomePage() {
   const { token } = theme.useToken()
+  const location = useLocation()
   const [stats, setStats] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 })
   const [chartData, setChartData] = useState<{ date: string; income: number; expense: number }[]>([])
   const [loading, setLoading] = useState(false)
@@ -48,7 +50,7 @@ export default function HomePage() {
         )
       })
       .finally(() => setLoading(false))
-  }, [])
+  }, [location.pathname])
 
   return (
     <Flex vertical gap={token.marginLG}>
@@ -99,7 +101,7 @@ export default function HomePage() {
             <XAxis dataKey="date" tick={{ fill: token.colorTextSecondary, fontSize: 12 }} axisLine={{ stroke: token.colorBorderSecondary }} padding={{ left: 0, right: 0 }} />
             <YAxis tick={{ fill: token.colorTextSecondary, fontSize: 12 }} axisLine={{ stroke: token.colorBorderSecondary }} />
             <Tooltip
-              formatter={(value: number | string) => [`¥${Number(value).toFixed(2)}`, '']}
+              formatter={(value: unknown) => [`¥${Number(value).toFixed(2)}`, '']}
               contentStyle={{
                 background: token.colorBgElevated,
                 border: `1px solid ${token.colorBorder}`,

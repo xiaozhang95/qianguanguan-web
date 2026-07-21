@@ -10,7 +10,7 @@ import Loading from './components/loading'
 import Layout from './layouts'
 import Login from './pages/login'
 import NotFound from './pages/notfound'
-import getRoutes from './router'
+import { flattenRoutes } from './router'
 import { RoutePath } from './router/routes'
 import type { RootState } from './store'
 import { setUserInfo } from './store/userInfo'
@@ -38,7 +38,7 @@ export function LoadAuth() {
 
 export default function App() {
   const userInfo = useSelector((state: RootState) => state.userInfo)
-  const routes = getRoutes(userInfo?.role)
+  const routes = flattenRoutes(userInfo?.role)
 
   return (
     <ConfigProvider
@@ -46,8 +46,15 @@ export default function App() {
       theme={{
         algorithm: theme.darkAlgorithm,
         token: {
-          borderRadius: 6,
+          borderRadius: 6
         },
+        components: {
+          Menu: {
+            subMenuItemBg: 'transparent',
+            itemSelectedColor: '#fff',
+            itemSelectedBg: '#1677ff80'
+          }
+        }
       }}
     >
       <Routes>

@@ -1,10 +1,11 @@
+import type { Role } from '@/constants'
 import create from '@/utils/request'
 
 export interface UserInfo {
   id: number
   username: string
   name: string
-  role: string
+  role: Role
   phone: string
   email: string
   createtime: string

@@ -7,8 +7,6 @@ import { Button, Card, DatePicker, Flex, Form, Input, InputNumber, message, Moda
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 
-const { MonthPicker } = DatePicker
-
 export default function BillPage() {
   const { token } = theme.useToken()
   const [bills, setBills] = useState<BillVO[]>([])
@@ -19,7 +17,7 @@ export default function BillPage() {
 
   const [filterType, setFilterType] = useState<string | undefined>()
   const [filterCategoryId, setFilterCategoryId] = useState<number | undefined>()
-  const [filterMonth, setFilterMonth] = useState<dayjs.Dayjs>(dayjs())
+  const [filterDate, setFilterDate] = useState<dayjs.Dayjs>(dayjs())
   const [pageNum, setPageNum] = useState(DefaultPagination.PageNum as number)
   const [pageSize, setPageSize] = useState(DefaultPagination.PageSize as number)
 
@@ -29,8 +27,8 @@ export default function BillPage() {
 
   const fetchBills = () => {
     setLoading(true)
-    const startDate = filterMonth.startOf('month').format('YYYY-MM-DD')
-    const endDate = filterMonth.endOf('month').format('YYYY-MM-DD')
+    const startDate = filterDate.format('YYYY-MM-DD')
+    const endDate = filterDate.format('YYYY-MM-DD')
     billList({ type: filterType, categoryId: filterCategoryId, startDate, endDate, pageNum, pageSize })
       .then(({ data }) => {
         setBills(data.records)
@@ -40,7 +38,7 @@ export default function BillPage() {
   }
 
   const fetchStats = () => {
-    billStats(filterMonth.format('YYYY'), filterMonth.format('M')).then(({ data }) => setStats(data))
+    billStats(filterDate.format('YYYY'), filterDate.format('M')).then(({ data }) => setStats(data))
   }
 
   useEffect(() => {
@@ -50,13 +48,13 @@ export default function BillPage() {
   useEffect(() => {
     fetchBills()
     fetchStats()
-  }, [filterMonth, filterType, filterCategoryId, pageNum, pageSize])
+  }, [filterDate, filterType, filterCategoryId, pageNum, pageSize])
 
   const incomeCategories = categories.filter((c) => c.type === BillType.INCOME)
   const expenseCategories = categories.filter((c) => c.type === BillType.EXPENSE)
 
   const columns = [
-    { title: '日期', dataIndex: 'billDate', width: 120 },
+    { title: '日期', dataIndex: 'billDate', width: 120, render: (d: string) => dayjs(d).format('YYYY-MM-DD') },
     {
       title: '分类',
       width: 140,
@@ -117,11 +115,11 @@ export default function BillPage() {
     <Flex vertical gap={token.marginLG}>
       <Flex justify="space-between" align="center" wrap>
         <Space wrap>
-          <MonthPicker
-            value={filterMonth}
+          <DatePicker
+            value={filterDate}
             onChange={(v) => {
               if (v) {
-                setFilterMonth(v)
+                setFilterDate(v)
                 setPageNum(1)
               }
             }}

@@ -1,7 +1,7 @@
 import ErrorBoundary from '@/components/error-boundary'
 import Icon from '@/components/icon'
 import Loading from '@/components/loading'
-import getRoutes from '@/router'
+import { getPermittedRoutes, isGroup, type RouteDefinition } from '@/router'
 import { RoutePath } from '@/router/routes'
 import type { RootState } from '@/store'
 import { setToken } from '@/store/token'
@@ -14,39 +14,50 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 const { Sider, Content, Header } = Layout
 
-const siderStyle: React.CSSProperties = {
-  overflow: 'auto',
-  height: '100vh',
-  position: 'fixed',
-  left: 0,
-  top: 0,
-  bottom: 0,
-  zIndex: 10
-}
-
 export default function AdminLayout() {
   const { token } = theme.useToken()
   const location = useLocation()
   const nav = useNavigate()
   const dispatch = useDispatch()
   const userInfo = useSelector((state: RootState) => state.userInfo)
-  const routes = getRoutes(userInfo?.role)
+  const routes = getPermittedRoutes(userInfo?.role)
 
   const [activeKey, setActiveKey] = useState(location.pathname)
+  const [openKeys, setOpenKeys] = useState<string[]>([])
 
   useEffect(() => {
     setActiveKey(location.pathname)
+    const group = routes.find((r) => isGroup(r) && r.children.some((c) => c.path === location.pathname))
+    if (group) {
+      setOpenKeys((prev) => [...new Set([...prev, group.meta.title])])
+    }
   }, [location.pathname])
 
-  const menuItems = routes.map(({ path, meta }) => ({
-    key: path,
-    icon: <meta.Icon />,
-    label: meta.title
-  }))
+  const buildMenuItems = (defs: RouteDefinition[]) => {
+    return defs.map((r) => {
+      if (isGroup(r)) {
+        return {
+          key: r.meta.title,
+          icon: <r.meta.Icon />,
+          label: r.meta.title,
+          children: r.children.map((c) => ({
+            key: c.path,
+            icon: <c.meta.Icon />,
+            label: c.meta.title
+          }))
+        }
+      }
+      return {
+        key: r.path,
+        icon: <r.meta.Icon />,
+        label: r.meta.title
+      }
+    })
+  }
 
   return (
     <Layout style={{ minHeight: '100vh', background: token.colorBgLayout }}>
-      <Sider style={{ ...siderStyle, background: token.colorBgContainer }}>
+      <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0, zIndex: 10, background: token.colorBgContainer }}>
         <Flex
           align="center"
           justify="center"
@@ -63,7 +74,9 @@ export default function AdminLayout() {
         <Menu
           mode="inline"
           selectedKeys={[activeKey]}
-          items={menuItems}
+          openKeys={openKeys}
+          onOpenChange={setOpenKeys}
+          items={buildMenuItems(routes)}
           onClick={({ key }) => {
             if (activeKey !== key) {
               setActiveKey(key)
