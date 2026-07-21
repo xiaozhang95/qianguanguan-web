@@ -1,18 +1,17 @@
 import { captcha, login } from '@/api/login'
 import Icon from '@/components/icon'
 import { RoutePath } from '@/router/routes'
-import { useAppDispatch } from '@/store'
 import { setToken } from '@/store/token'
-import { setUserInfo } from '@/store/userInfo'
 import { LockOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons'
 import { App, Button, Flex, Form, Input, theme } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 export default function Page() {
   const { token } = theme.useToken()
   const nav = useNavigate()
-  const dispatch = useAppDispatch()
+  const dispatch = useDispatch()
   const { message } = App.useApp()
 
   const [loading, setLoading] = useState(false)
@@ -75,7 +74,6 @@ export default function Page() {
               .then(({ data, msg }) => {
                 message.success(msg)
                 dispatch(setToken(data.token))
-                dispatch(setUserInfo(data.userInfo))
                 nav(RoutePath.Home, { replace: true })
               })
               .catch(() => {

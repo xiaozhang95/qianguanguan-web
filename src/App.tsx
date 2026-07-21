@@ -2,25 +2,52 @@ import 'antd/dist/reset.css'
 
 import { App as AntdApp, ConfigProvider } from 'antd'
 import zhCN from 'antd/es/locale/zh_CN'
-import { Navigate, Route, Routes } from 'react-router-dom'
-import { useAppSelector } from './store'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import { userInfo } from './api/user'
+import Loading from './components/loading'
 import Layout from './layouts'
 import Login from './pages/login'
 import getRoutes from './router'
 import { RoutePath } from './router/routes'
+import type { RootState } from './store'
+import { setUserInfo } from './store/userInfo'
+
+export function LoadAuth() {
+  const dispatch = useDispatch()
+  const nav = useNavigate()
+  const token = useSelector((state: RootState) => state.token)
+
+  useEffect(() => {
+    if (!token) return
+    userInfo()
+      .then(({ data }) => {
+        setTimeout(() => {
+          dispatch(setUserInfo(data))
+        }, 500)
+      })
+      .catch(() => {
+        nav('/login')
+      })
+  }, [])
+
+  return token ? <Loading /> : <Navigate to={RoutePath.Login} replace />
+}
 
 export default function App() {
-  const token = useAppSelector((state) => state.token)
-  const userInfo = useAppSelector((state) => state.userInfo)
+  const token = useSelector((state: RootState) => state.token)
+  const userInfo = useSelector((state: RootState) => state.userInfo)
   const routes = getRoutes(userInfo?.role)
 
+  console.log(routes, userInfo)
   return (
     <ConfigProvider locale={zhCN}>
       <AntdApp>
         <Routes>
-          <Route path={RoutePath.Login} element={token ? <Navigate to={RoutePath.Home} replace /> : <Login />} />
-          {!token ? (
-            <Route path="/*" element={<Navigate to={RoutePath.Login} replace />} />
+          <Route path={RoutePath.Login} element={<Login />} />
+          {!routes.length ? (
+            <Route path="/*" element={<LoadAuth />} />
           ) : (
             <Route path={RoutePath.Home} element={<Layout />}>
               <Route path={RoutePath.Home} element={<Navigate to={routes[0]?.path || RoutePath.Home} />} />

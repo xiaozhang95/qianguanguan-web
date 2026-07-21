@@ -1,20 +1,21 @@
 import Loading from '@/components/loading'
 import getRoutes from '@/router'
 import { RoutePath } from '@/router/routes'
-import { useAppDispatch, useAppSelector } from '@/store'
+import type { RootState } from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
 import { DownOutlined } from '@ant-design/icons'
 import { Dropdown, Layout, Menu, Space } from 'antd'
 import { Suspense } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 const { Sider: LayoutSider, Content: LayoutContent, Header: LayoutHeader } = Layout
 
 function PageHeader() {
   const nav = useNavigate()
-  const dispatch = useAppDispatch()
-  const userInfo = useAppSelector((state) => state.userInfo)
+  const dispatch = useDispatch()
+  const userInfo = useSelector((state: RootState) => state.userInfo)
 
   const handleLogout = () => {
     dispatch(setToken(''))
@@ -54,7 +55,7 @@ function PageMenu() {
   const nav = useNavigate()
   const key = location.pathname
 
-  const userInfo = useAppSelector((state) => state.userInfo)
+  const userInfo = useSelector((state: RootState) => state.userInfo)
 
   return (
     <Menu
