@@ -18,20 +18,40 @@ description: Use ONLY when working on qianguanguan-web (钱罐罐 React 前端).
 
 ## 项目目录
 
-| 路径 | 职责 |
-|---|---|
-| `src/api/` | API 接口层，每个模块一个文件 |
-| `src/pages/` | 页面组件，每个页面一个文件夹 |
-| `src/components/` | 共享组件（ErrorBoundary、Loading、Icon） |
-| `src/layouts/` | 布局组件 |
-| `src/router/` | 路由配置 |
-| `src/store/` | Redux Store (token + userInfo) |
-| `src/utils/` | 工具（request 封装、DefaultPagination） |
-| `src/constants/` | 领域常量（BillType、Role、UserStatus 等） |
+| 路径              | 职责                                                     |
+| ----------------- | -------------------------------------------------------- |
+| `src/api/`        | API 接口层，每个模块一个文件                             |
+| `src/pages/`      | 页面组件，每个页面一个文件夹（驼峰命名，如 `notFound`）  |
+| `src/components/` | 共享组件（驼峰命名，如 `errorBoundary`、`profileModal`） |
+| `src/layouts/`    | 布局组件                                                 |
+| `src/router/`     | 路由配置                                                 |
+| `src/store/`      | Redux Store (token + userInfo)                           |
+| `src/utils/`      | 工具（request 封装、DefaultPagination）                  |
+| `src/constants/`  | 领域常量（BillType、Role、UserStatus 等）                |
 
 ## 常量定义规范
 
-**所有领域枚举值必须定义为常量**，禁止在代码中直接使用字符串字面量或魔法数字做比较或赋值。
+**所有领域枚举值和魔法数字必须定义为常量**，禁止硬编码：
+
+| 类别          | 来源                          | 示例                                                      |
+| ------------- | ----------------------------- | --------------------------------------------------------- |
+| 业务枚举      | `@/constants`                 | `BillType`、`Role`、`UserStatus`                          |
+| 分页默认值    | `@/utils/request`             | `DefaultPagination.PageNum`、`DefaultPagination.PageSize` |
+| 应用名称/配置 | `import.meta.env`             | `VITE_NAME`、`VITE_USERNAME`、`VITE_PASSWORD`             |
+| 主题色        | `token`（`theme.useToken()`） | `token.colorPrimary`、`token.colorSuccess`                |
+
+**禁止行为：**
+
+- 禁止字符串字面量比较（如 `'INCOME'`、`'超级管理员'`）
+- 禁止魔法数字（如 `setPageNum(1)`、`status === 1`）
+- 禁止硬编码应用名称（如 `钱罐罐`）
+- 禁止硬编码颜色值（如 `'#ff4d4f'`、`'green'`）
+
+## 代码质量
+
+- **禁止使用 `eslint-disable` / `oxlint-disable` 注释**
+- 每次代码修改后必须运行 `pnpm run lint`，确保 `tsc` 和 `oxlint` 零错误
+- `useEffect` 依赖必须完整，使用 `useCallback` 稳定函数引用
 
 ```typescript
 // src/constants/index.ts
@@ -69,6 +89,7 @@ export const UserStatusLabel: Record<UserStatus, string> = {
 ```
 
 使用示例：
+
 ```typescript
 import { BillType, BillTypeLabel, Role, RoleLabel, UserStatus, UserStatusLabel } from '@/constants'
 
@@ -108,12 +129,11 @@ record.status === UserStatus.ENABLED
 
 ```tsx
 import { ConfigProvider, theme } from 'antd'
-
-<ConfigProvider
+;<ConfigProvider
   locale={zhCN}
   theme={{
     algorithm: theme.darkAlgorithm,
-    token: { borderRadius: 6 },
+    token: { borderRadius: 6 }
   }}
 >
   <App />
@@ -141,6 +161,18 @@ Layout 使用 antd `Layout.Sider` + `Layout.Header` + `Layout.Content` 结构：
 
 ## API 调用规范
 
+**函数命名**：URL 路径按 `/` 分割后转驼峰，同名路径不同 HTTP 方法加动词后缀。
+
+| URL                 | 函数名        | 规则          |
+| ------------------- | ------------- | ------------- |
+| `/user/info`        | `userInfo`    | 路径转驼峰    |
+| `/user/profile`     | `userProfile` | 路径转驼峰    |
+| `/bill/list`        | `billList`    | 路径转驼峰    |
+| `/upload`           | `upload`      | 路径转驼峰    |
+| `/bill` POST        | `billSave`    | 同名路径+动词 |
+| `/bill/{id}` PUT    | `billUpdate`  | 同名路径+动词 |
+| `/bill/{id}` DELETE | `billDelete`  | 同名路径+动词 |
+
 所有查询类接口使用 POST + JSON body，通过 `create<T>(options)` 封装：
 
 ```typescript
@@ -149,8 +181,7 @@ export async function billList(params: BillListParams) {
   return create<BillPage>({
     url: '/bill/list',
     method: 'POST',
-    data: params,
-    errorMsg: true
+    data: params
   })
 }
 
@@ -159,8 +190,7 @@ export async function billSave(data: BillSaveParams) {
   return create<BillVO>({
     url: '/bill',
     method: 'POST',
-    data,
-    errorMsg: true
+    data
   })
 }
 
@@ -169,8 +199,7 @@ export async function billUpdate(id: number, data: BillSaveParams) {
   return create<BillVO>({
     url: `/bill/${id}`,
     method: 'PUT',
-    data,
-    errorMsg: true
+    data
   })
 }
 
@@ -178,16 +207,47 @@ export async function billUpdate(id: number, data: BillSaveParams) {
 export async function billDelete(id: number) {
   return create<CtmResponse<null>>({
     url: `/bill/${id}`,
-    method: 'DELETE',
-    errorMsg: true
+    method: 'DELETE'
   })
 }
 ```
 
 - `create<T>()` 泛型 T 是 `data` 字段的类型
-- `errorMsg: true` 开启自动错误提示
-- 通过 `{ data }` 解构获取返回数据
+- `errorMsg` 默认 `true`，无需显式设置
+- 返回类型 `CtmResponse<T>` = `{ code, msg, data }`
+- **成功提示必须使用后端返回的 `msg`，不可硬编码文案**
+- **`.then()` 回调必须解构，不使用 `res.xxx` 写法**
 - 分页默认值使用 `DefaultPagination.PageNum` / `DefaultPagination.PageSize`
+
+调用示例：
+
+```typescript
+// 列表查询
+billList({ ... }).then(({ data }) => { setBills(data.records) })
+
+// 增删改 —— 解构 msg 用于提示
+billSave(params).then(({ msg, data }) => { message.success(msg); ... })
+
+// 无 data 的接口 —— 使用 CtmResponse<null>
+billDelete(id).then(({ msg }) => { message.success(msg); ... })
+```
+
+## 文件上传
+
+文件上传使用 FormData + `create()`，设置 `requestType: 'blob'` 跳过 JSON 序列化：
+
+```typescript
+export async function uploadAvatar(file: File) {
+  const formData = new FormData()
+  formData.append('file', file)
+  return create<{ url: string }>({
+    url: '/upload',
+    method: 'POST',
+    data: formData,
+    requestType: 'blob'
+  })
+}
+```
 
 ## 样式约定
 
@@ -224,12 +284,12 @@ const handleAdd = () => { ... }
 
 所有可配置文本必须通过环境变量引用：
 
-| 变量 | 说明 |
-|---|---|
-| `VITE_NAME` | 应用名称（Layout Logo旁、登录页底部） |
-| `VITE_USERNAME` | 默认登录用户名 |
-| `VITE_PASSWORD` | 默认登录密码 |
-| `VITE_REQUEST_BASE_URL` | API 基础路径 `/api/business` |
+| 变量                    | 说明                                  |
+| ----------------------- | ------------------------------------- |
+| `VITE_NAME`             | 应用名称（Layout Logo旁、登录页底部） |
+| `VITE_USERNAME`         | 默认登录用户名                        |
+| `VITE_PASSWORD`         | 默认登录密码                          |
+| `VITE_REQUEST_BASE_URL` | API 基础路径 `/api/business`          |
 
 ## 错误处理
 
@@ -242,5 +302,7 @@ const handleAdd = () => { ... }
 
 ```typescript
 const location = useLocation()
-useEffect(() => { fetchData() }, [location.pathname])
+useEffect(() => {
+  fetchData()
+}, [location.pathname])
 ```

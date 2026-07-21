@@ -9,7 +9,8 @@ import { userInfo } from './api/user'
 import Loading from './components/loading'
 import Layout from './layouts'
 import Login from './pages/login'
-import NotFound from './pages/notfound'
+import NotFound from './pages/notFound'
+import { Role } from './constants'
 import { flattenRoutes } from './router'
 import { RoutePath } from './router/routes'
 import type { RootState } from './store'
@@ -31,14 +32,14 @@ export function LoadAuth() {
       .catch(() => {
         nav(RoutePath.Login)
       })
-  }, [])
+  }, [token, nav, dispatch])
 
   return token ? <Loading /> : <Navigate to={RoutePath.Login} replace />
 }
 
 export default function App() {
   const userInfo = useSelector((state: RootState) => state.userInfo)
-  const routes = flattenRoutes(userInfo?.role)
+  const routes = flattenRoutes(userInfo?.role as Role)
 
   useEffect(() => {
     const style = document.createElement('style')
@@ -52,16 +53,14 @@ export default function App() {
       locale={zhCN}
       theme={{
         algorithm: theme.darkAlgorithm,
-        token: {
-          borderRadius: 6
-        },
+        token: { borderRadius: 6 },
         components: {
           Menu: {
             subMenuItemBg: 'transparent',
             itemSelectedColor: '#fff',
-            itemSelectedBg: '#1677ff80'
-          }
-        }
+            itemSelectedBg: '#1677ff80',
+          },
+        },
       }}
     >
       <Routes>

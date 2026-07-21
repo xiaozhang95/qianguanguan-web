@@ -54,7 +54,7 @@ export default function HomePage() {
         )
       })
       .finally(() => setLoading(false))
-  }, [location.pathname, filterMonth])
+  }, [location.pathname, filterMonth, month, year])
 
   return (
     <Flex vertical gap={token.marginLG}>

@@ -22,8 +22,7 @@ export interface UserPage {
 export async function userInfo() {
   return create<UserInfo>({
     url: '/user/info',
-    method: 'GET',
-    errorMsg: true
+    method: 'GET'
   })
 }
 
@@ -31,15 +30,32 @@ export async function userList(data: UserListParams) {
   return create<UserPage>({
     url: '/user/list',
     method: 'POST',
-    data,
-    errorMsg: true
+    data
   })
 }
 
 export async function userToggle(id: number) {
   return create<CtmResponse<null>>({
     url: `/user/toggle/${id}`,
+    method: 'PUT'
+  })
+}
+
+export async function userProfile(data: { name: string; phone: string; email: string; avatar?: string }) {
+  return create<UserInfo>({
+    url: '/user/profile',
     method: 'PUT',
-    errorMsg: true
+    data
+  })
+}
+
+export async function upload(file: File) {
+  const formData = new FormData()
+  formData.append('file', file)
+  return create<{ url: string }>({
+    url: '/upload',
+    method: 'POST',
+    data: formData,
+    requestType: 'blob'
   })
 }

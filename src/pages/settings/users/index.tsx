@@ -3,7 +3,7 @@ import { Role, RoleLabel, UserStatus, UserStatusLabel } from '@/constants'
 import { DefaultPagination } from '@/utils/request'
 import { Button, Flex, Input, message, Popconfirm, Select, Space, Table, Tag, theme } from 'antd'
 import dayjs from 'dayjs'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 export default function UserListPage() {
   const { token } = theme.useToken()
@@ -17,7 +17,7 @@ export default function UserListPage() {
   const [pageNum, setPageNum] = useState(DefaultPagination.PageNum as number)
   const [pageSize, setPageSize] = useState(DefaultPagination.PageSize as number)
 
-  const fetchList = () => {
+  const fetchList = useCallback(() => {
     setLoading(true)
     userList({
       username: searchUsername || undefined,
@@ -31,11 +31,11 @@ export default function UserListPage() {
         setTotal(data.total)
       })
       .finally(() => setLoading(false))
-  }
+  }, [searchUsername, filterRole, filterStatus, pageNum, pageSize])
 
   useEffect(() => {
     fetchList()
-  }, [pageNum, pageSize, filterRole, filterStatus])
+  }, [pageNum, pageSize, filterRole, filterStatus, fetchList])
 
   return (
     <Flex vertical gap={token.marginLG}>
@@ -47,14 +47,14 @@ export default function UserListPage() {
             style={{ width: 200 }}
             value={searchUsername}
             onChange={(e) => setSearchUsername(e.target.value)}
-            onSearch={() => { setPageNum(1); fetchList() }}
+            onSearch={() => { setPageNum(DefaultPagination.PageNum as number); fetchList() }}
           />
           <Select
             placeholder="全部角色"
             allowClear
             style={{ width: 120 }}
             value={filterRole}
-            onChange={(v) => { setFilterRole(v); setPageNum(1) }}
+            onChange={(v) => { setFilterRole(v); setPageNum(DefaultPagination.PageNum as number) }}
             options={Object.entries(RoleLabel).map(([key, label]) => ({ label, value: key }))}
           />
           <Select
@@ -62,7 +62,7 @@ export default function UserListPage() {
             allowClear
             style={{ width: 120 }}
             value={filterStatus}
-            onChange={(v) => { setFilterStatus(v); setPageNum(1) }}
+            onChange={(v) => { setFilterStatus(v); setPageNum(DefaultPagination.PageNum as number) }}
             options={[
               { label: UserStatusLabel[UserStatus.ENABLED], value: UserStatus.ENABLED },
               { label: UserStatusLabel[UserStatus.DISABLED], value: UserStatus.DISABLED },
@@ -109,8 +109,8 @@ export default function UserListPage() {
               <Popconfirm
                 title={record.status === UserStatus.ENABLED ? '确定禁用该用户？' : '确定启用该用户？'}
                 onConfirm={() => {
-                  userToggle(record.id).then(() => {
-                    message.success('操作成功')
+                  userToggle(record.id).then(({ msg }) => {
+                    message.success(msg)
                     fetchList()
                   })
                 }}

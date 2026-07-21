@@ -21,8 +21,7 @@ export async function categoryList(type?: string) {
   return create<Category[]>({
     url: '/category/list',
     method: 'POST',
-    data: { type },
-    errorMsg: true
+    data: { type }
   })
 }
 
@@ -30,8 +29,7 @@ export async function categorySave(data: CategorySaveParams) {
   return create<Category>({
     url: '/category',
     method: 'POST',
-    data,
-    errorMsg: true
+    data
   })
 }
 
@@ -39,15 +37,13 @@ export async function categoryUpdate(id: number, data: CategorySaveParams) {
   return create<Category>({
     url: `/category/${id}`,
     method: 'PUT',
-    data,
-    errorMsg: true
+    data
   })
 }
 
 export async function categoryDelete(id: number) {
   return create<CtmResponse<null>>({
     url: `/category/${id}`,
-    method: 'DELETE',
-    errorMsg: true
+    method: 'DELETE'
   })
 }

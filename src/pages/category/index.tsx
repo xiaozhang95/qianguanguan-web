@@ -44,7 +44,7 @@ export default function CategoryPage() {
       render: (_: unknown, record: Category) => (
         <Space>
           <Button type="link" size="small" onClick={() => { setEditingCategory(record); form.setFieldsValue(record); setModalOpen(true) }}>编辑</Button>
-          <Popconfirm title="确定删除？" onConfirm={() => { categoryDelete(record.id).then(() => { message.success('删除成功'); fetchList() }) }}>
+          <Popconfirm title="确定删除？" onConfirm={() => { categoryDelete(record.id).then(({ msg }) => { message.success(msg); fetchList() }) }}>
             <Button type="link" size="small" danger>删除</Button>
           </Popconfirm>
         </Space>
@@ -70,7 +70,7 @@ export default function CategoryPage() {
         onOk={() => {
           form.validateFields().then((values: CategorySaveParams) => {
             const action = editingCategory ? categoryUpdate(editingCategory.id, values) : categorySave(values)
-            action.then(() => { message.success(editingCategory ? '更新成功' : '新增成功'); setModalOpen(false); fetchList() })
+            action.then(({ msg }) => { message.success(msg); setModalOpen(false); fetchList() })
           })
         }}
         onCancel={() => setModalOpen(false)}

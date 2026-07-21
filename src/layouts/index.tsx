@@ -1,12 +1,14 @@
-import ErrorBoundary from '@/components/error-boundary'
+import ErrorBoundary from '@/components/errorBoundary'
 import Icon from '@/components/icon'
 import Loading from '@/components/loading'
+import ProfileModal from '@/components/profileModal'
+import { Role } from '@/constants'
 import { getPermittedRoutes, isGroup, type RouteDefinition } from '@/router'
 import { RoutePath } from '@/router/routes'
 import type { RootState } from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
-import { DownOutlined, LogoutOutlined } from '@ant-design/icons'
+import { DownOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { Button, Dropdown, Flex, Layout, Menu, theme } from 'antd'
 import { Suspense, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -20,10 +22,11 @@ export default function AdminLayout() {
   const nav = useNavigate()
   const dispatch = useDispatch()
   const userInfo = useSelector((state: RootState) => state.userInfo)
-  const routes = getPermittedRoutes(userInfo?.role)
+  const routes = getPermittedRoutes(userInfo?.role as Role)
 
   const [activeKey, setActiveKey] = useState(location.pathname)
   const [openKeys, setOpenKeys] = useState<string[]>([])
+  const [profileOpen, setProfileOpen] = useState(false)
 
   useEffect(() => {
     setActiveKey(location.pathname)
@@ -31,7 +34,7 @@ export default function AdminLayout() {
     if (group) {
       setOpenKeys((prev) => [...new Set([...prev, group.meta.title])])
     }
-  }, [location.pathname])
+  }, [location.pathname, routes])
 
   const buildMenuItems = (defs: RouteDefinition[]) => {
     return defs.map((r) => {
@@ -105,6 +108,12 @@ export default function AdminLayout() {
             menu={{
               items: [
                 {
+                  key: 'profile',
+                  icon: <UserOutlined />,
+                  label: '个人信息',
+                  onClick: () => setProfileOpen(true)
+                },
+                {
                   key: 'logout',
                   icon: <LogoutOutlined />,
                   label: '退出登录',
@@ -119,6 +128,7 @@ export default function AdminLayout() {
             placement="bottomRight"
           >
             <Button type="text" style={{ color: token.colorText }}>
+              {userInfo?.avatar && <img src={userInfo.avatar} alt="" style={{ width: 24, height: 24, borderRadius: '50%', marginRight: 8, verticalAlign: 'middle' }} />}
               {userInfo?.name || userInfo?.username || ''} <DownOutlined />
             </Button>
           </Dropdown>
@@ -132,6 +142,13 @@ export default function AdminLayout() {
           </Suspense>
         </Content>
       </Layout>
+
+      <ProfileModal
+        open={profileOpen}
+        userInfo={userInfo}
+        onClose={() => setProfileOpen(false)}
+        onSuccess={(info) => dispatch(setUserInfo(info))}
+      />
     </Layout>
   )
 }

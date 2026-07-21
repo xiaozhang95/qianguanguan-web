@@ -5,7 +5,7 @@ import { DefaultPagination } from '@/utils/request'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Card, DatePicker, Flex, Form, Input, InputNumber, message, Modal, Popconfirm, Select, Space, Statistic, Table, theme } from 'antd'
 import dayjs from 'dayjs'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 export default function BillPage() {
   const { token } = theme.useToken()
@@ -25,7 +25,7 @@ export default function BillPage() {
   const [editingBill, setEditingBill] = useState<BillVO | null>(null)
   const [form] = Form.useForm()
 
-  const fetchBills = () => {
+  const fetchBills = useCallback(() => {
     setLoading(true)
     const startDate = filterDate.format('YYYY-MM-DD')
     const endDate = filterDate.format('YYYY-MM-DD')
@@ -35,11 +35,11 @@ export default function BillPage() {
         setTotal(data.total)
       })
       .finally(() => setLoading(false))
-  }
+  }, [filterDate, filterType, filterCategoryId, pageNum, pageSize])
 
-  const fetchStats = () => {
+  const fetchStats = useCallback(() => {
     billStats(filterDate.format('YYYY'), filterDate.format('M')).then(({ data }) => setStats(data))
-  }
+  }, [filterDate])
 
   useEffect(() => {
     categoryList().then(({ data }) => setCategories(data))
@@ -48,7 +48,7 @@ export default function BillPage() {
   useEffect(() => {
     fetchBills()
     fetchStats()
-  }, [filterDate, filterType, filterCategoryId, pageNum, pageSize])
+  }, [filterDate, filterType, filterCategoryId, pageNum, pageSize, fetchBills, fetchStats])
 
   const incomeCategories = categories.filter((c) => c.type === BillType.INCOME)
   const expenseCategories = categories.filter((c) => c.type === BillType.EXPENSE)
@@ -95,8 +95,8 @@ export default function BillPage() {
           <Popconfirm
             title="确定删除？"
             onConfirm={() => {
-              billDelete(record.id).then(() => {
-                message.success('删除成功')
+              billDelete(record.id).then(({ msg }) => {
+                message.success(msg)
                 fetchBills()
                 fetchStats()
               })
@@ -120,7 +120,7 @@ export default function BillPage() {
             onChange={(v) => {
               if (v) {
                 setFilterDate(v)
-                setPageNum(1)
+                setPageNum(DefaultPagination.PageNum as number)
               }
             }}
             allowClear={false}
@@ -132,7 +132,7 @@ export default function BillPage() {
             value={filterType}
             onChange={(v) => {
               setFilterType(v)
-              setPageNum(1)
+              setPageNum(DefaultPagination.PageNum as number)
             }}
             options={[
               { label: BillTypeLabel[BillType.INCOME], value: BillType.INCOME },
@@ -147,10 +147,10 @@ export default function BillPage() {
             value={filterCategoryId}
             onChange={(v) => {
               setFilterCategoryId(v)
-              setPageNum(1)
+              setPageNum(DefaultPagination.PageNum as number)
             }}
+            optionFilterProp="label"
             options={categories.map((c) => ({ label: `${c.icon} ${c.name}`, value: c.id }))}
-            filterOption={(input, option) => (option?.label as string)?.includes(input)}
           />
         </Space>
         <Button
@@ -227,8 +227,8 @@ export default function BillPage() {
               onClick={() => {
                 form.validateFields().then((values: { type: string; categoryId: number; amount: number; billDate: dayjs.Dayjs; remark?: string }) => {
                   const params: BillSaveParams = { ...values, billDate: values.billDate.format('YYYY-MM-DD') }
-                  ;(editingBill ? billUpdate(editingBill.id, params) : billSave(params)).then(() => {
-                    message.success(editingBill ? '更新成功' : '新增成功')
+                  ;(editingBill ? billUpdate(editingBill.id, params) : billSave(params)).then(({ msg }) => {
+                    message.success(msg)
                     setDrawerOpen(false)
                     fetchBills()
                     fetchStats()

@@ -1,13 +1,13 @@
-import type { Role } from '@/constants'
 import create from '@/utils/request'
 
 export interface UserInfo {
   id: number
   username: string
   name: string
-  role: Role
+  role: string
   phone: string
   email: string
+  avatar: string
   createtime: string
 }
 
@@ -31,8 +31,7 @@ export interface CaptchaResult {
 export async function captcha() {
   return create<CaptchaResult>({
     url: '/captcha',
-    method: 'GET',
-    errorMsg: true
+    method: 'GET'
   })
 }
 
@@ -40,7 +39,6 @@ export async function login(params: LoginParams) {
   return create<LoginResult>({
     url: '/login',
     method: 'POST',
-    data: params,
-    errorMsg: true
+    data: params
   })
 }

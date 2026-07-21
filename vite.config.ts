@@ -18,6 +18,10 @@ export default defineConfig(({ mode }) => {
         [env.VITE_REQUEST_BASE_URL]: {
           target: env.VITE_REQUEST_TARGET,
           changeOrigin: true
+        },
+        '/static': {
+          target: env.VITE_REQUEST_TARGET,
+          changeOrigin: true
         }
       }
     }

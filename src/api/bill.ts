@@ -48,8 +48,7 @@ export async function billList(params: BillListParams) {
   return create<BillPage>({
     url: '/bill/list',
     method: 'POST',
-    data: params,
-    errorMsg: true
+    data: params
   })
 }
 
@@ -57,8 +56,7 @@ export async function billSave(data: BillSaveParams) {
   return create<BillVO>({
     url: '/bill',
     method: 'POST',
-    data,
-    errorMsg: true
+    data
   })
 }
 
@@ -66,16 +64,14 @@ export async function billUpdate(id: number, data: BillSaveParams) {
   return create<BillVO>({
     url: `/bill/${id}`,
     method: 'PUT',
-    data,
-    errorMsg: true
+    data
   })
 }
 
 export async function billDelete(id: number) {
   return create<CtmResponse<null>>({
     url: `/bill/${id}`,
-    method: 'DELETE',
-    errorMsg: true
+    method: 'DELETE'
   })
 }
 
@@ -83,7 +79,6 @@ export async function billStats(year: string, month: string) {
   return create<BillStats>({
     url: '/bill/stats',
     method: 'POST',
-    data: { year, month },
-    errorMsg: true
+    data: { year, month }
   })
 }
