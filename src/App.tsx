@@ -1,6 +1,6 @@
 import 'antd/dist/reset.css'
 
-import { App as AntdApp, ConfigProvider } from 'antd'
+import { ConfigProvider } from 'antd'
 import zhCN from 'antd/es/locale/zh_CN'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -42,21 +42,19 @@ export default function App() {
   console.log(routes, userInfo)
   return (
     <ConfigProvider locale={zhCN}>
-      <AntdApp>
-        <Routes>
-          <Route path={RoutePath.Login} element={<Login />} />
-          {!routes.length ? (
-            <Route path="/*" element={<LoadAuth />} />
-          ) : (
-            <Route path={RoutePath.Home} element={<Layout />}>
-              <Route path={RoutePath.Home} element={<Navigate to={routes[0]?.path} />} />
-              {routes.map(({ path, Component }) => (
-                <Route key={path} path={path} element={<Component />} />
-              ))}
-            </Route>
-          )}
-        </Routes>
-      </AntdApp>
+      <Routes>
+        <Route path={RoutePath.Login} element={<Login />} />
+        {!routes.length ? (
+          <Route path="/*" element={<LoadAuth />} />
+        ) : (
+          <Route path={RoutePath.Home} element={<Layout />}>
+            <Route path={RoutePath.Home} element={<Navigate to={routes[0]?.path} />} />
+            {routes.map(({ path, Component }) => (
+              <Route key={path} path={path} element={<Component />} />
+            ))}
+          </Route>
+        )}
+      </Routes>
     </ConfigProvider>
   )
 }
