@@ -55,14 +55,12 @@ function PageMenu() {
 
   const userInfo = useSelector((state: RootState) => state.userInfo)
 
-  function onClick(e: { key: string }) {
-    if (key === e.key) return
-    nav(e.key)
-  }
-
   return (
     <Menu
-      onClick={onClick}
+      onClick={(e: { key: string }) => {
+        if (key === e.key) return
+        nav(e.key)
+      }}
       selectedKeys={[key]}
       mode="inline"
       items={getRoutes(userInfo?.role).map(({ path, meta }) => {

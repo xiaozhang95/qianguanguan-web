@@ -11,7 +11,7 @@ export interface UserInfo {
 
 export const userInfoSlice = createSlice({
   name: 'userInfo',
-  initialState: localStorage.getItem('userInfo') || null,
+  initialState: null,
   reducers: {
     set: (_, action) => {
       return action.payload
