@@ -1,5 +1,6 @@
 import { HomeOutlined, WalletOutlined, AppstoreOutlined } from '@ant-design/icons'
 import { lazy } from 'react'
+import { RoutePath } from './routes'
 
 export const Permission = {
   SUPER_ADMIN: '超级管理员',
@@ -12,9 +13,9 @@ const Home = lazy(() => import('@/pages/home'))
 const Bill = lazy(() => import('@/pages/bill'))
 const Category = lazy(() => import('@/pages/category'))
 const routes = [
-  { path: '/home', meta: { title: '首页', Icon: HomeOutlined, permissions: [Permission.SUPER_ADMIN, Permission.ADMIN, Permission.USER] }, Component: Home },
-  { path: '/bill', meta: { title: '账单', Icon: WalletOutlined, permissions: [Permission.SUPER_ADMIN, Permission.ADMIN, Permission.USER] }, Component: Bill },
-  { path: '/category', meta: { title: '分类管理', Icon: AppstoreOutlined, permissions: [Permission.SUPER_ADMIN, Permission.ADMIN, Permission.USER] }, Component: Category }
+  { path: RoutePath.HomePage, meta: { title: '首页', Icon: HomeOutlined, permissions: [Permission.SUPER_ADMIN, Permission.ADMIN, Permission.USER] }, Component: Home },
+  { path: RoutePath.Bill, meta: { title: '账单', Icon: WalletOutlined, permissions: [Permission.SUPER_ADMIN, Permission.ADMIN, Permission.USER] }, Component: Bill },
+  { path: RoutePath.Category, meta: { title: '分类管理', Icon: AppstoreOutlined, permissions: [Permission.SUPER_ADMIN, Permission.ADMIN, Permission.USER] }, Component: Category }
 ]
 
 export default function getRoutes(permission?: string) {
