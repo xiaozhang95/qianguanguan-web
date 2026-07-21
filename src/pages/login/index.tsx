@@ -1,13 +1,13 @@
+import { captcha, login } from '@/api/login'
+import Icon from '@/components/icon'
+import { RoutePath } from '@/router/routes'
+import { useAppDispatch } from '@/store'
+import { setToken } from '@/store/token'
+import { setUserInfo } from '@/store/userInfo'
 import { LockOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons'
 import { App, Button, Flex, Form, Input, theme } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { captcha, login } from '../../api/login'
-import Icon from '../../components/icon'
-import { RoutePath } from '../../router/routes'
-import { useAppDispatch } from '../../store'
-import { setToken } from '../../store/token'
-import { setUserInfo } from '../../store/userInfo'
 
 export default function Page() {
   const { token } = theme.useToken()
@@ -47,7 +47,8 @@ export default function Page() {
         vertical
         align="center"
         style={{
-          width: 400,
+          width: 450,
+          padding: token.sizeLG,
           background: token.colorBgContainer,
           borderRadius: token.borderRadiusLG,
           boxShadow: token.boxShadowSecondary
@@ -56,6 +57,7 @@ export default function Page() {
         <Icon name="logo" style={{ width: 72, height: 72, margin: token.marginSM, color: token.colorPrimary }} />
         <span style={{ marginBottom: token.marginXL, fontSize: token.fontSizeHeading3, fontWeight: 600, color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
         <Form
+          style={{ width: '100%' }}
           size="large"
           form={form}
           initialValues={{
@@ -95,18 +97,20 @@ export default function Page() {
               <Form.Item noStyle name="captchaCode" rules={[{ required: true, message: '请输入验证码' }]}>
                 <Input prefix={<SafetyOutlined />} placeholder="验证码" style={{ flex: 1 }} />
               </Form.Item>
-              <img
-                alt="验证码"
-                src={captchaImage}
-                onClick={fetchCaptcha}
-                style={{
-                  height: token.controlHeightLG,
-                  width: 120,
-                  cursor: 'pointer',
-                  borderRadius: token.borderRadius,
-                  border: `1px solid ${token.colorBorder}`
-                }}
-              />
+              {captchaImage && (
+                <img
+                  alt="验证码"
+                  src={captchaImage}
+                  onClick={fetchCaptcha}
+                  style={{
+                    height: token.controlHeightLG,
+                    width: 120,
+                    cursor: 'pointer',
+                    borderRadius: token.borderRadius,
+                    border: `1px solid ${token.colorBorder}`
+                  }}
+                />
+              )}
             </Flex>
           </Form.Item>
           <Form.Item>

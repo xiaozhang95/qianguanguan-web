@@ -1,5 +1,5 @@
+import store from '@/store'
 import { message } from 'antd'
-import store from '../store'
 
 export type Params = Record<string, string | number | undefined>
 

@@ -1,4 +1,4 @@
-import create from '../utils/request'
+import create from '@/utils/request'
 
 export interface UserInfo {
   id: number

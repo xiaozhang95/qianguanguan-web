@@ -1,5 +1,5 @@
+import { type UserInfo } from '@/api/login'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { type UserInfo } from '../api/login'
 
 export type { UserInfo }
 

@@ -1,13 +1,13 @@
+import Loading from '@/components/loading'
+import getRoutes from '@/router'
+import { RoutePath } from '@/router/routes'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { setToken } from '@/store/token'
+import { setUserInfo } from '@/store/userInfo'
 import { DownOutlined } from '@ant-design/icons'
 import { Dropdown, Layout, Menu, Space } from 'antd'
 import { Suspense } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import Loading from '../components/loading'
-import getRoutes from '../router'
-import { RoutePath } from '../router/routes'
-import { useAppDispatch, useAppSelector } from '../store'
-import { setToken } from '../store/token'
-import { setUserInfo } from '../store/userInfo'
 
 const { Sider: LayoutSider, Content: LayoutContent, Header: LayoutHeader } = Layout
 

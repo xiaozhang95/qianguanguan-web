@@ -8,7 +8,7 @@ export const Permission = {
 } as const
 export type Permission = (typeof Permission)[keyof typeof Permission]
 
-const Home = lazy(() => import('../pages/home'))
+const Home = lazy(() => import('@/pages/home'))
 const routes = [{ path: '/home', meta: { title: '首页', Icon: HomeOutlined, permissions: [Permission.SUPER_ADMIN, Permission.ADMIN, Permission.USER] }, Component: Home }]
 
 export default function getRoutes(permission?: string) {
