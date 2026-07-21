@@ -1,6 +1,7 @@
 import { billList, billStats, type BillVO } from '@/api/bill'
 import { categoryList, type Category } from '@/api/category'
 import { BillType, BillTypeLabel } from '@/constants'
+import { DefaultPagination } from '@/utils/request'
 import { Card, Flex, Statistic, Table, Tag, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
@@ -22,7 +23,7 @@ export default function HomePage() {
     categoryList().then(({ data }) => setCategories(data))
     setLoading(true)
 
-    Promise.all([billStats(year, month), billList({ startDate, endDate, pageNum: 1, pageSize: 5 })])
+    Promise.all([billStats(year, month), billList({ startDate, endDate, pageNum: DefaultPagination.PageNum as number, pageSize: 5 })])
       .then(([statsRes, listRes]) => {
         setStats(statsRes.data)
         setRecentBills(listRes.data.records)

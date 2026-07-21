@@ -5,9 +5,9 @@ import { RoutePath } from '@/router/routes'
 import type { RootState } from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import { Avatar, Dropdown, Flex, Layout, Menu, theme } from 'antd'
-import { Suspense } from 'react'
+import { DownOutlined, LogoutOutlined } from '@ant-design/icons'
+import { Button, Dropdown, Flex, Layout, Menu, theme } from 'antd'
+import { Suspense, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
@@ -31,7 +31,11 @@ export default function AdminLayout() {
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const routes = getRoutes(userInfo?.role)
 
-  const selectedKey = location.pathname
+  const [activeKey, setActiveKey] = useState(location.pathname)
+
+  useEffect(() => {
+    setActiveKey(location.pathname)
+  }, [location.pathname])
 
   const menuItems = routes.map(({ path, meta }) => ({
     key: path,
@@ -40,8 +44,8 @@ export default function AdminLayout() {
   }))
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider style={siderStyle} theme="light">
+    <Layout style={{ minHeight: '100vh', background: token.colorBgLayout }}>
+      <Sider style={{ ...siderStyle, background: token.colorBgContainer }}>
         <Flex
           align="center"
           justify="center"
@@ -53,17 +57,16 @@ export default function AdminLayout() {
           }}
         >
           <Icon name="logo" size={32} fill={token.colorPrimary} />
-          <span style={{ fontWeight: 700, fontSize: token.fontSizeHeading5, whiteSpace: 'nowrap', color: token.colorPrimary }}>
+          <span style={{ fontWeight: 700, fontSize: token.fontSizeHeading5, whiteSpace: 'nowrap', color: token.colorText }}>
             {import.meta.env.VITE_NAME}
           </span>
         </Flex>
         <Menu
-          theme="light"
           mode="inline"
-          selectedKeys={[selectedKey]}
+          selectedKeys={[activeKey]}
           items={menuItems}
           onClick={({ key }) => {
-            if (selectedKey !== key) nav(key)
+            if (activeKey !== key) { setActiveKey(key); nav(key) }
           }}
           style={{ borderRight: 0 }}
         />
@@ -100,12 +103,9 @@ export default function AdminLayout() {
             }}
             placement="bottomRight"
           >
-            <Flex align="center" gap={token.marginXS} style={{ cursor: 'pointer' }}>
-              <Avatar size={32} icon={<UserOutlined />} />
-              <span style={{ fontWeight: token.fontWeightStrong }}>
-                {userInfo?.name || userInfo?.username || ''}
-              </span>
-            </Flex>
+            <Button type="text" style={{ color: token.colorText }}>
+              {userInfo?.name || userInfo?.username || ''} <DownOutlined />
+            </Button>
           </Dropdown>
         </Header>
 

@@ -1,6 +1,7 @@
 import { billDelete, billList, billSave, billStats, billUpdate, type BillSaveParams, type BillVO } from '@/api/bill'
 import { categoryList, type Category } from '@/api/category'
 import { BillType, BillTypeLabel } from '@/constants'
+import { DefaultPagination } from '@/utils/request'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Card, DatePicker, Drawer, Flex, Form, Input, InputNumber, message, Popconfirm, Select, Space, Statistic, Table, theme } from 'antd'
 import dayjs from 'dayjs'
@@ -19,8 +20,8 @@ export default function BillPage() {
   const [filterType, setFilterType] = useState<string | undefined>()
   const [filterCategoryId, setFilterCategoryId] = useState<number | undefined>()
   const [filterMonth, setFilterMonth] = useState<dayjs.Dayjs>(dayjs())
-  const [pageNum, setPageNum] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  const [pageNum, setPageNum] = useState(DefaultPagination.PageNum as number)
+  const [pageSize, setPageSize] = useState(DefaultPagination.PageSize as number)
 
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [editingBill, setEditingBill] = useState<BillVO | null>(null)

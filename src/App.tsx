@@ -43,7 +43,7 @@ export default function App() {
     <ConfigProvider
       locale={zhCN}
       theme={{
-        algorithm: theme.defaultAlgorithm,
+        algorithm: theme.darkAlgorithm,
         token: {
           borderRadius: 6,
         },
