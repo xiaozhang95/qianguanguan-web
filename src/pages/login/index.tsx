@@ -53,7 +53,7 @@ export default function Page() {
           boxShadow: token.boxShadowSecondary
         }}
       >
-        <Icon name="logo" style={{ width: 72, height: 72, marginBottom: token.marginSM, color: token.colorPrimary }} />
+        <Icon name="logo" style={{ width: 72, height: 72, margin: token.marginSM, color: token.colorPrimary }} />
         <Flex vertical align="center" style={{ marginBottom: token.marginXL }}>
           <span style={{ fontSize: token.fontSizeHeading3, fontWeight: 600, color: token.colorText }}>钱罐罐</span>
           <span style={{ fontSize: token.fontSize, color: token.colorTextSecondary, marginTop: token.marginXXS }}>小而美的记账应用</span>
@@ -109,7 +109,7 @@ export default function Page() {
               />
             </Flex>
           </Form.Item>
-          <Form.Item style={{ marginBottom: token.marginSM }}>
+          <Form.Item>
             <Button type="primary" htmlType="submit" loading={loading} block>
               登录
             </Button>
