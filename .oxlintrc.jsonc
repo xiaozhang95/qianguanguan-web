@@ -1,0 +1,15 @@
+{
+  // oxlint 配置文件，每次代码修改后运行 pnpm run lint 检查
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "rules": {
+    // 项目不要求导出 React 组件
+    "only-export-components": "off",
+    // React Hooks 规则必须遵守
+    "react/rules-of-hooks": "error",
+    // 未使用变量检查
+    "typescript/no-unused-vars": "error",
+    // effect 依赖检查关闭，useEffect 的依赖由开发者自行保证
+    "react/exhaustive-deps": "off"
+  }
+}

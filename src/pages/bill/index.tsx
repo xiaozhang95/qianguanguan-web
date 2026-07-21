@@ -5,7 +5,7 @@ import { DefaultPagination } from '@/utils/request'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Card, DatePicker, Flex, Form, Input, InputNumber, message, Modal, Popconfirm, Select, Space, Statistic, Table, theme } from 'antd'
 import dayjs from 'dayjs'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function BillPage() {
   const { token } = theme.useToken()
@@ -25,21 +25,18 @@ export default function BillPage() {
   const [editingBill, setEditingBill] = useState<BillVO | null>(null)
   const [form] = Form.useForm()
 
-  const fetchBills = useCallback(() => {
+  const fetchBills = () => {
     setLoading(true)
     const startDate = filterDate.format('YYYY-MM-DD')
     const endDate = filterDate.format('YYYY-MM-DD')
     billList({ type: filterType, categoryId: filterCategoryId, startDate, endDate, pageNum, pageSize })
-      .then(({ data }) => {
-        setBills(data.records)
-        setTotal(data.total)
-      })
+      .then(({ data }) => { setBills(data.records); setTotal(data.total) })
       .finally(() => setLoading(false))
-  }, [filterDate, filterType, filterCategoryId, pageNum, pageSize])
+  }
 
-  const fetchStats = useCallback(() => {
+  const fetchStats = () => {
     billStats(filterDate.format('YYYY'), filterDate.format('M')).then(({ data }) => setStats(data))
-  }, [filterDate])
+  }
 
   useEffect(() => {
     categoryList().then(({ data }) => setCategories(data))
@@ -48,7 +45,7 @@ export default function BillPage() {
   useEffect(() => {
     fetchBills()
     fetchStats()
-  }, [filterDate, filterType, filterCategoryId, pageNum, pageSize, fetchBills, fetchStats])
+  }, [filterDate, filterType, filterCategoryId, pageNum, pageSize])
 
   const incomeCategories = categories.filter((c) => c.type === BillType.INCOME)
   const expenseCategories = categories.filter((c) => c.type === BillType.EXPENSE)
@@ -231,7 +228,7 @@ export default function BillPage() {
                     message.success(msg)
                     setDrawerOpen(false)
                     fetchBills()
-                    fetchStats()
+                fetchStats()
                   })
                 })
               }}

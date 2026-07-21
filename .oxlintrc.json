@@ -1,9 +1,0 @@
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "rules": {
-    "only-export-components": "off",
-    "react/rules-of-hooks": "error",
-    "typescript/no-unused-vars": "error"
-  }
-}

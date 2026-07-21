@@ -34,7 +34,7 @@ export default function AdminLayout() {
     if (group) {
       setOpenKeys((prev) => [...new Set([...prev, group.meta.title])])
     }
-  }, [location.pathname, routes])
+  }, [location.pathname])
 
   const buildMenuItems = (defs: RouteDefinition[]) => {
     return defs.map((r) => {

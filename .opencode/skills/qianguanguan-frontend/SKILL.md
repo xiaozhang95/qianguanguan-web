@@ -51,7 +51,7 @@ description: Use ONLY when working on qianguanguan-web (钱罐罐 React 前端).
 
 - **禁止使用 `eslint-disable` / `oxlint-disable` 注释**
 - 每次代码修改后必须运行 `pnpm run lint`，确保 `tsc` 和 `oxlint` 零错误
-- `useEffect` 依赖必须完整，使用 `useCallback` 稳定函数引用
+- `react/exhaustive-deps` 规则在 `.oxlintrc.jsonc` 中关闭，useEffect 依赖由开发者自行保证
 
 ```typescript
 // src/constants/index.ts

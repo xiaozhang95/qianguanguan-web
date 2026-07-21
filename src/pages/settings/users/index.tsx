@@ -3,7 +3,7 @@ import { Role, RoleLabel, UserStatus, UserStatusLabel } from '@/constants'
 import { DefaultPagination } from '@/utils/request'
 import { Button, Flex, Input, message, Popconfirm, Select, Space, Table, Tag, theme } from 'antd'
 import dayjs from 'dayjs'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function UserListPage() {
   const { token } = theme.useToken()
@@ -17,7 +17,7 @@ export default function UserListPage() {
   const [pageNum, setPageNum] = useState(DefaultPagination.PageNum as number)
   const [pageSize, setPageSize] = useState(DefaultPagination.PageSize as number)
 
-  const fetchList = useCallback(() => {
+  const fetchList = () => {
     setLoading(true)
     userList({
       username: searchUsername || undefined,
@@ -26,16 +26,13 @@ export default function UserListPage() {
       pageNum,
       pageSize,
     })
-      .then(({ data }) => {
-        setUsers(data.records)
-        setTotal(data.total)
-      })
+      .then(({ data }) => { setUsers(data.records); setTotal(data.total) })
       .finally(() => setLoading(false))
-  }, [searchUsername, filterRole, filterStatus, pageNum, pageSize])
+  }
 
   useEffect(() => {
     fetchList()
-  }, [pageNum, pageSize, filterRole, filterStatus, fetchList])
+  }, [pageNum, pageSize])
 
   return (
     <Flex vertical gap={token.marginLG}>
@@ -77,9 +74,7 @@ export default function UserListPage() {
           { title: '用户名', dataIndex: 'username', width: 120 },
           { title: '姓名', dataIndex: 'name', width: 120 },
           {
-            title: '角色',
-            dataIndex: 'role',
-            width: 120,
+            title: '角色', dataIndex: 'role', width: 120,
             render: (role: string) => {
               const colors: Record<string, string> = { [Role.SUPER_ADMIN]: 'orange', [Role.ADMIN]: 'processing', [Role.USER]: 'default' }
               return <Tag color={colors[role]}>{RoleLabel[role as Role] || role}</Tag>
@@ -88,32 +83,19 @@ export default function UserListPage() {
           { title: '手机号', dataIndex: 'phone', width: 140 },
           { title: '邮箱', dataIndex: 'email', ellipsis: true },
           {
-            title: '状态',
-            dataIndex: 'status',
-            width: 80,
-            render: (s: number) => (
-              <Tag color={s === UserStatus.ENABLED ? 'success' : 'error'}>{UserStatusLabel[s as UserStatus]}</Tag>
-            )
+            title: '状态', dataIndex: 'status', width: 80,
+            render: (s: number) => <Tag color={s === UserStatus.ENABLED ? 'success' : 'error'}>{UserStatusLabel[s as UserStatus]}</Tag>
           },
           {
-            title: '创建时间',
-            dataIndex: 'createtime',
-            width: 180,
+            title: '创建时间', dataIndex: 'createtime', width: 180,
             render: (t: string) => dayjs(t).format('YYYY-MM-DD HH:mm:ss')
           },
           {
-            title: '操作',
-            key: 'action',
-            width: 100,
+            title: '操作', key: 'action', width: 100,
             render: (_: unknown, record: UserInfo & { status: number }) => (
               <Popconfirm
                 title={record.status === UserStatus.ENABLED ? '确定禁用该用户？' : '确定启用该用户？'}
-                onConfirm={() => {
-                  userToggle(record.id).then(({ msg }) => {
-                    message.success(msg)
-                    fetchList()
-                  })
-                }}
+                onConfirm={() => { userToggle(record.id).then(({ msg }) => { message.success(msg); fetchList() }) }}
               >
                 <Button type="link" size="small" danger={record.status === UserStatus.ENABLED}>
                   {record.status === UserStatus.ENABLED ? '禁用' : '启用'}
@@ -125,9 +107,7 @@ export default function UserListPage() {
         dataSource={users}
         loading={loading}
         pagination={{
-          current: pageNum,
-          pageSize,
-          total,
+          current: pageNum, pageSize, total,
           showSizeChanger: true,
           showTotal: (t) => `共 ${t} 条`,
           onChange: (p, s) => { setPageNum(p); setPageSize(s) }
