@@ -31,7 +31,7 @@ export interface RequestOptions {
 export interface CtmResponse<T> {
   code: number
   data: T
-  message: string
+  msg: string
 }
 
 export interface ResponseFile {
@@ -150,9 +150,9 @@ export default async function create<T>(requestInfo: RequestOptions): Promise<Ct
   //设置默认值
   const ro = Object.assign(
     {
-      api: import.meta.env.APP_REQUEST_API,
-      baseURL: import.meta.env.APP_REQUEST_BASE_URL,
-      timeout: Number(import.meta.env.APP_REQUEST_TIMEOUT),
+      api: import.meta.env.VITE_REQUEST_API,
+      baseURL: import.meta.env.VITE_REQUEST_BASE_URL,
+      timeout: Number(import.meta.env.VITE_REQUEST_TIMEOUT),
       headers: {},
       requestType: 'json',
       responseType: 'json',
@@ -178,7 +178,7 @@ export default async function create<T>(requestInfo: RequestOptions): Promise<Ct
           const json = (await response.json()) as CtmResponse<T>
           if (ResponseCode.Success !== Number(json.code)) {
             // 错误处理
-            if (ro.errorMsg) message.error(json.message)
+            if (ro.errorMsg) message.error(json.msg)
             reject(json)
           } else {
             // 正常返回
@@ -195,7 +195,7 @@ export default async function create<T>(requestInfo: RequestOptions): Promise<Ct
           resolve({
             code: ResponseCode.Success,
             data: responseFile as T,
-            message: ''
+            msg: ''
           })
         }
       },

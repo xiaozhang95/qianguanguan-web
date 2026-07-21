@@ -1,19 +1,21 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { type UserInfo } from '../api/login'
 
-export interface UserInfo {
-  id: number
-  phone: string
-  email: string
-  createtime: string
-  name: string
-  role: string
-}
+export type { UserInfo }
+
+const stored = localStorage.getItem('userInfo')
+const initialState: UserInfo | null = stored ? JSON.parse(stored) : null
 
 export const userInfoSlice = createSlice({
   name: 'userInfo',
-  initialState: null,
+  initialState: initialState as UserInfo | null,
   reducers: {
-    set: (_, action) => {
+    set: (_, action: PayloadAction<UserInfo | null>) => {
+      if (action.payload) {
+        localStorage.setItem('userInfo', JSON.stringify(action.payload))
+      } else {
+        localStorage.removeItem('userInfo')
+      }
       return action.payload
     }
   }
