@@ -1,4 +1,5 @@
 import { billList, billStats, type BillVO } from '@/api/bill'
+import { BillType } from '@/constants'
 import { Card, DatePicker, Flex, Statistic, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
@@ -40,7 +41,7 @@ export default function HomePage() {
         listRes.data.records.forEach((b: BillVO) => {
           const entry = dailyMap.get(b.billDate)
           if (entry) {
-            if (b.type === 'INCOME') entry.income += b.amount
+            if (b.type === BillType.INCOME) entry.income += b.amount
             else entry.expense += b.amount
           }
         })
