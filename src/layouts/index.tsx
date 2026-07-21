@@ -1,21 +1,37 @@
+import Icon from '@/components/icon'
 import Loading from '@/components/loading'
 import getRoutes from '@/router'
 import { RoutePath } from '@/router/routes'
 import type { RootState } from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
-import { DownOutlined } from '@ant-design/icons'
-import { Dropdown, Layout, Menu, Space } from 'antd'
-import { Suspense } from 'react'
+import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from '@ant-design/icons'
+import { Avatar, Breadcrumb, Button, Dropdown, Layout, Menu } from 'antd'
+import { Suspense, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
-const { Sider: LayoutSider, Content: LayoutContent, Header: LayoutHeader } = Layout
+const { Sider, Content, Header } = Layout
 
-function PageHeader() {
+const siderStyle: React.CSSProperties = {
+  overflow: 'auto',
+  height: '100vh',
+  position: 'fixed',
+  left: 0,
+  top: 0,
+  bottom: 0,
+  zIndex: 10
+}
+
+export default function AdminLayout() {
+  const [collapsed, setCollapsed] = useState(false)
+  const location = useLocation()
   const nav = useNavigate()
   const dispatch = useDispatch()
   const userInfo = useSelector((state: RootState) => state.userInfo)
+  const routes = getRoutes(userInfo?.role)
+
+  const selectedKey = location.pathname
 
   const handleLogout = () => {
     dispatch(setToken(''))
@@ -23,76 +39,94 @@ function PageHeader() {
     nav(RoutePath.Login, { replace: true })
   }
 
+  const menuItems = routes.map(({ path, meta }) => ({
+    key: path,
+    icon: <meta.Icon />,
+    label: meta.title
+  }))
+
+  const currentRoute = routes.find((r) => r.path === selectedKey)
+
   return (
-    <div className="header">
-      <div className="header-left"></div>
-      <div className="header-right">
-        <Space vertical>
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider trigger={null} collapsible collapsed={collapsed} style={siderStyle} theme="light">
+        <div
+          style={{
+            height: 64,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderBottom: '1px solid #f0f0f0',
+            padding: '0 16px',
+            gap: 8
+          }}
+        >
+          <Icon name="logo" size={32} />
+          {!collapsed && <span style={{ fontWeight: 700, fontSize: 18, whiteSpace: 'nowrap' }}>钱罐罐</span>}
+        </div>
+        <Menu
+          theme="light"
+          mode="inline"
+          selectedKeys={[selectedKey]}
+          items={menuItems}
+          onClick={({ key }) => {
+            if (selectedKey !== key) nav(key)
+          }}
+          style={{ borderRight: 0 }}
+        />
+      </Sider>
+
+      <Layout style={{ marginLeft: collapsed ? 80 : 200, transition: 'all 0.2s' }}>
+        <Header
+          style={{
+            padding: '0 24px',
+            background: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+            position: 'sticky',
+            top: 0,
+            zIndex: 9
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <Button type="text" icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={() => setCollapsed(!collapsed)} />
+            <Breadcrumb items={[{ title: '首页', path: '/' }, ...(currentRoute ? [{ title: currentRoute.meta.title }] : [])]} style={{ fontSize: 14 }} />
+          </div>
+
           <Dropdown
             menu={{
               items: [
                 {
-                  key: '1',
-                  label: <div onClick={handleLogout}>退出</div>
+                  key: 'logout',
+                  icon: <LogoutOutlined />,
+                  label: '退出登录',
+                  onClick: handleLogout
                 }
               ]
             }}
             placement="bottomRight"
           >
-            <span className="username">
-              {userInfo?.name || userInfo?.username || ''}&nbsp;
-              <DownOutlined />
-            </span>
+            <div
+              style={{
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8
+              }}
+            >
+              <Avatar size={32} icon={<UserOutlined />} />
+              <span style={{ fontWeight: 500 }}>{userInfo?.name || userInfo?.username || ''}</span>
+            </div>
           </Dropdown>
-        </Space>
-      </div>
-    </div>
-  )
-}
+        </Header>
 
-function PageMenu() {
-  const location = useLocation()
-  const nav = useNavigate()
-  const key = location.pathname
-
-  const userInfo = useSelector((state: RootState) => state.userInfo)
-
-  return (
-    <Menu
-      onClick={(e: { key: string }) => {
-        if (key === e.key) return
-        nav(e.key)
-      }}
-      selectedKeys={[key]}
-      mode="inline"
-      items={getRoutes(userInfo?.role).map(({ path, meta }) => {
-        return {
-          label: meta.title,
-          key: path,
-          icon: <meta.Icon />
-        }
-      })}
-    />
-  )
-}
-
-export default function Admin() {
-  return (
-    <Layout>
-      <LayoutHeader>
-        <PageHeader></PageHeader>
-      </LayoutHeader>
-      <Layout>
-        <LayoutSider>
-          <PageMenu></PageMenu>
-        </LayoutSider>
-        <LayoutContent>
-          <div className="container">
-            <Suspense fallback={<Loading />}>
-              <Outlet />
-            </Suspense>
-          </div>
-        </LayoutContent>
+        <Content style={{ padding: 24, minHeight: 280 }}>
+          <Suspense fallback={<Loading />}>
+            <Outlet />
+          </Suspense>
+        </Content>
       </Layout>
     </Layout>
   )

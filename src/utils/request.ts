@@ -1,4 +1,6 @@
 import store from '@/store'
+import { setToken } from '@/store/token'
+import { setUserInfo } from '@/store/userInfo'
 import { message } from 'antd'
 
 export type Params = Record<string, string | number | undefined>
@@ -50,8 +52,10 @@ export interface TableResponse<T> {
 }
 
 export const ResponseCode = {
-  Success: 200,
-  Fail: 500
+  SUCCESS: 200,
+  FAIL: 500,
+  SC_FORBIDDEN: 403,
+  SC_UNAUTHORIZED: 401
 } as const
 
 export type ResponseCode = (typeof ResponseCode)[keyof typeof ResponseCode]
@@ -176,9 +180,13 @@ export default async function create<T>(requestInfo: RequestOptions): Promise<Ct
       async (response: Response) => {
         if (ro.responseType === 'json') {
           const json = (await response.json()) as CtmResponse<T>
-          if (ResponseCode.Success !== Number(json.code)) {
+          if (ResponseCode.SUCCESS !== json.code) {
             // 错误处理
             if (ro.errorMsg) message.error(json.msg)
+            if (json.code === ResponseCode.SC_FORBIDDEN || json.code === ResponseCode.SC_UNAUTHORIZED) {
+              store.dispatch(setToken(''))
+              store.dispatch(setUserInfo(null))
+            }
             reject(json)
           } else {
             // 正常返回
@@ -193,7 +201,7 @@ export default async function create<T>(requestInfo: RequestOptions): Promise<Ct
           if (ro.downloadFile) download(responseFile)
 
           resolve({
-            code: ResponseCode.Success,
+            code: ResponseCode.SUCCESS,
             data: responseFile as T,
             msg: ''
           })
@@ -201,7 +209,7 @@ export default async function create<T>(requestInfo: RequestOptions): Promise<Ct
       },
       (e) => {
         const resp = {
-          code: ResponseCode.Fail,
+          code: ResponseCode.FAIL,
           data: null,
           message: e.message
         }

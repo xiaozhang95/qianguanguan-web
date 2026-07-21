@@ -1,6 +1,6 @@
 import 'antd/dist/reset.css'
 
-import { ConfigProvider } from 'antd'
+import { ConfigProvider, theme } from 'antd'
 import zhCN from 'antd/es/locale/zh_CN'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -39,9 +39,16 @@ export default function App() {
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const routes = getRoutes(userInfo?.role)
 
-  console.log(routes, userInfo)
   return (
-    <ConfigProvider locale={zhCN}>
+    <ConfigProvider
+      locale={zhCN}
+      theme={{
+        algorithm: theme.defaultAlgorithm,
+        token: {
+          borderRadius: 6,
+        },
+      }}
+    >
       <Routes>
         <Route path={RoutePath.Login} element={<Login />} />
         {!routes.length ? (
