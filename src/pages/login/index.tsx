@@ -54,11 +54,7 @@ export default function Page() {
         }}
       >
         <Icon name="logo" style={{ width: 72, height: 72, margin: token.marginSM, color: token.colorPrimary }} />
-        <Flex vertical align="center" style={{ marginBottom: token.marginXL }}>
-          <span style={{ fontSize: token.fontSizeHeading3, fontWeight: 600, color: token.colorText }}>钱罐罐</span>
-          <span style={{ fontSize: token.fontSize, color: token.colorTextSecondary, marginTop: token.marginXXS }}>小而美的记账应用</span>
-        </Flex>
-
+        <span style={{ marginBottom: token.marginXL, fontSize: token.fontSizeHeading3, fontWeight: 600, color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
         <Form
           size="large"
           form={form}
