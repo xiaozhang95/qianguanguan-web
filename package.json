@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "tsc --noEmit && oxlint"
+    "lint": "tsc --noEmit -p ./tsconfig.app.json && oxlint"
   },
   "dependencies": {
     "@ant-design/icons": "^6.3.2",
