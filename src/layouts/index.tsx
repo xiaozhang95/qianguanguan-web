@@ -1,3 +1,4 @@
+import ErrorBoundary from '@/components/error-boundary'
 import Icon from '@/components/icon'
 import Loading from '@/components/loading'
 import getRoutes from '@/router'
@@ -57,16 +58,17 @@ export default function AdminLayout() {
           }}
         >
           <Icon name="logo" size={32} fill={token.colorPrimary} />
-          <span style={{ fontWeight: 700, fontSize: token.fontSizeHeading5, whiteSpace: 'nowrap', color: token.colorText }}>
-            {import.meta.env.VITE_NAME}
-          </span>
+          <span style={{ fontWeight: 700, fontSize: token.fontSizeHeading5, whiteSpace: 'nowrap', color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
         </Flex>
         <Menu
           mode="inline"
           selectedKeys={[activeKey]}
           items={menuItems}
           onClick={({ key }) => {
-            if (activeKey !== key) { setActiveKey(key); nav(key) }
+            if (activeKey !== key) {
+              setActiveKey(key)
+              nav(key)
+            }
           }}
           style={{ borderRight: 0 }}
         />
@@ -111,7 +113,9 @@ export default function AdminLayout() {
 
         <Content style={{ padding: token.paddingLG, minHeight: 280 }}>
           <Suspense fallback={<Loading />}>
-            <Outlet />
+            <ErrorBoundary>
+              <Outlet />
+            </ErrorBoundary>
           </Suspense>
         </Content>
       </Layout>

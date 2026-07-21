@@ -3,7 +3,7 @@ import { categoryList, type Category } from '@/api/category'
 import { BillType, BillTypeLabel } from '@/constants'
 import { DefaultPagination } from '@/utils/request'
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Card, DatePicker, Drawer, Flex, Form, Input, InputNumber, message, Popconfirm, Select, Space, Statistic, Table, theme } from 'antd'
+import { Button, Card, DatePicker, Flex, Form, Input, InputNumber, message, Modal, Popconfirm, Select, Space, Statistic, Table, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 
@@ -32,7 +32,10 @@ export default function BillPage() {
     const startDate = filterMonth.startOf('month').format('YYYY-MM-DD')
     const endDate = filterMonth.endOf('month').format('YYYY-MM-DD')
     billList({ type: filterType, categoryId: filterCategoryId, startDate, endDate, pageNum, pageSize })
-      .then(({ data }) => { setBills(data.records); setTotal(data.total) })
+      .then(({ data }) => {
+        setBills(data.records)
+        setTotal(data.total)
+      })
       .finally(() => setLoading(false))
   }
 
@@ -57,7 +60,11 @@ export default function BillPage() {
     {
       title: '分类',
       width: 140,
-      render: (_: unknown, record: BillVO) => (<span>{record.categoryIcon} {record.categoryName}</span>)
+      render: (_: unknown, record: BillVO) => (
+        <span>
+          {record.categoryIcon} {record.categoryName}
+        </span>
+      )
     },
     {
       title: '金额',
@@ -76,9 +83,30 @@ export default function BillPage() {
       width: 160,
       render: (_: unknown, record: BillVO) => (
         <Space>
-          <Button type="link" size="small" onClick={() => { setEditingBill(record); form.setFieldsValue({ ...record, billDate: dayjs(record.billDate) }); setDrawerOpen(true) }}>编辑</Button>
-          <Popconfirm title="确定删除？" onConfirm={() => { billDelete(record.id).then(() => { message.success('删除成功'); fetchBills(); fetchStats() }) }}>
-            <Button type="link" size="small" danger>删除</Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              setEditingBill(record)
+              form.setFieldsValue({ ...record, billDate: dayjs(record.billDate) })
+              setDrawerOpen(true)
+            }}
+          >
+            编辑
+          </Button>
+          <Popconfirm
+            title="确定删除？"
+            onConfirm={() => {
+              billDelete(record.id).then(() => {
+                message.success('删除成功')
+                fetchBills()
+                fetchStats()
+              })
+            }}
+          >
+            <Button type="link" size="small" danger>
+              删除
+            </Button>
           </Popconfirm>
         </Space>
       )
@@ -89,13 +117,25 @@ export default function BillPage() {
     <Flex vertical gap={token.marginLG}>
       <Flex justify="space-between" align="center" wrap>
         <Space wrap>
-          <MonthPicker value={filterMonth} onChange={(v) => { if (v) { setFilterMonth(v); setPageNum(1) } }} allowClear={false} />
+          <MonthPicker
+            value={filterMonth}
+            onChange={(v) => {
+              if (v) {
+                setFilterMonth(v)
+                setPageNum(1)
+              }
+            }}
+            allowClear={false}
+          />
           <Select
             placeholder="全部类型"
             allowClear
             style={{ width: 100 }}
             value={filterType}
-            onChange={(v) => { setFilterType(v); setPageNum(1) }}
+            onChange={(v) => {
+              setFilterType(v)
+              setPageNum(1)
+            }}
             options={[
               { label: BillTypeLabel[BillType.INCOME], value: BillType.INCOME },
               { label: BillTypeLabel[BillType.EXPENSE], value: BillType.EXPENSE }
@@ -107,19 +147,51 @@ export default function BillPage() {
             showSearch
             style={{ width: 140 }}
             value={filterCategoryId}
-            onChange={(v) => { setFilterCategoryId(v); setPageNum(1) }}
+            onChange={(v) => {
+              setFilterCategoryId(v)
+              setPageNum(1)
+            }}
             options={categories.map((c) => ({ label: `${c.icon} ${c.name}`, value: c.id }))}
             filterOption={(input, option) => (option?.label as string)?.includes(input)}
           />
         </Space>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => { setEditingBill(null); form.resetFields(); form.setFieldsValue({ type: BillType.EXPENSE, billDate: dayjs() }); setDrawerOpen(true) }}>记一笔</Button>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => {
+            setEditingBill(null)
+            form.resetFields()
+            form.setFieldsValue({ type: BillType.EXPENSE, billDate: dayjs() })
+            setDrawerOpen(true)
+          }}
+        >
+          记一笔
+        </Button>
       </Flex>
 
       <Card>
         <Flex gap={token.marginXL}>
-          <Statistic title="收入" value={stats.totalIncome} prefix="¥" precision={2} valueStyle={{ color: token.colorSuccess }} />
-          <Statistic title="支出" value={stats.totalExpense} prefix="¥" precision={2} valueStyle={{ color: token.colorError }} />
-          <Statistic title="结余" value={stats.balance} prefix="¥" precision={2} valueStyle={{ color: stats.balance >= 0 ? token.colorSuccess : token.colorError }} />
+          <Statistic
+            title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>收入</span>}
+            value={stats.totalIncome}
+            prefix="¥"
+            precision={2}
+            styles={{ value: { color: token.colorSuccess, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
+          />
+          <Statistic
+            title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>支出</span>}
+            value={stats.totalExpense}
+            prefix="¥"
+            precision={2}
+            styles={{ value: { color: token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
+          />
+          <Statistic
+            title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>结余</span>}
+            value={stats.balance}
+            prefix="¥"
+            precision={2}
+            styles={{ value: { color: stats.balance >= 0 ? token.colorSuccess : token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
+          />
         </Flex>
       </Card>
 
@@ -134,25 +206,37 @@ export default function BillPage() {
           total,
           showSizeChanger: true,
           showTotal: (t) => `共 ${t} 条`,
-          onChange: (p, s) => { setPageNum(p); setPageSize(s) }
+          onChange: (p, s) => {
+            setPageNum(p)
+            setPageSize(s)
+          }
         }}
       />
 
-      <Drawer
+      <Modal
         title={editingBill ? '编辑账单' : '记一笔'}
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        width={400}
-        extra={
-          <Space>
+        onCancel={() => setDrawerOpen(false)}
+        footer={
+          <Flex justify="flex-end" gap={token.marginSM}>
             <Button onClick={() => setDrawerOpen(false)}>取消</Button>
-            <Button type="primary" onClick={() => {
-              form.validateFields().then((values: { type: string; categoryId: number; amount: number; billDate: dayjs.Dayjs; remark?: string }) => {
-                const params: BillSaveParams = { ...values, billDate: values.billDate.format('YYYY-MM-DD') };
-                (editingBill ? billUpdate(editingBill.id, params) : billSave(params)).then(() => { message.success(editingBill ? '更新成功' : '新增成功'); setDrawerOpen(false); fetchBills(); fetchStats() })
-              })
-            }}>保存</Button>
-          </Space>
+            <Button
+              type="primary"
+              onClick={() => {
+                form.validateFields().then((values: { type: string; categoryId: number; amount: number; billDate: dayjs.Dayjs; remark?: string }) => {
+                  const params: BillSaveParams = { ...values, billDate: values.billDate.format('YYYY-MM-DD') }
+                  ;(editingBill ? billUpdate(editingBill.id, params) : billSave(params)).then(() => {
+                    message.success(editingBill ? '更新成功' : '新增成功')
+                    setDrawerOpen(false)
+                    fetchBills()
+                    fetchStats()
+                  })
+                })
+              }}
+            >
+              保存
+            </Button>
+          </Flex>
         }
       >
         <Form form={form} layout="vertical">
@@ -186,7 +270,7 @@ export default function BillPage() {
             <Input.TextArea placeholder="选填" rows={2} maxLength={200} />
           </Form.Item>
         </Form>
-      </Drawer>
+      </Modal>
     </Flex>
   )
 }

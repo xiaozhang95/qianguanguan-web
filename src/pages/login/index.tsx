@@ -2,7 +2,7 @@ import { captcha, login } from '@/api/login'
 import Icon from '@/components/icon'
 import { RoutePath } from '@/router/routes'
 import { setToken } from '@/store/token'
-import { CheckCircleFilled, LockOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons'
+import { LockOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons'
 import { Button, Divider, Flex, Form, Input, theme, Typography } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
@@ -13,7 +13,7 @@ const { Title, Text, Paragraph } = Typography
 const features = [
   { icon: '💰', text: '轻松记账，收支一目了然' },
   { icon: '📊', text: '月度统计，消费结构尽收眼底' },
-  { icon: '✨', text: '极简设计，记账从未如此简单' },
+  { icon: '✨', text: '极简设计，记账从未如此简单' }
 ]
 
 export default function Page() {
@@ -40,31 +40,35 @@ export default function Page() {
 
   return (
     <Flex align="center" style={{ minHeight: '100vh', background: token.colorBgContainer, position: 'relative', overflow: 'hidden' }}>
-      <div style={{
-        position: 'absolute',
-        top: -80,
-        left: -80,
-        width: 300,
-        height: 300,
-        borderRadius: '50%',
-        background: token.colorPrimaryBg,
-      }} />
-      <div style={{
-        position: 'absolute',
-        bottom: -40,
-        right: -40,
-        width: 200,
-        height: 200,
-        borderRadius: '50%',
-        background: token.colorPrimaryBg,
-      }} />
+      <div
+        style={{
+          position: 'absolute',
+          top: -80,
+          left: -80,
+          width: 300,
+          height: 300,
+          borderRadius: '50%',
+          background: token.colorPrimaryBg
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          bottom: -40,
+          right: -40,
+          width: 200,
+          height: 200,
+          borderRadius: '50%',
+          background: token.colorPrimaryBg
+        }}
+      />
 
       <Flex flex={1} vertical align="center" style={{ position: 'relative', zIndex: 1, padding: token.paddingXL }}>
         <Icon name="logo" style={{ width: 96, height: 96, marginBottom: token.marginLG }} fill={token.colorPrimary} />
-        <Title level={1} style={{ color: token.colorText, marginBottom: token.marginSM }}>{import.meta.env.VITE_NAME}</Title>
-        <Paragraph style={{ color: token.colorTextDescription, fontSize: token.fontSizeLG, marginBottom: token.marginXXL }}>
-          让每一笔收支都有迹可循
-        </Paragraph>
+        <Title level={1} style={{ color: token.colorText, marginBottom: token.marginSM }}>
+          {import.meta.env.VITE_NAME}
+        </Title>
+        <Paragraph style={{ color: token.colorTextDescription, fontSize: token.fontSizeLG, marginBottom: token.marginXXL }}>让每一笔收支都有迹可循</Paragraph>
         <Flex vertical gap={token.marginMD} align="center">
           {features.map((f) => (
             <Flex key={f.text} align="center" gap={token.marginSM}>
@@ -88,15 +92,15 @@ export default function Page() {
             padding: `${token.paddingXL}px ${token.paddingLG}px`,
             background: token.colorBgElevated,
             borderRadius: token.borderRadiusLG,
-            boxShadow: token.boxShadowSecondary,
+            boxShadow: token.boxShadowSecondary
           }}
         >
-          <Flex align="center" gap={token.marginXS} style={{ marginBottom: token.marginXS }}>
-            <CheckCircleFilled style={{ color: token.colorSuccess, fontSize: token.fontSizeLG }} />
-            <Text type="secondary">已有账号</Text>
-          </Flex>
-          <Title level={2} style={{ color: token.colorText, marginBottom: token.marginXS }}>欢迎回来</Title>
-          <Text type="secondary" style={{ marginBottom: token.marginXL }}>请登录您的账号继续记账</Text>
+          <Title level={2} style={{ color: token.colorText, marginBottom: token.marginXS }}>
+            欢迎回来
+          </Title>
+          <Text type="secondary" style={{ marginBottom: token.marginXL }}>
+            请登录您的账号继续记账
+          </Text>
 
           <Form
             size="large"
@@ -146,19 +150,23 @@ export default function Page() {
                       width: 130,
                       cursor: 'pointer',
                       borderRadius: token.borderRadius,
-                      border: `1px solid ${token.colorBorder}`,
+                      border: `1px solid ${token.colorBorder}`
                     }}
                   />
                 )}
               </Flex>
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit" loading={loading} block size="large">登录</Button>
+              <Button type="primary" htmlType="submit" loading={loading} block size="large">
+                登录
+              </Button>
             </Form.Item>
           </Form>
 
           <Divider plain>
-            <Text type="secondary" style={{ fontSize: token.fontSizeSM }}>{import.meta.env.VITE_NAME} · 个人记账助手</Text>
+            <Text type="secondary" style={{ fontSize: token.fontSizeSM }}>
+              {import.meta.env.VITE_NAME} · 个人记账助手
+            </Text>
           </Divider>
         </Flex>
       </Flex>

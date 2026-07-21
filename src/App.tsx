@@ -9,6 +9,7 @@ import { userInfo } from './api/user'
 import Loading from './components/loading'
 import Layout from './layouts'
 import Login from './pages/login'
+import NotFound from './pages/notfound'
 import getRoutes from './router'
 import { RoutePath } from './router/routes'
 import type { RootState } from './store'
@@ -59,6 +60,7 @@ export default function App() {
             {routes.map(({ path, Component }) => (
               <Route key={path} path={path} element={<Component />} />
             ))}
+            <Route path="*" element={<NotFound />} />
           </Route>
         )}
       </Routes>

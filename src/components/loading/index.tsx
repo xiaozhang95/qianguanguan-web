@@ -10,10 +10,10 @@ export default function Loading() {
       style={{
         position: 'fixed',
         inset: 0,
-        background: token.colorBgContainer,
+        background: token.colorBgContainer
       }}
     >
-      <Spin size="large" />
+      <Spin />
     </Flex>
   )
 }

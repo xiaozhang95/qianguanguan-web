@@ -31,7 +31,7 @@ export default function CategoryPage() {
       dataIndex: 'type',
       width: 100,
       render: (type: string) => (
-        <Tag color={type === BillType.INCOME ? 'green' : 'red'}>
+        <Tag color={type === BillType.INCOME ? 'success' : 'error'}>
           {BillTypeLabel[type as BillType]}
         </Tag>
       )
@@ -74,7 +74,6 @@ export default function CategoryPage() {
           })
         }}
         onCancel={() => setModalOpen(false)}
-        destroyOnClose
       >
         <Form form={form} layout="vertical" style={{ marginTop: token.marginMD }}>
           <Form.Item name="name" label="名称" rules={[{ required: true, message: '请输入名称' }]}>
