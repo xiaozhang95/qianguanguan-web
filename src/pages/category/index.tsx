@@ -1,10 +1,11 @@
 import { categoryDelete, categoryList, categorySave, categoryUpdate, type Category, type CategorySaveParams } from '@/api/category'
 import { BillType, BillTypeLabel } from '@/constants'
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Form, Input, InputNumber, message, Modal, Popconfirm, Radio, Space, Table, Tag } from 'antd'
+import { Button, Flex, Form, Input, InputNumber, message, Modal, Popconfirm, Radio, Space, Table, Tag, theme } from 'antd'
 import { useEffect, useState } from 'react'
 
 export default function CategoryPage() {
+  const { token } = theme.useToken()
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
@@ -22,45 +23,9 @@ export default function CategoryPage() {
     fetchList()
   }, [])
 
-  const handleAdd = () => {
-    setEditingCategory(null)
-    form.resetFields()
-    form.setFieldsValue({ type: BillType.EXPENSE, sort: 0 })
-    setModalOpen(true)
-  }
-
-  const handleEdit = (record: Category) => {
-    setEditingCategory(record)
-    form.setFieldsValue(record)
-    setModalOpen(true)
-  }
-
-  const handleDelete = (id: number) => {
-    categoryDelete(id).then(() => {
-      message.success('删除成功')
-      fetchList()
-    })
-  }
-
-  const handleSubmit = () => {
-    form.validateFields().then((values: CategorySaveParams) => {
-      const action = editingCategory
-        ? categoryUpdate(editingCategory.id, values)
-        : categorySave(values)
-      action.then(() => {
-        message.success(editingCategory ? '更新成功' : '新增成功')
-        setModalOpen(false)
-        fetchList()
-      })
-    })
-  }
-
   const columns = [
     { title: '图标', dataIndex: 'icon', width: 80, align: 'center' as const },
-    {
-      title: '名称',
-      dataIndex: 'name',
-    },
+    { title: '名称', dataIndex: 'name' },
     {
       title: '类型',
       dataIndex: 'type',
@@ -78,8 +43,8 @@ export default function CategoryPage() {
       width: 160,
       render: (_: unknown, record: Category) => (
         <Space>
-          <Button type="link" size="small" onClick={() => handleEdit(record)}>编辑</Button>
-          <Popconfirm title="确定删除？" onConfirm={() => handleDelete(record.id)}>
+          <Button type="link" size="small" onClick={() => { setEditingCategory(record); form.setFieldsValue(record); setModalOpen(true) }}>编辑</Button>
+          <Popconfirm title="确定删除？" onConfirm={() => { categoryDelete(record.id).then(() => { message.success('删除成功'); fetchList() }) }}>
             <Button type="link" size="small" danger>删除</Button>
           </Popconfirm>
         </Space>
@@ -88,10 +53,10 @@ export default function CategoryPage() {
   ]
 
   return (
-    <div>
-      <div style={{ marginBottom: 16 }}>
-        <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>新增分类</Button>
-      </div>
+    <Flex vertical gap={token.marginLG}>
+      <Flex>
+        <Button type="primary" icon={<PlusOutlined />} onClick={() => { setEditingCategory(null); form.resetFields(); form.setFieldsValue({ type: BillType.EXPENSE, sort: 0 }); setModalOpen(true) }}>新增分类</Button>
+      </Flex>
       <Table
         rowKey="id"
         columns={columns}
@@ -102,11 +67,16 @@ export default function CategoryPage() {
       <Modal
         title={editingCategory ? '编辑分类' : '新增分类'}
         open={modalOpen}
-        onOk={handleSubmit}
+        onOk={() => {
+          form.validateFields().then((values: CategorySaveParams) => {
+            const action = editingCategory ? categoryUpdate(editingCategory.id, values) : categorySave(values)
+            action.then(() => { message.success(editingCategory ? '更新成功' : '新增成功'); setModalOpen(false); fetchList() })
+          })
+        }}
         onCancel={() => setModalOpen(false)}
         destroyOnClose
       >
-        <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
+        <Form form={form} layout="vertical" style={{ marginTop: token.marginMD }}>
           <Form.Item name="name" label="名称" rules={[{ required: true, message: '请输入名称' }]}>
             <Input placeholder="如：餐饮" />
           </Form.Item>
@@ -124,6 +94,6 @@ export default function CategoryPage() {
           </Form.Item>
         </Form>
       </Modal>
-    </div>
+    </Flex>
   )
 }

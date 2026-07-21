@@ -198,5 +198,20 @@ export interface RootState {
 ## 样式约定
 
 - 不使用独立 CSS/SCSS 文件
-- 样式通过 antd 组件 props 和 `style` 属性内联
-- 主题色通过 `ConfigProvider theme` 全局控制，组件内通过 `theme.useToken()` 获取
+- 布局容器使用 antd `<Flex>` 组件，禁止 `style={{ display: 'flex' }}` 内联
+- 所有颜色使用 `token.colorXxx`（如 `token.colorSuccess`、`token.colorError`、`token.colorPrimary`）
+- 字体大小使用 `token.fontSizeXxx`（如 `token.fontSizeHeading5`）
+- 间距使用 `token.marginXxx` / `token.paddingXxx`
+- 圆角使用 `token.borderRadiusXxx`
+- 阴影使用 `token.boxShadowXxx`
+
+示例：
+```tsx
+import { Flex, theme } from 'antd'
+
+const { token } = theme.useToken()
+
+<Flex align="center" justify="center" gap={token.marginXS}>
+  <span style={{ fontSize: token.fontSizeHeading5, color: token.colorPrimary }}>标题</span>
+</Flex>
+```，组件内通过 `theme.useToken()` 获取

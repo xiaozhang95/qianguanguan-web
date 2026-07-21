@@ -1,11 +1,12 @@
 import { billList, billStats, type BillVO } from '@/api/bill'
 import { categoryList, type Category } from '@/api/category'
 import { BillType, BillTypeLabel } from '@/constants'
-import { Card, Col, Row, Statistic, Table, Tag } from 'antd'
+import { Card, Flex, Statistic, Table, Tag, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 
 export default function HomePage() {
+  const { token } = theme.useToken()
   const [stats, setStats] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 })
   const [recentBills, setRecentBills] = useState<BillVO[]>([])
   const [categories, setCategories] = useState<Category[]>([])
@@ -32,24 +33,18 @@ export default function HomePage() {
   const categoryMap = new Map(categories.map((c) => [c.id, c]))
 
   return (
-    <div>
-      <Row gutter={16} style={{ marginBottom: 24 }}>
-        <Col span={8}>
-          <Card>
-            <Statistic title={`${month}月收入`} value={stats.totalIncome} prefix="¥" precision={2} valueStyle={{ color: '#52c41a' }} />
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card>
-            <Statistic title={`${month}月支出`} value={stats.totalExpense} prefix="¥" precision={2} valueStyle={{ color: '#ff4d4f' }} />
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card>
-            <Statistic title={`${month}月结余`} value={stats.balance} prefix="¥" precision={2} valueStyle={{ color: stats.balance >= 0 ? '#52c41a' : '#ff4d4f' }} />
-          </Card>
-        </Col>
-      </Row>
+    <Flex vertical gap={token.marginLG}>
+      <Flex gap={token.marginLG}>
+        <Card style={{ flex: 1 }}>
+          <Statistic title={`${month}月收入`} value={stats.totalIncome} prefix="¥" precision={2} valueStyle={{ color: token.colorSuccess }} />
+        </Card>
+        <Card style={{ flex: 1 }}>
+          <Statistic title={`${month}月支出`} value={stats.totalExpense} prefix="¥" precision={2} valueStyle={{ color: token.colorError }} />
+        </Card>
+        <Card style={{ flex: 1 }}>
+          <Statistic title={`${month}月结余`} value={stats.balance} prefix="¥" precision={2} valueStyle={{ color: stats.balance >= 0 ? token.colorSuccess : token.colorError }} />
+        </Card>
+      </Flex>
 
       <Card title="最近账单">
         <Table
@@ -63,9 +58,7 @@ export default function HomePage() {
               title: '分类',
               width: 120,
               render: (_: unknown, r: BillVO) => (
-                <span>
-                  {categoryMap.get(r.categoryId)?.icon} {categoryMap.get(r.categoryId)?.name || r.categoryName}
-                </span>
+                <span>{categoryMap.get(r.categoryId)?.icon} {categoryMap.get(r.categoryId)?.name || r.categoryName}</span>
               )
             },
             {
@@ -73,7 +66,7 @@ export default function HomePage() {
               dataIndex: 'amount',
               width: 130,
               render: (amount: number, r: BillVO) => (
-                <span style={{ color: r.type === BillType.INCOME ? '#52c41a' : '#ff4d4f', fontWeight: 500 }}>
+                <span style={{ color: r.type === BillType.INCOME ? token.colorSuccess : token.colorError, fontWeight: token.fontWeightStrong }}>
                   {r.type === BillType.INCOME ? '+' : '-'}¥{amount.toFixed(2)}
                 </span>
               )
@@ -88,6 +81,6 @@ export default function HomePage() {
           ]}
         />
       </Card>
-    </div>
+    </Flex>
   )
 }

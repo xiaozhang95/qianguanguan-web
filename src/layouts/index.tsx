@@ -6,7 +6,7 @@ import type { RootState } from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import { Avatar, Dropdown, Layout, Menu, theme } from 'antd'
+import { Avatar, Dropdown, Flex, Layout, Menu, theme } from 'antd'
 import { Suspense } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
@@ -33,12 +33,6 @@ export default function AdminLayout() {
 
   const selectedKey = location.pathname
 
-  const handleLogout = () => {
-    dispatch(setToken(''))
-    dispatch(setUserInfo(null))
-    nav(RoutePath.Login, { replace: true })
-  }
-
   const menuItems = routes.map(({ path, meta }) => ({
     key: path,
     icon: <meta.Icon />,
@@ -48,20 +42,21 @@ export default function AdminLayout() {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider style={siderStyle} theme="light">
-        <div
+        <Flex
+          align="center"
+          justify="center"
+          gap={token.marginXS}
           style={{
             height: 64,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderBottom: '1px solid #f0f0f0',
-            padding: '0 16px',
-            gap: 8
+            borderBottom: `1px solid ${token.colorBorderSecondary}`,
+            padding: `0 ${token.paddingMD}px`
           }}
         >
           <Icon name="logo" size={32} fill={token.colorPrimary} />
-          <span style={{ fontWeight: 700, fontSize: 18, whiteSpace: 'nowrap', color: token.colorPrimary }}>{import.meta.env.VITE_NAME}</span>
-        </div>
+          <span style={{ fontWeight: 700, fontSize: token.fontSizeHeading5, whiteSpace: 'nowrap', color: token.colorPrimary }}>
+            {import.meta.env.VITE_NAME}
+          </span>
+        </Flex>
         <Menu
           theme="light"
           mode="inline"
@@ -77,19 +72,17 @@ export default function AdminLayout() {
       <Layout style={{ marginLeft: 200 }}>
         <Header
           style={{
-            padding: '0 24px',
-            background: '#fff',
+            padding: `0 ${token.paddingLG}px`,
+            background: token.colorBgContainer,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+            justifyContent: 'flex-end',
+            boxShadow: token.boxShadowTertiary,
             position: 'sticky',
             top: 0,
             zIndex: 9
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }} />
-
           <Dropdown
             menu={{
               items: [
@@ -97,27 +90,26 @@ export default function AdminLayout() {
                   key: 'logout',
                   icon: <LogoutOutlined />,
                   label: '退出登录',
-                  onClick: handleLogout
+                  onClick: () => {
+                    dispatch(setToken(''))
+                    dispatch(setUserInfo(null))
+                    nav(RoutePath.Login, { replace: true })
+                  }
                 }
               ]
             }}
             placement="bottomRight"
           >
-            <div
-              style={{
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8
-              }}
-            >
+            <Flex align="center" gap={token.marginXS} style={{ cursor: 'pointer' }}>
               <Avatar size={32} icon={<UserOutlined />} />
-              <span style={{ fontWeight: 500 }}>{userInfo?.name || userInfo?.username || ''}</span>
-            </div>
+              <span style={{ fontWeight: token.fontWeightStrong }}>
+                {userInfo?.name || userInfo?.username || ''}
+              </span>
+            </Flex>
           </Dropdown>
         </Header>
 
-        <Content style={{ padding: 24, minHeight: 280 }}>
+        <Content style={{ padding: token.paddingLG, minHeight: 280 }}>
           <Suspense fallback={<Loading />}>
             <Outlet />
           </Suspense>
