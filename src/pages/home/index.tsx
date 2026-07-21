@@ -1,5 +1,6 @@
 import { billList, billStats, type BillVO } from '@/api/bill'
 import { categoryList, type Category } from '@/api/category'
+import { BillType, BillTypeLabel } from '@/constants'
 import { Card, Col, Row, Statistic, Table, Tag } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
@@ -72,8 +73,8 @@ export default function HomePage() {
               dataIndex: 'amount',
               width: 130,
               render: (amount: number, r: BillVO) => (
-                <span style={{ color: r.type === 'INCOME' ? '#52c41a' : '#ff4d4f', fontWeight: 500 }}>
-                  {r.type === 'INCOME' ? '+' : '-'}¥{amount.toFixed(2)}
+                <span style={{ color: r.type === BillType.INCOME ? '#52c41a' : '#ff4d4f', fontWeight: 500 }}>
+                  {r.type === BillType.INCOME ? '+' : '-'}¥{amount.toFixed(2)}
                 </span>
               )
             },
@@ -81,7 +82,7 @@ export default function HomePage() {
               title: '类型',
               dataIndex: 'type',
               width: 80,
-              render: (type: string) => <Tag color={type === 'INCOME' ? 'green' : 'red'}>{type === 'INCOME' ? '收入' : '支出'}</Tag>
+              render: (type: string) => <Tag color={type === BillType.INCOME ? 'green' : 'red'}>{BillTypeLabel[type as BillType]}</Tag>
             },
             { title: '备注', dataIndex: 'remark', ellipsis: true }
           ]}

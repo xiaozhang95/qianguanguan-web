@@ -1,4 +1,5 @@
 import { categoryDelete, categoryList, categorySave, categoryUpdate, type Category, type CategorySaveParams } from '@/api/category'
+import { BillType, BillTypeLabel } from '@/constants'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Form, Input, InputNumber, message, Modal, Popconfirm, Radio, Space, Table, Tag } from 'antd'
 import { useEffect, useState } from 'react'
@@ -24,7 +25,7 @@ export default function CategoryPage() {
   const handleAdd = () => {
     setEditingCategory(null)
     form.resetFields()
-    form.setFieldsValue({ type: 'EXPENSE', sort: 0 })
+    form.setFieldsValue({ type: BillType.EXPENSE, sort: 0 })
     setModalOpen(true)
   }
 
@@ -65,8 +66,8 @@ export default function CategoryPage() {
       dataIndex: 'type',
       width: 100,
       render: (type: string) => (
-        <Tag color={type === 'INCOME' ? 'green' : 'red'}>
-          {type === 'INCOME' ? '收入' : '支出'}
+        <Tag color={type === BillType.INCOME ? 'green' : 'red'}>
+          {BillTypeLabel[type as BillType]}
         </Tag>
       )
     },
@@ -114,8 +115,8 @@ export default function CategoryPage() {
           </Form.Item>
           <Form.Item name="type" label="类型" rules={[{ required: true, message: '请选择类型' }]}>
             <Radio.Group>
-              <Radio value="INCOME">收入</Radio>
-              <Radio value="EXPENSE">支出</Radio>
+              <Radio value={BillType.INCOME}>{BillTypeLabel[BillType.INCOME]}</Radio>
+              <Radio value={BillType.EXPENSE}>{BillTypeLabel[BillType.EXPENSE]}</Radio>
             </Radio.Group>
           </Form.Item>
           <Form.Item name="sort" label="排序">

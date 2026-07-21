@@ -1,5 +1,6 @@
 import { billDelete, billList, billSave, billStats, billUpdate, type BillSaveParams, type BillVO } from '@/api/bill'
 import { categoryList, type Category } from '@/api/category'
+import { BillType, BillTypeLabel } from '@/constants'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, DatePicker, Drawer, Form, Input, InputNumber, message, Popconfirm, Select, Space, Statistic, Table } from 'antd'
 import dayjs from 'dayjs'
@@ -60,13 +61,13 @@ export default function BillPage() {
     fetchStats()
   }, [filterMonth, filterType, filterCategoryId, pageNum, pageSize])
 
-  const incomeCategories = categories.filter((c) => c.type === 'INCOME')
-  const expenseCategories = categories.filter((c) => c.type === 'EXPENSE')
+  const incomeCategories = categories.filter((c) => c.type === BillType.INCOME)
+  const expenseCategories = categories.filter((c) => c.type === BillType.EXPENSE)
 
   const handleAdd = () => {
     setEditingBill(null)
     form.resetFields()
-    form.setFieldsValue({ type: 'EXPENSE', billDate: dayjs() })
+    form.setFieldsValue({ type: BillType.EXPENSE, billDate: dayjs() })
     setDrawerOpen(true)
   }
 
@@ -123,8 +124,8 @@ export default function BillPage() {
       dataIndex: 'amount',
       width: 130,
       render: (amount: number, record: BillVO) => (
-        <span style={{ color: record.type === 'INCOME' ? '#52c41a' : '#ff4d4f', fontWeight: 500 }}>
-          {record.type === 'INCOME' ? '+' : '-'}¥{amount.toFixed(2)}
+        <span style={{ color: record.type === BillType.INCOME ? '#52c41a' : '#ff4d4f', fontWeight: 500 }}>
+          {record.type === BillType.INCOME ? '+' : '-'}¥{amount.toFixed(2)}
         </span>
       )
     },
@@ -176,8 +177,8 @@ export default function BillPage() {
               setPageNum(1)
             }}
             options={[
-              { label: '收入', value: 'INCOME' },
-              { label: '支出', value: 'EXPENSE' }
+              { label: BillTypeLabel[BillType.INCOME], value: BillType.INCOME },
+              { label: BillTypeLabel[BillType.EXPENSE], value: BillType.EXPENSE }
             ]}
           />
           <Select
@@ -241,8 +242,8 @@ export default function BillPage() {
           <Form.Item name="type" label="类型" rules={[{ required: true }]}>
             <Select
               options={[
-                { label: '收入', value: 'INCOME' },
-                { label: '支出', value: 'EXPENSE' }
+                { label: BillTypeLabel[BillType.INCOME], value: BillType.INCOME },
+                { label: BillTypeLabel[BillType.EXPENSE], value: BillType.EXPENSE }
               ]}
               onChange={() => form.setFieldValue('categoryId', undefined)}
             />
@@ -250,7 +251,7 @@ export default function BillPage() {
           <Form.Item noStyle shouldUpdate={(prev, cur) => prev.type !== cur.type}>
             {({ getFieldValue }) => {
               const type = getFieldValue('type')
-              const options = (type === 'INCOME' ? incomeCategories : expenseCategories).map((c) => ({ label: `${c.icon} ${c.name}`, value: c.id }))
+              const options = (type === BillType.INCOME ? incomeCategories : expenseCategories).map((c) => ({ label: `${c.icon} ${c.name}`, value: c.id }))
               return (
                 <Form.Item name="categoryId" label="分类" rules={[{ required: true, message: '请选择分类' }]}>
                   <Select placeholder="选择分类" options={options} />

@@ -5,9 +5,9 @@ import { RoutePath } from '@/router/routes'
 import type { RootState } from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
-import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from '@ant-design/icons'
-import { Avatar, Breadcrumb, Button, Dropdown, Layout, Menu } from 'antd'
-import { Suspense, useState } from 'react'
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
+import { Avatar, Dropdown, Layout, Menu, theme } from 'antd'
+import { Suspense } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
@@ -24,7 +24,7 @@ const siderStyle: React.CSSProperties = {
 }
 
 export default function AdminLayout() {
-  const [collapsed, setCollapsed] = useState(false)
+  const { token } = theme.useToken()
   const location = useLocation()
   const nav = useNavigate()
   const dispatch = useDispatch()
@@ -45,11 +45,9 @@ export default function AdminLayout() {
     label: meta.title
   }))
 
-  const currentRoute = routes.find((r) => r.path === selectedKey)
-
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider trigger={null} collapsible collapsed={collapsed} style={siderStyle} theme="light">
+      <Sider style={siderStyle} theme="light">
         <div
           style={{
             height: 64,
@@ -61,8 +59,8 @@ export default function AdminLayout() {
             gap: 8
           }}
         >
-          <Icon name="logo" size={32} />
-          {!collapsed && <span style={{ fontWeight: 700, fontSize: 18, whiteSpace: 'nowrap' }}>钱罐罐</span>}
+          <Icon name="logo" size={32} fill={token.colorPrimary} />
+          <span style={{ fontWeight: 700, fontSize: 18, whiteSpace: 'nowrap', color: token.colorPrimary }}>{import.meta.env.VITE_NAME}</span>
         </div>
         <Menu
           theme="light"
@@ -76,7 +74,7 @@ export default function AdminLayout() {
         />
       </Sider>
 
-      <Layout style={{ marginLeft: collapsed ? 80 : 200, transition: 'all 0.2s' }}>
+      <Layout style={{ marginLeft: 200 }}>
         <Header
           style={{
             padding: '0 24px',
@@ -90,10 +88,7 @@ export default function AdminLayout() {
             zIndex: 9
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <Button type="text" icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={() => setCollapsed(!collapsed)} />
-            <Breadcrumb items={[{ title: '首页', path: '/' }, ...(currentRoute ? [{ title: currentRoute.meta.title }] : [])]} style={{ fontSize: 14 }} />
-          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }} />
 
           <Dropdown
             menu={{
