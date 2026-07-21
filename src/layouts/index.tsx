@@ -3,11 +3,10 @@ import { Dropdown, Layout, Menu, Space } from 'antd'
 import { Suspense } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import logo from '../../assets/logo.png'
 import Loading from '../components/loading'
 import getRoutes from '../router'
+import { RoutePath } from '../router/routes'
 import type { RootState } from '../store'
-import './index.scss'
 
 const { Sider: LayoutSider, Content: LayoutContent, Header: LayoutHeader } = Layout
 
@@ -16,11 +15,9 @@ function PageHeader() {
 
   return (
     <div className="header">
-      <div className="header-left">
-        <img src={logo} alt="" className="logo" />
-      </div>
+      <div className="header-left"></div>
       <div className="header-right">
-        <Space direction="vertical">
+        <Space vertical>
           <Dropdown
             menu={{
               items: [
@@ -29,7 +26,7 @@ function PageHeader() {
                   label: (
                     <div
                       onClick={() => {
-                        nav('/login')
+                        nav(RoutePath.Login)
                       }}
                     >
                       退出
@@ -62,6 +59,7 @@ function PageMenu() {
     if (key === e.key) return
     nav(e.key)
   }
+
   return (
     <Menu
       onClick={onClick}
