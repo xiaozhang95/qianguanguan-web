@@ -58,6 +58,10 @@ export default function Page() {
         <Form
           size="large"
           form={form}
+          initialValues={{
+            username: import.meta.env.VITE_USERNAME,
+            password: import.meta.env.VITE_PASSWORD
+          }}
           onFinish={(values: { username: string; password: string; captchaCode: string }) => {
             setLoading(true)
             login({
