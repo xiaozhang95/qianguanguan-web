@@ -10,7 +10,7 @@ export const userInfoSlice = createSlice({
   name: 'userInfo',
   initialState: initialState as UserInfo | null,
   reducers: {
-    set: (_, action: PayloadAction<UserInfo | null>) => {
+    setUserInfo: (_, action: PayloadAction<UserInfo | null>) => {
       if (action.payload) {
         localStorage.setItem('userInfo', JSON.stringify(action.payload))
       } else {
@@ -21,6 +21,6 @@ export const userInfoSlice = createSlice({
   }
 })
 
-export const { set } = userInfoSlice.actions
+export const { setUserInfo } = userInfoSlice.actions
 
 export default userInfoSlice.reducer

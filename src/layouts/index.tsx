@@ -5,9 +5,9 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Loading from '../components/loading'
 import getRoutes from '../router'
 import { RoutePath } from '../router/routes'
-import { set as setUserInfo } from '../store/userInfo'
-import { setToken } from '../store/token'
 import { useAppDispatch, useAppSelector } from '../store'
+import { setToken } from '../store/token'
+import { setUserInfo } from '../store/userInfo'
 
 const { Sider: LayoutSider, Content: LayoutContent, Header: LayoutHeader } = Layout
 
