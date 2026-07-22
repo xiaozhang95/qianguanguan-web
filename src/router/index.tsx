@@ -16,7 +16,7 @@ export interface RouteItem {
   Component: LazyExoticComponent<ComponentType>
 }
 
-interface RouteGroup {
+export interface RouteGroup {
   type: 'group'
   meta: RouteMeta
   children: RouteItem[]

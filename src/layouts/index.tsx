@@ -42,9 +42,18 @@ export default function AdminLayout() {
 
   useEffect(() => {
     setActiveKey(location.pathname)
-    const group = routes.find((r) => isGroup(r) && r.children.some((c) => c.path === location.pathname))
-    if (group) {
-      setOpenKeys((prev) => [...new Set([...prev, group.meta.title])])
+    for (const r of routes) {
+      if (isGroup(r)) {
+        if (r.children.some((c) => c.path === location.pathname)) {
+          setOpenKeys((prev) => [...new Set([...prev, r.meta.title])])
+          const child = r.children.find((c) => c.path === location.pathname)
+          if (child) document.title = `${child.meta.title} - 钱罐罐`
+          return
+        }
+      } else if (r.path === location.pathname) {
+        document.title = `${r.meta.title} - 钱罐罐`
+        return
+      }
     }
   }, [location.pathname])
 
@@ -75,16 +84,16 @@ export default function AdminLayout() {
       <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0, zIndex: 10, background: token.colorBgContainer }}>
         <Flex
           align="center"
-          justify="center"
-          gap={token.marginXS}
+          gap={token.marginSM}
           style={{
             height: 64,
             borderBottom: `1px solid ${token.colorBorderSecondary}`,
             padding: `0 ${token.paddingMD}px`,
-            userSelect: 'none'
+            userSelect: 'none',
+            overflow: 'hidden'
           }}
         >
-          <div ref={pigRef} onClick={playPig} style={{ cursor: 'pointer', position: 'relative', width: 32, height: 32 }}>
+          <div ref={pigRef} onClick={playPig} style={{ cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
             {pigRun && pigRef.current && (
               <div
                 style={{
@@ -96,10 +105,25 @@ export default function AdminLayout() {
                   pointerEvents: 'none'
                 }}
               >
-                <Icon name="logo" size={32} fill={token.colorPrimary} />
+                <div style={{
+                  width: 38, height: 38, borderRadius: 10,
+                  background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryActive})`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: `0 2px 8px ${token.colorPrimary}40`
+                }}>
+                  <Icon name="logo" size={24} fill="#fff" />
+                </div>
               </div>
             )}
-            <Icon name="logo" size={32} fill={token.colorPrimary} style={{ visibility: pigRun ? 'hidden' : 'visible' }} />
+            <div style={{
+              width: 38, height: 38, borderRadius: 10,
+              background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryActive})`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: `0 2px 8px ${token.colorPrimary}40`,
+              visibility: pigRun ? 'hidden' : 'visible'
+            }}>
+              <Icon name="logo" size={24} fill="#fff" />
+            </div>
           </div>
           <style>{`
             @keyframes pigRun {
@@ -107,7 +131,14 @@ export default function AdminLayout() {
               100% { transform: translateX(calc(-100vw + 200px)); }
             }
           `}</style>
-          <span style={{ fontWeight: 700, fontSize: token.fontSizeHeading5, whiteSpace: 'nowrap', color: token.colorText, userSelect: 'none' }}>{import.meta.env.VITE_NAME}</span>
+          <Flex vertical gap={0} style={{ lineHeight: 1.2 }}>
+            <span style={{ fontWeight: 700, fontSize: token.fontSizeLG, whiteSpace: 'nowrap', color: token.colorText }}>
+              {import.meta.env.VITE_NAME}
+            </span>
+            <span style={{ fontSize: token.fontSizeSM, color: token.colorTextTertiary, whiteSpace: 'nowrap' }}>
+              好好记账，天天向上
+            </span>
+          </Flex>
         </Flex>
         <Menu
           mode="inline"
