@@ -37,7 +37,7 @@ export default function BillPage() {
   }
 
   const fetchStats = () => {
-    billStats(filterDate.format('YYYY'), filterDate.format('M')).then(({ data }) => setStats(data))
+    billStats(filterDate.format('YYYY'), filterDate.format('M'), filterDate.format('D')).then(({ data }) => setStats(data))
   }
 
   useEffect(() => {
@@ -116,7 +116,7 @@ export default function BillPage() {
 
   return (
     <Flex vertical gap={token.marginLG}>
-      <Flex justify="space-between" align="center" wrap>
+      <Flex justify="space-between" align="center" wrap gap={token.marginSM}>
         <Space wrap>
           <DatePicker
             value={filterDate}
@@ -170,8 +170,8 @@ export default function BillPage() {
         </Button>
       </Flex>
 
-      <Flex gap={token.marginLG}>
-        <Card style={{ flex: 1 }}>
+      <Flex gap={token.marginLG} wrap>
+        <Card style={{ flex: 1, minWidth: 200 }}>
           <Statistic
             title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>收入</span>}
             value={stats.totalIncome}
@@ -180,7 +180,7 @@ export default function BillPage() {
             styles={{ value: { color: token.colorSuccess, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
           />
         </Card>
-        <Card style={{ flex: 1 }}>
+        <Card style={{ flex: 1, minWidth: 200 }}>
           <Statistic
             title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>支出</span>}
             value={stats.totalExpense}
@@ -189,7 +189,7 @@ export default function BillPage() {
             styles={{ value: { color: token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
           />
         </Card>
-        <Card style={{ flex: 1 }}>
+        <Card style={{ flex: 1, minWidth: 200 }}>
           <Statistic
             title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>结余</span>}
             value={stats.balance}

@@ -1,9 +1,9 @@
-import { captcha, login } from '@/api/login'
+import { captcha, login, register } from '@/api/login'
 import Icon from '@/components/icon'
 import { RoutePath } from '@/router/routes'
 import { setToken } from '@/store/token'
-import { LockOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons'
-import { Button, Divider, Flex, Form, Input, theme, Typography } from 'antd'
+import { LockOutlined, SafetyOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'
+import { App, Button, Divider, Flex, Form, Input, theme, Typography } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -18,10 +18,12 @@ const features = [
 
 export default function Page() {
   const { token } = theme.useToken()
+  const { message } = App.useApp()
   const nav = useNavigate()
   const dispatch = useDispatch()
 
   const [loading, setLoading] = useState(false)
+  const [isRegister, setIsRegister] = useState(false)
   const [form] = Form.useForm()
   const [captchaImage, setCaptchaImage] = useState('')
   const [captchaKey, setCaptchaKey] = useState('')
@@ -63,7 +65,7 @@ export default function Page() {
         }}
       />
 
-      <Flex flex={1} vertical align="center" style={{ position: 'relative', zIndex: 1, padding: token.paddingXL }}>
+      <Flex flex={1} vertical align="center" className="hide-on-mobile" style={{ position: 'relative', zIndex: 1, padding: token.paddingXL }}>
         <div style={{
           width: 96, height: 96, borderRadius: 24, marginBottom: token.marginLG,
           background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryActive})`,
@@ -86,7 +88,7 @@ export default function Page() {
         </Flex>
       </Flex>
 
-      <Flex align="center" style={{ height: '60vh' }}>
+      <Flex align="center" className="hide-on-mobile" style={{ height: '60vh' }}>
         <div style={{ width: 1, height: '100%', background: token.colorBorderSecondary }} />
       </Flex>
 
@@ -108,25 +110,45 @@ export default function Page() {
               background: token.colorFillSecondary,
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
-              <UserOutlined style={{ fontSize: 28, color: token.colorTextTertiary }} />
+              {isRegister
+                ? <UserAddOutlined style={{ fontSize: 28, color: token.colorTextTertiary }} />
+                : <LockOutlined style={{ fontSize: 28, color: token.colorTextTertiary }} />
+              }
             </div>
           </Flex>
           <Title level={2} style={{ color: token.colorText, marginBottom: token.marginXS, textAlign: 'center' }}>
-            欢迎回来
+            {isRegister ? '创建账号' : '欢迎回来'}
           </Title>
           <Text type="secondary" style={{ marginBottom: token.marginXL, textAlign: 'center', display: 'block' }}>
-            请登录您的账号继续记账
+            {isRegister ? '注册后即可开始记账' : '请登录您的账号继续记账'}
           </Text>
 
           <Form
             size="large"
             form={form}
-            initialValues={{
+            initialValues={isRegister ? undefined : {
               username: import.meta.env.VITE_USERNAME,
               password: import.meta.env.VITE_PASSWORD
             }}
-            onFinish={(values: { username: string; password: string; captchaCode: string }) => {
+            onFinish={(values: { username: string; password: string; confirmPassword?: string; captchaCode: string }) => {
               setLoading(true)
+              if (isRegister) {
+                register({
+                  username: values.username,
+                  password: values.password,
+                  captchaKey,
+                  captchaCode: values.captchaCode
+                })
+                .then(({ msg }) => {
+                  message.success(msg)
+                  setIsRegister(false)
+                    form.setFieldsValue({ username: values.username, password: '', captchaCode: '' })
+                    fetchCaptcha()
+                  })
+                  .catch(() => fetchCaptcha())
+                  .finally(() => setLoading(false))
+                return
+              }
               login({
                 username: values.username,
                 password: values.password,
@@ -148,9 +170,28 @@ export default function Page() {
             <Form.Item name="username" rules={[{ required: true, message: '请输入用户名' }]}>
               <Input prefix={<UserOutlined />} placeholder="用户名" />
             </Form.Item>
-            <Form.Item name="password" rules={[{ required: true, message: '请输入密码' }]}>
+            <Form.Item name="password" rules={[{ required: true, message: '请输入密码' }, { min: 6, message: '密码至少6位' }]}>
               <Input.Password prefix={<LockOutlined />} placeholder="密码" />
             </Form.Item>
+            {isRegister && (
+              <Form.Item
+                name="confirmPassword"
+                dependencies={['password']}
+                rules={[
+                  { required: true, message: '请确认密码' },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve()
+                      }
+                      return Promise.reject(new Error('两次输入的密码不一致'))
+                    }
+                  })
+                ]}
+              >
+                <Input.Password prefix={<LockOutlined />} placeholder="确认密码" />
+              </Form.Item>
+            )}
             <Form.Item>
               <Flex gap={token.marginSM}>
                 <Form.Item noStyle name="captchaCode" rules={[{ required: true, message: '请输入验证码' }]}>
@@ -174,14 +215,17 @@ export default function Page() {
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" loading={loading} block size="large">
-                登录
+                {isRegister ? '注册' : '登录'}
               </Button>
             </Form.Item>
           </Form>
 
           <Divider plain>
             <Text type="secondary" style={{ fontSize: token.fontSizeSM }}>
-              {import.meta.env.VITE_NAME} · 个人记账助手
+              {isRegister
+                ? <>已有账号？<Button type="link" size="small" onClick={() => { setIsRegister(false); form.resetFields() }}>去登录</Button></>
+                : <>没有账号？<Button type="link" size="small" onClick={() => { setIsRegister(true); form.resetFields() }}>去注册</Button></>
+              }
             </Text>
           </Divider>
         </Flex>

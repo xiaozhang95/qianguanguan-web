@@ -73,8 +73,8 @@ export default function HomePage() {
         <MonthPicker value={filterMonth} onChange={(v) => { if (v) setFilterMonth(v) }} allowClear={false} />
       </Flex>
 
-      <Flex gap={token.marginLG}>
-        <Card style={{ flex: 1 }}>
+      <Flex gap={token.marginLG} wrap>
+        <Card style={{ flex: 1, minWidth: 200 }}>
           <Statistic
             title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>收入</span>}
             value={stats.totalIncome}
@@ -83,7 +83,7 @@ export default function HomePage() {
             styles={{ value: { color: token.colorSuccess, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
           />
         </Card>
-        <Card style={{ flex: 1 }}>
+        <Card style={{ flex: 1, minWidth: 200 }}>
           <Statistic
             title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>支出</span>}
             value={stats.totalExpense}
@@ -92,7 +92,7 @@ export default function HomePage() {
             styles={{ value: { color: token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
           />
         </Card>
-        <Card style={{ flex: 1 }}>
+        <Card style={{ flex: 1, minWidth: 200 }}>
           <Statistic
             title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>结余</span>}
             value={stats.balance}

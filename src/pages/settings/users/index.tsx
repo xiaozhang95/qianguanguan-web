@@ -44,7 +44,7 @@ export default function UserListPage() {
 
   return (
     <Flex vertical gap={token.marginLG}>
-      <Flex justify="space-between" wrap>
+      <Flex justify="space-between" wrap gap={token.marginSM}>
         <Space wrap>
           <Select
             placeholder="全部角色"

@@ -1,5 +1,12 @@
 import create from '@/utils/request'
 
+export interface RegisterParams {
+  username: string
+  password: string
+  captchaKey: string
+  captchaCode: string
+}
+
 export interface UserInfo {
   id: string
   username: string
@@ -38,6 +45,14 @@ export async function captcha() {
 export async function login(params: LoginParams) {
   return create<LoginResult>({
     url: '/login',
+    method: 'POST',
+    data: params
+  })
+}
+
+export async function register(params: RegisterParams) {
+  return create({
+    url: '/register',
     method: 'POST',
     data: params
   })

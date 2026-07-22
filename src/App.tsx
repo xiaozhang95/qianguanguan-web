@@ -1,4 +1,5 @@
 import 'antd/dist/reset.css'
+import './app.scss'
 
 import { App as AntdApp, ConfigProvider, theme } from 'antd'
 import zhCN from 'antd/es/locale/zh_CN'

@@ -55,6 +55,14 @@ export async function userProfile(data: { name: string; phone: string; email: st
   })
 }
 
+export async function userPassword(data: { oldPassword: string; newPassword: string }) {
+  return create({
+    url: '/user/password',
+    method: 'PUT',
+    data
+  })
+}
+
 export async function upload(file: File) {
   const formData = new FormData()
   formData.append('file', file)
