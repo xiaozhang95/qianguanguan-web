@@ -31,12 +31,12 @@ const Users = lazy(() => import('@/pages/settings/users'))
 
 const routes: RouteDefinition[] = [
   { path: RoutePath.HomePage, meta: { title: '首页', Icon: HomeOutlined, roles: [Role.SUPER_ADMIN, Role.ADMIN, Role.USER] }, Component: Home },
-  { path: RoutePath.Bill, meta: { title: '账单', Icon: WalletOutlined, roles: [Role.SUPER_ADMIN, Role.ADMIN, Role.USER] }, Component: Bill },
+  { path: RoutePath.Bill, meta: { title: '账单管理', Icon: WalletOutlined, roles: [Role.SUPER_ADMIN, Role.ADMIN, Role.USER] }, Component: Bill },
   { path: RoutePath.Category, meta: { title: '分类管理', Icon: AppstoreOutlined, roles: [Role.SUPER_ADMIN, Role.ADMIN, Role.USER] }, Component: Category },
   {
     type: 'group',
-    meta: { title: '系统设置', Icon: SettingOutlined, roles: [Role.SUPER_ADMIN, Role.ADMIN] },
-    children: [{ path: RoutePath.Users, meta: { title: '用户列表', Icon: TeamOutlined, roles: [Role.SUPER_ADMIN, Role.ADMIN] }, Component: Users }]
+    meta: { title: '系统设置', Icon: SettingOutlined, roles: [Role.SUPER_ADMIN] },
+    children: [{ path: RoutePath.Users, meta: { title: '用户列表', Icon: TeamOutlined, roles: [Role.SUPER_ADMIN] }, Component: Users }]
   }
 ]
 

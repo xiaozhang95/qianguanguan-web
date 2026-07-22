@@ -182,10 +182,11 @@ export default async function create<T>(requestInfo: RequestOptions): Promise<Ct
           const json = (await response.json()) as CtmResponse<T>
           if (ResponseCode.SUCCESS !== json.code) {
             // 错误处理
-            if (ro.errorMsg) getMsgApi().error(json.msg)
-            if (json.code === ResponseCode.SC_FORBIDDEN || json.code === ResponseCode.SC_UNAUTHORIZED) {
+            if (json.code === ResponseCode.SC_UNAUTHORIZED) {
               store.dispatch(setToken(''))
               store.dispatch(setUserInfo(null))
+            } else if (ro.errorMsg) {
+              getMsgApi().error(json.msg)
             }
             reject(json)
           } else {

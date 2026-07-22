@@ -42,6 +42,7 @@ export default function CategoryPage() {
       title: '操作',
       key: 'action',
       width: 160,
+      fixed: 'right' as const,
       render: (_: unknown, record: Category) => (
         <Space>
           <Button type="link" size="small" onClick={() => { setEditingCategory(record); form.setFieldsValue(record); setModalOpen(true) }}>编辑</Button>
@@ -64,6 +65,7 @@ export default function CategoryPage() {
         dataSource={categories}
         loading={loading}
         pagination={false}
+        scroll={{ x: 'max-content' }}
       />
       <Modal
         title={editingCategory ? '编辑分类' : '新增分类'}

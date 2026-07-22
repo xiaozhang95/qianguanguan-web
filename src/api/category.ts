@@ -1,5 +1,4 @@
 import create from '@/utils/request'
-import type { CtmResponse } from '@/utils/request'
 
 export interface Category {
   id: string
@@ -27,7 +26,7 @@ export async function categoryList(type?: string) {
 
 export async function categorySave(data: CategorySaveParams) {
   return create<Category>({
-    url: '/category',
+    url: '/category/save',
     method: 'POST',
     data
   })
@@ -35,15 +34,15 @@ export async function categorySave(data: CategorySaveParams) {
 
 export async function categoryUpdate(id: string, data: CategorySaveParams) {
   return create<Category>({
-    url: `/category/${id}`,
+    url: `/category/update/${id}`,
     method: 'PUT',
     data
   })
 }
 
 export async function categoryDelete(id: string) {
-  return create<CtmResponse<null>>({
-    url: `/category/${id}`,
+  return create({
+    url: `/category/delete/${id}`,
     method: 'DELETE'
   })
 }

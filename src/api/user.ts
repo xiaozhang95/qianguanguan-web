@@ -1,5 +1,4 @@
 import create from '@/utils/request'
-import type { CtmResponse } from '@/utils/request'
 import type { UserInfo } from './login'
 
 export type { UserInfo }
@@ -35,8 +34,15 @@ export async function userList(data: UserListParams) {
 }
 
 export async function userToggle(id: string) {
-  return create<CtmResponse<null>>({
+  return create({
     url: `/user/toggle/${id}`,
+    method: 'PUT'
+  })
+}
+
+export async function userUpdateRole(id: string, role: string) {
+  return create({
+    url: `/user/role/update/${id}?role=${encodeURIComponent(role)}`,
     method: 'PUT'
   })
 }

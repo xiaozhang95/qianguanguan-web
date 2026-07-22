@@ -53,7 +53,7 @@ export async function billList(params: BillListParams) {
 
 export async function billSave(data: BillSaveParams) {
   return create<BillVO>({
-    url: '/bill',
+    url: '/bill/save',
     method: 'POST',
     data
   })
@@ -61,15 +61,15 @@ export async function billSave(data: BillSaveParams) {
 
 export async function billUpdate(id: string, data: BillSaveParams) {
   return create<BillVO>({
-    url: `/bill/${id}`,
+    url: `/bill/update/${id}`,
     method: 'PUT',
     data
   })
 }
 
 export async function billDelete(id: string) {
-  return create<null>({
-    url: `/bill/${id}`,
+  return create({
+    url: `/bill/delete/${id}`,
     method: 'DELETE'
   })
 }

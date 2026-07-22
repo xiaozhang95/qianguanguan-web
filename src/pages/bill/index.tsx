@@ -78,6 +78,7 @@ export default function BillPage() {
       title: '操作',
       key: 'action',
       width: 160,
+      fixed: 'right' as const,
       render: (_: unknown, record: BillVO) => (
         <Space>
           <Button
@@ -204,6 +205,7 @@ export default function BillPage() {
         columns={columns}
         dataSource={bills}
         loading={loading}
+        scroll={{ x: 'max-content' }}
         pagination={{
           current: pageNum,
           pageSize,
