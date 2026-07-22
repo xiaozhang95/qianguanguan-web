@@ -7,10 +7,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { userInfo } from './api/user'
 import Loading from './components/loading'
+import { Role } from './constants'
 import Layout from './layouts'
 import Login from './pages/login'
-import NotFound from './pages/notFound'
-import { Role } from './constants'
+import NotFound from './pages/notfound'
 import { flattenRoutes } from './router'
 import { RoutePath } from './router/routes'
 import type { RootState } from './store'
@@ -45,7 +45,9 @@ export default function App() {
     const style = document.createElement('style')
     style.textContent = '.ant-menu-submenu-selected > .ant-menu-submenu-title { color: #fff !important; }'
     document.head.appendChild(style)
-    return () => { document.head.removeChild(style) }
+    return () => {
+      document.head.removeChild(style)
+    }
   }, [])
 
   return (
@@ -58,9 +60,9 @@ export default function App() {
           Menu: {
             subMenuItemBg: 'transparent',
             itemSelectedColor: '#fff',
-            itemSelectedBg: '#1677ff80',
-          },
-        },
+            itemSelectedBg: '#1677ff80'
+          }
+        }
       }}
     >
       <Routes>
