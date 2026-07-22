@@ -114,7 +114,7 @@ export default function UserListPage() {
                   />
                 )
               }
-              const colors: Record<string, string> = { [Role.SUPER_ADMIN]: 'orange', [Role.ADMIN]: 'processing', [Role.USER]: 'default' }
+              const colors: Record<string, string> = { [Role.SUPER_ADMIN]: token.orange, [Role.ADMIN]: token.colorPrimary, [Role.USER]: token.colorTextQuaternary }
               return <Tag color={colors[role]}>{RoleLabel[role as Role] || role}</Tag>
             }
           },
@@ -124,7 +124,7 @@ export default function UserListPage() {
             title: '状态',
             dataIndex: 'status',
             width: 80,
-            render: (s: number) => <Tag color={s === UserStatus.ENABLED ? 'success' : 'error'}>{UserStatusLabel[s as UserStatus]}</Tag>
+            render: (s: number) => <Tag color={s === UserStatus.ENABLED ? token.colorSuccess : token.colorError}>{UserStatusLabel[s as UserStatus]}</Tag>
           },
           {
             title: '创建时间',

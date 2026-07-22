@@ -15,7 +15,8 @@ export default function HomePage() {
   const [filterMonth, setFilterMonth] = useState<dayjs.Dayjs>(dayjs())
   const [stats, setStats] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 })
   const [chartData, setChartData] = useState<{ date: string; income: number; expense: number }[]>([])
-  const [pieData, setPieData] = useState<{ name: string; value: number }[]>([])
+  const [incomePieData, setIncomePieData] = useState<{ name: string; value: number }[]>([])
+  const [expensePieData, setExpensePieData] = useState<{ name: string; value: number }[]>([])
   const [loading, setLoading] = useState(false)
   const month = filterMonth.format('M')
   const year = filterMonth.format('YYYY')
@@ -55,12 +56,22 @@ export default function HomePage() {
           }))
         )
 
-        const categoryMap = new Map<string, number>()
+        const incomeMap = new Map<string, number>()
+        const expenseMap = new Map<string, number>()
         listRes.data.records.forEach((b: BillVO) => {
-          categoryMap.set(b.categoryName, (categoryMap.get(b.categoryName) || 0) + b.amount)
+          if (b.type === BillType.INCOME) {
+            incomeMap.set(b.categoryName, (incomeMap.get(b.categoryName) || 0) + b.amount)
+          } else {
+            expenseMap.set(b.categoryName, (expenseMap.get(b.categoryName) || 0) + b.amount)
+          }
         })
-        setPieData(
-          Array.from(categoryMap.entries())
+        setIncomePieData(
+          Array.from(incomeMap.entries())
+            .map(([name, value]) => ({ name, value }))
+            .sort((a, b) => b.value - a.value)
+        )
+        setExpensePieData(
+          Array.from(expenseMap.entries())
             .map(([name, value]) => ({ name, value }))
             .sort((a, b) => b.value - a.value)
         )
@@ -77,7 +88,7 @@ export default function HomePage() {
       <Flex gap={token.marginLG} wrap>
         <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined style={{ color: token.colorSuccess, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>收入</span></Flex>}
+            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined style={{ color: token.colorSuccess, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorText, fontWeight: token.fontWeightStrong }}>收入</span></Flex>}
             value={stats.totalIncome}
             prefix="¥"
             precision={2}
@@ -86,7 +97,7 @@ export default function HomePage() {
         </Card>
         <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined style={{ color: token.colorError, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>支出</span></Flex>}
+            title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined style={{ color: token.colorError, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorText, fontWeight: token.fontWeightStrong }}>支出</span></Flex>}
             value={stats.totalExpense}
             prefix="¥"
             precision={2}
@@ -95,7 +106,7 @@ export default function HomePage() {
         </Card>
         <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><WalletOutlined style={{ color: token.colorPrimary, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>结余</span></Flex>}
+            title={<Flex align="center" gap={token.marginXS}><WalletOutlined style={{ color: token.colorPrimary, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorText, fontWeight: token.fontWeightStrong }}>结余</span></Flex>}
             value={stats.balance}
             prefix="¥"
             precision={2}
@@ -104,7 +115,7 @@ export default function HomePage() {
         </Card>
       </Flex>
 
-      <Card title={`${monthText}收支趋势`} loading={loading}>
+      <Card title={<span style={{ fontWeight: token.fontWeightStrong, color: token.colorText, fontSize: token.fontSizeLG }}>{`${monthText}收支趋势`}</span>} loading={loading}>
         <ResponsiveContainer width="100%" height={320}>
           <AreaChart data={chartData} margin={{ top: token.marginXS, right: token.margin, bottom: 0, left: -token.margin }}>
             <defs>
@@ -136,42 +147,83 @@ export default function HomePage() {
         </ResponsiveContainer>
       </Card>
 
-      {pieData.length > 0 && (
-        <Card title={`${monthText}分类占比`} loading={loading}>
-        <ResponsiveContainer width="100%" height={360}>
-          <PieChart>
-            <Pie
-              data={pieData}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={120}
-              paddingAngle={3}
-              dataKey="value"
-              nameKey="name"
-              label={({ value }) => `¥${value.toFixed(2)}`}
-            >
-              {pieData.map((_, i) => {
-                const colors = [token.colorPrimary, token.colorSuccess, token.colorError, token.colorWarning, token.colorInfo, token.purple, token.volcano, token.gold, token.cyan, token.geekblue]
-                return <Cell key={i} fill={colors[i % colors.length]} />
-              })}
-            </Pie>
-            <Tooltip
-              formatter={(value: unknown) => [`¥${Number(value).toFixed(2)}`, '']}
-              contentStyle={{
-                background: token.colorBgElevated,
-                border: `1px solid ${token.colorBorder}`,
-                borderRadius: token.borderRadius,
-                boxShadow: token.boxShadowSecondary,
-              }}
-              labelStyle={{ color: token.colorText }}
-            />
-            <Legend
-              formatter={(value: string) => <span style={{ color: token.colorText }}>{value}</span>}
-            />
-          </PieChart>
-        </ResponsiveContainer>
-      </Card>
+      {(incomePieData.length > 0 || expensePieData.length > 0) && (
+        <Flex gap={token.marginLG} wrap>
+          {incomePieData.length > 0 && (
+            <Card title={<span style={{ fontWeight: token.fontWeightStrong, color: token.colorText, fontSize: token.fontSizeLG }}>{`${monthText}收入分类占比`}</span>} loading={loading} style={{ flex: 1, minWidth: 300 }}>
+              <ResponsiveContainer width="100%" height={360}>
+                <PieChart>
+                  <Pie
+                    data={incomePieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={110}
+                    paddingAngle={2}
+                    dataKey="value"
+                    nameKey="name"
+                    label={({ value }) => `¥${value.toFixed(2)}`}
+                  >
+                    {incomePieData.map((_, i) => {
+                      const colors = [token.colorSuccess, token.colorPrimary, token.colorInfo, token.geekblue, token.cyan, token.gold, token.purple, token.volcano, token.colorWarning, token.colorError]
+                      return <Cell key={i} fill={colors[i % colors.length]} />
+                    })}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value: unknown) => [`¥${Number(value).toFixed(2)}`, '']}
+                    contentStyle={{
+                      background: token.colorBgElevated,
+                      border: `1px solid ${token.colorBorder}`,
+                      borderRadius: token.borderRadius,
+                      boxShadow: token.boxShadowSecondary,
+                    }}
+                    labelStyle={{ color: token.colorText }}
+                  />
+                  <Legend
+                    formatter={(value: string) => <span style={{ color: token.colorText }}>{value}</span>}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </Card>
+          )}
+          {expensePieData.length > 0 && (
+            <Card title={<span style={{ fontWeight: token.fontWeightStrong, color: token.colorText, fontSize: token.fontSizeLG }}>{`${monthText}支出分类占比`}</span>} loading={loading} style={{ flex: 1, minWidth: 300 }}>
+              <ResponsiveContainer width="100%" height={360}>
+                <PieChart>
+                  <Pie
+                    data={expensePieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={110}
+                    paddingAngle={2}
+                    dataKey="value"
+                    nameKey="name"
+                    label={({ value }) => `¥${value.toFixed(2)}`}
+                  >
+                    {expensePieData.map((_, i) => {
+                      const colors = [token.colorError, token.volcano, token.colorWarning, token.gold, token.purple, token.colorPrimary, token.colorInfo, token.geekblue, token.cyan, token.colorSuccess]
+                      return <Cell key={i} fill={colors[i % colors.length]} />
+                    })}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value: unknown) => [`¥${Number(value).toFixed(2)}`, '']}
+                    contentStyle={{
+                      background: token.colorBgElevated,
+                      border: `1px solid ${token.colorBorder}`,
+                      borderRadius: token.borderRadius,
+                      boxShadow: token.boxShadowSecondary,
+                    }}
+                    labelStyle={{ color: token.colorText }}
+                  />
+                  <Legend
+                    formatter={(value: string) => <span style={{ color: token.colorText }}>{value}</span>}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </Card>
+          )}
+        </Flex>
       )}
     </Flex>
   )

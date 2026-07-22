@@ -32,7 +32,7 @@ export default function CategoryPage() {
       dataIndex: 'type',
       width: 100,
       render: (type: string) => (
-        <Tag color={type === BillType.INCOME ? 'success' : 'error'}>
+        <Tag color={type === BillType.INCOME ? token.colorSuccess : token.colorError}>
           {BillTypeLabel[type as BillType]}
         </Tag>
       )

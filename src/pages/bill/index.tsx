@@ -173,7 +173,7 @@ export default function BillPage() {
       <Flex gap={token.marginLG} wrap>
         <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined style={{ color: token.colorSuccess, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>收入</span></Flex>}
+            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined style={{ color: token.colorSuccess, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorText, fontWeight: token.fontWeightStrong }}>收入</span></Flex>}
             value={stats.totalIncome}
             prefix="¥"
             precision={2}
@@ -182,7 +182,7 @@ export default function BillPage() {
         </Card>
         <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined style={{ color: token.colorError, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>支出</span></Flex>}
+            title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined style={{ color: token.colorError, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorText, fontWeight: token.fontWeightStrong }}>支出</span></Flex>}
             value={stats.totalExpense}
             prefix="¥"
             precision={2}
@@ -191,7 +191,7 @@ export default function BillPage() {
         </Card>
         <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><WalletOutlined style={{ color: token.colorPrimary, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>结余</span></Flex>}
+            title={<Flex align="center" gap={token.marginXS}><WalletOutlined style={{ color: token.colorPrimary, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorText, fontWeight: token.fontWeightStrong }}>结余</span></Flex>}
             value={stats.balance}
             prefix="¥"
             precision={2}

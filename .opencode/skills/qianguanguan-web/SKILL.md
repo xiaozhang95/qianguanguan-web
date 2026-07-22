@@ -90,10 +90,21 @@ import { BillType, BillTypeLabel, Role, RoleLabel, UserStatus, UserStatusLabel }
 record.type === BillType.INCOME
 BillTypeLabel[type as BillType]
 record.role === Role.SUPER_ADMIN
-<Tag color={role === Role.SUPER_ADMIN ? 'orange' : role === Role.ADMIN ? 'processing' : 'default'}>
+<Tag color={role === Role.SUPER_ADMIN ? token.orange : role === Role.ADMIN ? token.colorPrimary : token.colorTextQuaternary}>
   {RoleLabel[role as Role]}
 </Tag>
 record.status === UserStatus.ENABLED
+```
+
+**Tag 颜色映射**：Tag 的 `color` 属性必须使用 token 值，禁止直接使用 antd 预设字符串：
+
+| 语义色       | Token 值                    |
+| ------------ | --------------------------- |
+| 成功/收入    | `token.colorSuccess`        |
+| 错误/支出    | `token.colorError`          |
+| 警告/超管    | `token.orange`              |
+| 处理中/管理员 | `token.colorPrimary`       |
+| 默认/用户    | `token.colorTextQuaternary` |
 ```
 
 ## 代码质量
@@ -297,7 +308,7 @@ export async function uploadAvatar(file: File) {
 - 字体大小使用 `token.fontSizeXxx`
 - 间距使用 `token.marginXxx` / `token.paddingXxx`
 - 圆角使用 `token.borderRadiusXxx`
-- Tag 颜色使用 antd 预设：`'success'` / `'error'` / `'processing'` / `'orange'` / `'default'`
+- Tag 颜色使用 token 值：`token.colorSuccess` / `token.colorError` / `token.colorPrimary` / `token.orange` / `token.colorTextQuaternary`
 - 响应式使用 CSS 媒体查询，不写 JS 监听 `window.innerWidth`
 - 废弃 API：`valueStyle` → `styles={{ value: {...} }}`，`destroyOnClose` → 移除
 
