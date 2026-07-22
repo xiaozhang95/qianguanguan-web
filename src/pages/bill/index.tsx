@@ -3,12 +3,13 @@ import { categoryList, type Category } from '@/api/category'
 import { BillType, BillTypeLabel } from '@/constants'
 import { DefaultPagination } from '@/utils/request'
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Card, DatePicker, Flex, Form, Input, InputNumber, message, Modal, Popconfirm, Select, Space, Statistic, Table, theme } from 'antd'
+import { App, Button, Card, DatePicker, Flex, Form, Input, InputNumber, Modal, Popconfirm, Select, Space, Statistic, Table, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 
 export default function BillPage() {
   const { token } = theme.useToken()
+  const { message } = App.useApp()
   const [bills, setBills] = useState<BillVO[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -16,13 +17,14 @@ export default function BillPage() {
   const [stats, setStats] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 })
 
   const [filterType, setFilterType] = useState<string | undefined>()
-  const [filterCategoryId, setFilterCategoryId] = useState<number | undefined>()
+  const [filterCategoryId, setFilterCategoryId] = useState<string | undefined>()
   const [filterDate, setFilterDate] = useState<dayjs.Dayjs>(dayjs())
   const [pageNum, setPageNum] = useState(DefaultPagination.PageNum as number)
   const [pageSize, setPageSize] = useState(DefaultPagination.PageSize as number)
 
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [editingBill, setEditingBill] = useState<BillVO | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
   const [form] = Form.useForm()
 
   const fetchBills = () => {
@@ -91,15 +93,18 @@ export default function BillPage() {
           </Button>
           <Popconfirm
             title="确定删除？"
+            disabled={deletingId === record.id}
             onConfirm={() => {
+              setDeletingId(record.id)
               billDelete(record.id).then(({ msg }) => {
                 message.success(msg)
+                setDeletingId(null)
                 fetchBills()
                 fetchStats()
               })
             }}
           >
-            <Button type="link" size="small" danger>
+            <Button type="link" size="small" danger loading={deletingId === record.id}>
               删除
             </Button>
           </Popconfirm>
@@ -222,7 +227,7 @@ export default function BillPage() {
             <Button
               type="primary"
               onClick={() => {
-                form.validateFields().then((values: { type: string; categoryId: number; amount: number; billDate: dayjs.Dayjs; remark?: string }) => {
+                form.validateFields().then((values: { type: string; categoryId: string; amount: number; billDate: dayjs.Dayjs; remark?: string }) => {
                   const params: BillSaveParams = { ...values, billDate: values.billDate.format('YYYY-MM-DD') }
                   ;(editingBill ? billUpdate(editingBill.id, params) : billSave(params)).then(({ msg }) => {
                     message.success(msg)

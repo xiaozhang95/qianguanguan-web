@@ -34,7 +34,7 @@ export async function userList(data: UserListParams) {
   })
 }
 
-export async function userToggle(id: number) {
+export async function userToggle(id: string) {
   return create<CtmResponse<null>>({
     url: `/user/toggle/${id}`,
     method: 'PUT'

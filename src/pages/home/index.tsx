@@ -4,7 +4,7 @@ import { Card, DatePicker, Flex, Statistic, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Area, AreaChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 const { MonthPicker } = DatePicker
 
@@ -14,6 +14,7 @@ export default function HomePage() {
   const [filterMonth, setFilterMonth] = useState<dayjs.Dayjs>(dayjs())
   const [stats, setStats] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 })
   const [chartData, setChartData] = useState<{ date: string; income: number; expense: number }[]>([])
+  const [pieData, setPieData] = useState<{ name: string; value: number }[]>([])
   const [loading, setLoading] = useState(false)
   const month = filterMonth.format('M')
   const year = filterMonth.format('YYYY')
@@ -51,6 +52,16 @@ export default function HomePage() {
             income: v.income,
             expense: v.expense,
           }))
+        )
+
+        const categoryMap = new Map<string, number>()
+        listRes.data.records.forEach((b: BillVO) => {
+          categoryMap.set(b.categoryName, (categoryMap.get(b.categoryName) || 0) + b.amount)
+        })
+        setPieData(
+          Array.from(categoryMap.entries())
+            .map(([name, value]) => ({ name, value }))
+            .sort((a, b) => b.value - a.value)
         )
       })
       .finally(() => setLoading(false))
@@ -123,6 +134,44 @@ export default function HomePage() {
           </AreaChart>
         </ResponsiveContainer>
       </Card>
+
+      {pieData.length > 0 && (
+        <Card title={`${monthText}分类占比`} loading={loading}>
+        <ResponsiveContainer width="100%" height={360}>
+          <PieChart>
+            <Pie
+              data={pieData}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={120}
+              paddingAngle={3}
+              dataKey="value"
+              nameKey="name"
+              label={({ value }) => `¥${value.toFixed(2)}`}
+            >
+              {pieData.map((_, i) => {
+                const colors = [token.colorPrimary, token.colorSuccess, token.colorError, token.colorWarning, token.colorInfo, token.purple, token.volcano, token.gold, token.cyan, token.geekblue]
+                return <Cell key={i} fill={colors[i % colors.length]} />
+              })}
+            </Pie>
+            <Tooltip
+              formatter={(value: unknown) => [`¥${Number(value).toFixed(2)}`, '']}
+              contentStyle={{
+                background: token.colorBgElevated,
+                border: `1px solid ${token.colorBorder}`,
+                borderRadius: token.borderRadius,
+                boxShadow: token.boxShadowSecondary,
+              }}
+              labelStyle={{ color: token.colorText }}
+            />
+            <Legend
+              formatter={(value: string) => <span style={{ color: token.colorText }}>{value}</span>}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </Card>
+      )}
     </Flex>
   )
 }

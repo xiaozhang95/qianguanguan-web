@@ -1,7 +1,7 @@
 import create from '@/utils/request'
 
 export interface UserInfo {
-  id: number
+  id: string
   username: string
   name: string
   role: string

@@ -1,7 +1,7 @@
 import type { UserInfo } from '@/api/login'
 import { userProfile, upload } from '@/api/user'
 import { PlusOutlined } from '@ant-design/icons'
-import { Form, Input, message, Modal, Upload } from 'antd'
+import { App, Form, Input, Modal, Upload } from 'antd'
 import { useEffect, useState } from 'react'
 
 interface Props {
@@ -13,6 +13,7 @@ interface Props {
 
 export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Props) {
   const [form] = Form.useForm()
+  const { message } = App.useApp()
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState('')
 

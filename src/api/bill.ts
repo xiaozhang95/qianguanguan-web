@@ -1,10 +1,9 @@
 import create from '@/utils/request'
-import type { CtmResponse } from '@/utils/request'
 
 export interface BillVO {
-  id: number
-  userId: number
-  categoryId: number
+  id: string
+  userId: string
+  categoryId: string
   categoryName: string
   categoryIcon: string
   type: string
@@ -15,7 +14,7 @@ export interface BillVO {
 }
 
 export interface BillSaveParams {
-  categoryId: number
+  categoryId: string
   type: string
   amount: number
   billDate: string
@@ -24,7 +23,7 @@ export interface BillSaveParams {
 
 export interface BillListParams {
   type?: string
-  categoryId?: number
+  categoryId?: string
   startDate?: string
   endDate?: string
   pageNum?: number
@@ -60,7 +59,7 @@ export async function billSave(data: BillSaveParams) {
   })
 }
 
-export async function billUpdate(id: number, data: BillSaveParams) {
+export async function billUpdate(id: string, data: BillSaveParams) {
   return create<BillVO>({
     url: `/bill/${id}`,
     method: 'PUT',
@@ -68,8 +67,8 @@ export async function billUpdate(id: number, data: BillSaveParams) {
   })
 }
 
-export async function billDelete(id: number) {
-  return create<CtmResponse<null>>({
+export async function billDelete(id: string) {
+  return create<null>({
     url: `/bill/${id}`,
     method: 'DELETE'
   })

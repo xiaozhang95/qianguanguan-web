@@ -1,7 +1,7 @@
 import store from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
-import { message } from 'antd'
+import { getMsgApi } from './msgHolder'
 
 export type Params = Record<string, string | number | undefined>
 
@@ -182,7 +182,7 @@ export default async function create<T>(requestInfo: RequestOptions): Promise<Ct
           const json = (await response.json()) as CtmResponse<T>
           if (ResponseCode.SUCCESS !== json.code) {
             // 错误处理
-            if (ro.errorMsg) message.error(json.msg)
+            if (ro.errorMsg) getMsgApi().error(json.msg)
             if (json.code === ResponseCode.SC_FORBIDDEN || json.code === ResponseCode.SC_UNAUTHORIZED) {
               store.dispatch(setToken(''))
               store.dispatch(setUserInfo(null))
@@ -214,7 +214,7 @@ export default async function create<T>(requestInfo: RequestOptions): Promise<Ct
           message: e.message
         }
         if (e.name === 'AbortError') resp.message = ro.abortController ? '请求中止' : '请求超时'
-        if (ro.errorMsg) message.error(resp.message)
+        if (ro.errorMsg) getMsgApi().error(resp.message)
         reject(resp)
       }
     )

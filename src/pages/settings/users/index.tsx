@@ -1,12 +1,13 @@
 import { userList, userToggle, type UserInfo } from '@/api/user'
 import { Role, RoleLabel, UserStatus, UserStatusLabel } from '@/constants'
 import { DefaultPagination } from '@/utils/request'
-import { Button, Flex, Input, message, Popconfirm, Select, Space, Table, Tag, theme } from 'antd'
+import { App, Button, Flex, Input, Popconfirm, Select, Space, Table, Tag, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 
 export default function UserListPage() {
   const { token } = theme.useToken()
+  const { message } = App.useApp()
   const [users, setUsers] = useState<(UserInfo & { status: number })[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)

@@ -1,6 +1,6 @@
 import 'antd/dist/reset.css'
 
-import { ConfigProvider, theme } from 'antd'
+import { App as AntdApp, ConfigProvider, theme } from 'antd'
 import zhCN from 'antd/es/locale/zh_CN'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -15,6 +15,7 @@ import { flattenRoutes } from './router'
 import { RoutePath } from './router/routes'
 import type { RootState } from './store'
 import { setUserInfo } from './store/userInfo'
+import { setMsgApi } from './utils/msgHolder'
 
 export function LoadAuth() {
   const dispatch = useDispatch()
@@ -35,6 +36,14 @@ export function LoadAuth() {
   }, [token])
 
   return token ? <Loading /> : <Navigate to={RoutePath.Login} replace />
+}
+
+function MsgInject() {
+  const { message } = AntdApp.useApp()
+  useEffect(() => {
+    setMsgApi(message)
+  }, [message])
+  return null
 }
 
 export default function App() {
@@ -65,20 +74,23 @@ export default function App() {
         }
       }}
     >
-      <Routes>
-        <Route path={RoutePath.Login} element={<Login />} />
-        {!routes.length ? (
-          <Route path="/*" element={<LoadAuth />} />
-        ) : (
-          <Route path={RoutePath.Home} element={<Layout />}>
-            <Route path={RoutePath.Home} element={<Navigate to={routes[0]?.path} />} />
-            {routes.map(({ path, Component }) => (
-              <Route key={path} path={path} element={<Component />} />
-            ))}
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        )}
-      </Routes>
+      <AntdApp>
+        <Routes>
+          <Route path={RoutePath.Login} element={<Login />} />
+          {!routes.length ? (
+            <Route path="/*" element={<LoadAuth />} />
+          ) : (
+            <Route path={RoutePath.Home} element={<Layout />}>
+              <Route path={RoutePath.Home} element={<Navigate to={routes[0]?.path} />} />
+              {routes.map(({ path, Component }) => (
+                <Route key={path} path={path} element={<Component />} />
+              ))}
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          )}
+        </Routes>
+        <MsgInject />
+      </AntdApp>
     </ConfigProvider>
   )
 }

@@ -1,11 +1,12 @@
 import { categoryDelete, categoryList, categorySave, categoryUpdate, type Category, type CategorySaveParams } from '@/api/category'
 import { BillType, BillTypeLabel } from '@/constants'
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Flex, Form, Input, InputNumber, message, Modal, Popconfirm, Radio, Space, Table, Tag, theme } from 'antd'
+import { App, Button, Flex, Form, Input, InputNumber, Modal, Popconfirm, Radio, Space, Table, Tag, theme } from 'antd'
 import { useEffect, useState } from 'react'
 
 export default function CategoryPage() {
   const { token } = theme.useToken()
+  const { message } = App.useApp()
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
