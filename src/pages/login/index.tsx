@@ -87,7 +87,7 @@ export default function Page() {
       </Flex>
 
       <Flex align="center" style={{ height: '60vh' }}>
-        <Divider type="vertical" style={{ height: '100%', borderColor: token.colorBorderSecondary }} />
+        <div style={{ width: 1, height: '100%', background: token.colorBorderSecondary }} />
       </Flex>
 
       <Flex flex={1} vertical align="center" style={{ padding: token.paddingXL, position: 'relative', zIndex: 1 }}>

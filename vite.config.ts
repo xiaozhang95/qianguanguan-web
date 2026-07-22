@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_REQUEST_TARGET,
           changeOrigin: true
         },
-        '/static': {
+        '/upload': {
           target: env.VITE_REQUEST_TARGET,
           changeOrigin: true
         }
