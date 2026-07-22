@@ -37,6 +37,10 @@ export default function Page() {
   }, [form])
 
   useEffect(() => {
+    document.title = `${import.meta.env.VITE_NAME} - ${isRegister ? '注册' : '登录'}`
+  }, [isRegister])
+
+  useEffect(() => {
     fetchCaptcha()
   }, [fetchCaptcha])
 

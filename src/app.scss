@@ -32,14 +32,40 @@ body {
   background: #555;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #141414 inset !important;
+  box-shadow: 0 0 0 30px #141414 inset !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.85) !important;
+  caret-color: rgba(255, 255, 255, 0.85);
+}
+
 @media (max-width: 767px) {
   .hide-on-mobile {
     display: none !important;
+  }
+
+  .layout-sider {
+    display: none !important;
+  }
+
+  .layout-main {
+    margin-left: 0 !important;
   }
 }
 
 @media (min-width: 768px) {
   .hide-on-desktop {
     display: none !important;
+  }
+
+  .show-on-mobile {
+    display: none !important;
+  }
+
+  .layout-main {
+    margin-left: 200px;
   }
 }

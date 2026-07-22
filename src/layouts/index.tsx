@@ -9,8 +9,8 @@ import { RoutePath } from '@/router/routes'
 import type { RootState } from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
-import { DownOutlined, LockOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import { Button, Dropdown, Flex, Layout, Menu, theme } from 'antd'
+import { DownOutlined, LockOutlined, LogoutOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons'
+import { Button, Drawer, Dropdown, Flex, Layout, Menu, theme } from 'antd'
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
@@ -29,6 +29,7 @@ export default function AdminLayout() {
   const [openKeys, setOpenKeys] = useState<string[]>([])
   const [profileOpen, setProfileOpen] = useState(false)
   const [passwordOpen, setPasswordOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [pigRun, setPigRun] = useState(false)
   const pigClicks = useRef(0)
   const pigRef = useRef<HTMLDivElement>(null)
@@ -89,7 +90,7 @@ export default function AdminLayout() {
 
   return (
     <Layout style={{ height: '100vh', overflow: 'hidden', background: token.colorBgLayout }}>
-      <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0, zIndex: 10, background: token.colorBgContainer }}>
+      <Sider className="layout-sider" style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0, zIndex: 10, background: token.colorBgContainer }}>
         <Flex
           align="center"
           gap={token.marginSM}
@@ -172,20 +173,28 @@ export default function AdminLayout() {
         />
       </Sider>
 
-      <Layout style={{ marginLeft: 200 }}>
+      <Layout className="layout-main">
         <Header
           style={{
             padding: `0 ${token.paddingLG}px`,
             background: token.colorBgContainer,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'flex-end',
+            justifyContent: 'space-between',
             boxShadow: token.boxShadowTertiary,
             position: 'sticky',
             top: 0,
             zIndex: 9
           }}
         >
+          <Flex align="center" gap={token.marginSM} className="show-on-mobile">
+            <Button
+              type="text"
+              icon={<MenuOutlined />}
+              onClick={() => setMobileMenuOpen(true)}
+            />
+            <span style={{ fontWeight: 700, fontSize: token.fontSizeLG, color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
+          </Flex>
           <Dropdown
             menu={{
               items: [
@@ -233,6 +242,52 @@ export default function AdminLayout() {
 
       <ProfileModal open={profileOpen} userInfo={userInfo} onClose={() => setProfileOpen(false)} onSuccess={(info) => dispatch(setUserInfo(info))} />
       <PasswordModal open={passwordOpen} onClose={() => setPasswordOpen(false)} onSuccess={logout} />
+      <Drawer
+        placement="left"
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        styles={{ body: { padding: 0, background: token.colorBgContainer }, header: { background: token.colorBgContainer, borderBottom: `1px solid ${token.colorBorderSecondary}` } }}
+        width={220}
+        title={
+          <Flex align="center" gap={token.marginSM}>
+            <div
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryActive})`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: `0 2px 8px ${token.colorPrimary}40`,
+                flexShrink: 0
+              }}
+            >
+              <Icon name="logo" size={20} fill="#fff" />
+            </div>
+            <Flex vertical gap={0} style={{ lineHeight: 1.2 }}>
+              <span style={{ fontWeight: 700, fontSize: token.fontSize, whiteSpace: 'nowrap', color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
+              <span style={{ fontSize: 12, color: token.colorTextTertiary, whiteSpace: 'nowrap' }}>好好记账，天天向上</span>
+            </Flex>
+          </Flex>
+        }
+      >
+        <Menu
+          mode="inline"
+          selectedKeys={[activeKey]}
+          openKeys={openKeys}
+          onOpenChange={setOpenKeys}
+          items={buildMenuItems(routes)}
+          onClick={({ key }) => {
+            if (activeKey !== key) {
+              setActiveKey(key)
+              nav(key)
+            }
+            setMobileMenuOpen(false)
+          }}
+          style={{ borderRight: 0 }}
+        />
+      </Drawer>
     </Layout>
   )
 }

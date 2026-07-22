@@ -1,5 +1,6 @@
 import { billList, billStats, type BillVO } from '@/api/bill'
 import { BillType } from '@/constants'
+import { ArrowDownOutlined, ArrowUpOutlined, WalletOutlined } from '@ant-design/icons'
 import { Card, DatePicker, Flex, Statistic, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
@@ -76,29 +77,29 @@ export default function HomePage() {
       <Flex gap={token.marginLG} wrap>
         <Card style={{ flex: 1, minWidth: 200 }}>
           <Statistic
-            title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>收入</span>}
+            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined style={{ color: token.colorSuccess, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>收入</span></Flex>}
             value={stats.totalIncome}
             prefix="¥"
             precision={2}
-            styles={{ value: { color: token.colorSuccess, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
+            styles={{ value: { color: token.colorSuccess, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
           />
         </Card>
         <Card style={{ flex: 1, minWidth: 200 }}>
           <Statistic
-            title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>支出</span>}
+            title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined style={{ color: token.colorError, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>支出</span></Flex>}
             value={stats.totalExpense}
             prefix="¥"
             precision={2}
-            styles={{ value: { color: token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
+            styles={{ value: { color: token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
           />
         </Card>
         <Card style={{ flex: 1, minWidth: 200 }}>
           <Statistic
-            title={<span style={{ fontSize: token.fontSizeLG, fontWeight: token.fontWeightStrong }}>结余</span>}
+            title={<Flex align="center" gap={token.marginXS}><WalletOutlined style={{ color: token.colorPrimary, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>结余</span></Flex>}
             value={stats.balance}
             prefix="¥"
             precision={2}
-            styles={{ value: { color: stats.balance >= 0 ? token.colorSuccess : token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading2 } }}
+            styles={{ value: { color: stats.balance >= 0 ? token.colorSuccess : token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
           />
         </Card>
       </Flex>
