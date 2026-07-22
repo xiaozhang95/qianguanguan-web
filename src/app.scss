@@ -35,11 +35,27 @@ body {
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
+input:-webkit-autofill:active,
+.ant-input:-webkit-autofill,
+.ant-input:-webkit-autofill:hover,
+.ant-input:-webkit-autofill:focus,
+.ant-input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px #141414 inset !important;
   box-shadow: 0 0 0 30px #141414 inset !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.85) !important;
+  background-color: #141414 !important;
+  transition: background-color 5000s ease-in-out 0s;
   caret-color: rgba(255, 255, 255, 0.85);
+}
+
+.ant-input-affix-wrapper:-webkit-autofill,
+.ant-input-affix-wrapper:-webkit-autofill:hover,
+.ant-input-affix-wrapper:-webkit-autofill:focus,
+.ant-input-affix-wrapper:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #141414 inset !important;
+  box-shadow: 0 0 0 30px #141414 inset !important;
+  background-color: #141414 !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 @media (max-width: 767px) {

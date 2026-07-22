@@ -11,7 +11,7 @@ import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
 import { DownOutlined, LockOutlined, LogoutOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons'
 import { Button, Drawer, Dropdown, Flex, Layout, Menu, theme } from 'antd'
-import { Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
@@ -30,18 +30,6 @@ export default function AdminLayout() {
   const [profileOpen, setProfileOpen] = useState(false)
   const [passwordOpen, setPasswordOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [pigRun, setPigRun] = useState(false)
-  const pigClicks = useRef(0)
-  const pigRef = useRef<HTMLDivElement>(null)
-
-  const playPig = () => {
-    pigClicks.current += 1
-    if (pigClicks.current >= 5) {
-      pigClicks.current = 0
-      setPigRun(true)
-      setTimeout(() => setPigRun(false), 5000)
-    }
-  }
 
   const logout = () => {
     dispatch(setToken(''))
@@ -56,11 +44,11 @@ export default function AdminLayout() {
         if (r.children.some((c) => c.path === location.pathname)) {
           setOpenKeys((prev) => [...new Set([...prev, r.meta.title])])
           const child = r.children.find((c) => c.path === location.pathname)
-          if (child) document.title = `${child.meta.title} - 钱罐罐`
+          if (child) document.title = `${child.meta.title} - ${import.meta.env.VITE_NAME}`
           return
         }
       } else if (r.path === location.pathname) {
-        document.title = `${r.meta.title} - 钱罐罐`
+        document.title = `${r.meta.title} - ${import.meta.env.VITE_NAME}`
         return
       }
     }
@@ -102,56 +90,21 @@ export default function AdminLayout() {
             overflow: 'hidden'
           }}
         >
-          <div ref={pigRef} onClick={playPig} style={{ cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
-            {pigRun && pigRef.current && (
-              <div
-                style={{
-                  position: 'fixed',
-                  left: pigRef.current.getBoundingClientRect().left,
-                  top: pigRef.current.getBoundingClientRect().top,
-                  zIndex: 9999,
-                  animation: 'pigRun 5s ease-in-out forwards',
-                  pointerEvents: 'none'
-                }}
-              >
-                <div
-                  style={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: 10,
-                    background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryActive})`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: `0 2px 8px ${token.colorPrimary}40`
-                  }}
-                >
-                  <Icon name="logo" size={24} fill="#fff" />
-                </div>
-              </div>
-            )}
-            <div
-              style={{
-                width: 38,
-                height: 38,
-                borderRadius: 10,
-                background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryActive})`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: `0 2px 8px ${token.colorPrimary}40`,
-                visibility: pigRun ? 'hidden' : 'visible'
-              }}
-            >
-              <Icon name="logo" size={24} fill="#fff" />
-            </div>
+          <div
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: 10,
+              background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryActive})`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: `0 2px 8px ${token.colorPrimary}40`,
+              flexShrink: 0
+            }}
+          >
+            <Icon name="logo" size={24} fill="#fff" />
           </div>
-          <style>{`
-            @keyframes pigRun {
-              0% { transform: translateX(0); }
-              100% { transform: translateX(calc(-100vw + 200px)); }
-            }
-          `}</style>
           <Flex vertical gap={0} style={{ lineHeight: 1.2 }}>
             <span style={{ fontWeight: 700, fontSize: token.fontSizeLG, whiteSpace: 'nowrap', color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
             <span style={{ fontSize: token.fontSizeSM, color: token.colorTextTertiary, whiteSpace: 'nowrap' }}>好好记账，天天向上</span>
@@ -180,7 +133,7 @@ export default function AdminLayout() {
             background: token.colorBgContainer,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-start',
             boxShadow: token.boxShadowTertiary,
             position: 'sticky',
             top: 0,
@@ -195,8 +148,9 @@ export default function AdminLayout() {
             />
             <span style={{ fontWeight: 700, fontSize: token.fontSizeLG, color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
           </Flex>
-          <Dropdown
-            menu={{
+          <Flex style={{ marginLeft: 'auto' }}>
+            <Dropdown
+              menu={{
               items: [
                 {
                   key: 'profile',
@@ -229,6 +183,7 @@ export default function AdminLayout() {
               {userInfo?.name || userInfo?.username || ''} <DownOutlined />
             </Button>
           </Dropdown>
+          </Flex>
         </Header>
 
         <Content style={{ padding: token.paddingLG, overflow: 'auto' }}>

@@ -129,7 +129,7 @@ record.status === UserStatus.ENABLED
 
 ```typescript
 // 布局内页面 —— 由 Layout 根据 route meta 自动设置
-document.title = `${child.meta.title} - 钱罐罐`
+document.title = `${child.meta.title} - ${import.meta.env.VITE_NAME}`
 
 // 独立页面（login、notfound）—— 手动在 useEffect 中设置
 useEffect(() => {
