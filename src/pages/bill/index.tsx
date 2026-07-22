@@ -146,7 +146,6 @@ export default function BillPage() {
           <Select
             placeholder="全部分类"
             allowClear
-            showSearch
             style={{ width: 160 }}
             value={filterCategoryId}
             onChange={(v) => {

@@ -106,7 +106,7 @@ export default function AdminLayout() {
             <Icon name="logo" size={24} fill="#fff" />
           </div>
           <Flex vertical gap={0} style={{ lineHeight: 1.2 }}>
-            <span style={{ fontWeight: 700, fontSize: token.fontSizeLG, whiteSpace: 'nowrap', color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
+            <span style={{ fontWeight: token.fontWeightStrong, fontSize: token.fontSizeLG, whiteSpace: 'nowrap', color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
             <span style={{ fontSize: token.fontSizeSM, color: token.colorTextTertiary, whiteSpace: 'nowrap' }}>好好记账，天天向上</span>
           </Flex>
         </Flex>
@@ -146,7 +146,7 @@ export default function AdminLayout() {
               icon={<MenuOutlined />}
               onClick={() => setMobileMenuOpen(true)}
             />
-            <span style={{ fontWeight: 700, fontSize: token.fontSizeLG, color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
+            <span style={{ fontWeight: token.fontWeightStrong, fontSize: token.fontSizeLG, color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
           </Flex>
           <Flex style={{ marginLeft: 'auto' }}>
             <Dropdown
@@ -176,9 +176,9 @@ export default function AdminLayout() {
           >
             <Button type="text" style={{ color: token.colorText }}>
               {userInfo?.avatar ? (
-                <img src={userInfo.avatar} alt="" style={{ width: 24, height: 24, borderRadius: '50%', marginRight: 8, verticalAlign: 'middle' }} />
+                <img src={userInfo.avatar} alt="" style={{ width: 24, height: 24, borderRadius: '50%', marginRight: token.marginXS, verticalAlign: 'middle' }} />
               ) : (
-                <UserOutlined style={{ marginRight: 8, fontSize: 18, color: token.colorTextTertiary }} />
+                <UserOutlined style={{ marginRight: token.marginXS, fontSize: token.fontSizeXL, color: token.colorTextTertiary }} />
               )}
               <span className="hide-on-mobile">{userInfo?.name || userInfo?.username || ''} <DownOutlined /></span>
               <DownOutlined className="show-on-mobile" />
@@ -222,8 +222,8 @@ export default function AdminLayout() {
               <Icon name="logo" size={20} fill="#fff" />
             </div>
             <Flex vertical gap={0} style={{ lineHeight: 1.2 }}>
-              <span style={{ fontWeight: 700, fontSize: token.fontSize, whiteSpace: 'nowrap', color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
-              <span style={{ fontSize: 12, color: token.colorTextTertiary, whiteSpace: 'nowrap' }}>好好记账，天天向上</span>
+              <span style={{ fontWeight: token.fontWeightStrong, fontSize: token.fontSize, whiteSpace: 'nowrap', color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
+              <span style={{ fontSize: token.fontSizeSM, color: token.colorTextTertiary, whiteSpace: 'nowrap' }}>好好记账，天天向上</span>
             </Flex>
           </Flex>
         }

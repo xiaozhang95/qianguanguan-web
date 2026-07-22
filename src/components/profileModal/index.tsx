@@ -1,7 +1,7 @@
 import type { UserInfo } from '@/api/login'
 import { userProfile, upload } from '@/api/user'
 import { PlusOutlined } from '@ant-design/icons'
-import { App, Form, Input, Modal, Upload } from 'antd'
+import { App, Form, Input, Modal, Upload, theme } from 'antd'
 import { useEffect, useState } from 'react'
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
 }
 
 export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Props) {
+  const { token } = theme.useToken()
   const [form] = Form.useForm()
   const { message } = App.useApp()
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
@@ -43,7 +44,7 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
         })
       }}
     >
-      <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
+      <Form form={form} layout="vertical" style={{ marginTop: token.margin }}>
         <Form.Item label="头像" style={{ textAlign: 'center' }}>
           <Upload
             listType="picture-circle"

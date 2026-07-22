@@ -85,7 +85,7 @@ export default function Page() {
         <Flex vertical gap={token.marginMD} align="center">
           {features.map((f) => (
             <Flex key={f.text} align="center" gap={token.marginSM}>
-              <span style={{ fontSize: 20 }}>{f.icon}</span>
+              <span style={{ fontSize: token.fontSizeXL }}>{f.icon}</span>
               <Text style={{ color: token.colorTextSecondary, fontSize: token.fontSize }}>{f.text}</Text>
             </Flex>
           ))}
@@ -116,8 +116,8 @@ export default function Page() {
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
               {isRegister
-                ? <UserAddOutlined style={{ fontSize: 28, color: token.colorTextTertiary }} />
-                : <LockOutlined style={{ fontSize: 28, color: token.colorTextTertiary }} />
+                ? <UserAddOutlined style={{ fontSize: token.fontSizeHeading2, color: token.colorTextTertiary }} />
+                : <LockOutlined style={{ fontSize: token.fontSizeHeading2, color: token.colorTextTertiary }} />
               }
             </div>
           </Flex>
