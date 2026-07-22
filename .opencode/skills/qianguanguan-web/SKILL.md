@@ -176,6 +176,7 @@ const { token } = theme.useToken()
 | 废弃属性 | 替换为 |
 |----------|--------|
 | `Modal destroyOnClose` | `destroyOnHidden` |
+| `Drawer width` | `size` |
 | `Divider type="vertical"` | 自定义 `<div>` 实现垂直分割线 |
 | `Divider type` | `orientation`（仅对文字方向有效） |
 

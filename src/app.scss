@@ -70,6 +70,33 @@ input:-webkit-autofill:active,
   .layout-main {
     margin-left: 0 !important;
   }
+
+  .login-form-area {
+    padding: 12px !important;
+  }
+
+  .login-form-card {
+    width: 100% !important;
+    padding: 16px !important;
+  }
+
+  .login-captcha-img {
+    width: 100px !important;
+  }
+
+  .layout-content {
+    padding: 12px !important;
+  }
+
+  .stat-card {
+    min-width: 140px !important;
+  }
+
+  .page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
 }
 
 @media (min-width: 768px) {

@@ -49,7 +49,7 @@ export default function UserListPage() {
           <Select
             placeholder="全部角色"
             allowClear
-            style={{ width: 120 }}
+            style={{ width: 160 }}
             value={filterRole}
             onChange={(v) => {
               setFilterRole(v)
@@ -61,7 +61,7 @@ export default function UserListPage() {
           <Select
             placeholder="全部状态"
             allowClear
-            style={{ width: 120 }}
+            style={{ width: 160 }}
             value={filterStatus}
             onChange={(v) => {
               setFilterStatus(v)
@@ -76,7 +76,7 @@ export default function UserListPage() {
           <Input.Search
             placeholder="搜索用户名"
             allowClear
-            style={{ width: 200 }}
+            style={{ width: 160 }}
             value={searchUsername}
             onChange={(e) => setSearchUsername(e.target.value)}
             onSearch={(value) => {

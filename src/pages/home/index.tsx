@@ -70,12 +70,12 @@ export default function HomePage() {
 
   return (
     <Flex vertical gap={token.marginLG}>
-      <Flex justify="space-between" align="center">
+      <Flex justify="space-between" align="center" className="page-header">
         <MonthPicker value={filterMonth} onChange={(v) => { if (v) setFilterMonth(v) }} allowClear={false} />
       </Flex>
 
       <Flex gap={token.marginLG} wrap>
-        <Card style={{ flex: 1, minWidth: 200 }}>
+        <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
           <Statistic
             title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined style={{ color: token.colorSuccess, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>收入</span></Flex>}
             value={stats.totalIncome}
@@ -84,7 +84,7 @@ export default function HomePage() {
             styles={{ value: { color: token.colorSuccess, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
           />
         </Card>
-        <Card style={{ flex: 1, minWidth: 200 }}>
+        <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
           <Statistic
             title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined style={{ color: token.colorError, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>支出</span></Flex>}
             value={stats.totalExpense}
@@ -93,7 +93,7 @@ export default function HomePage() {
             styles={{ value: { color: token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
           />
         </Card>
-        <Card style={{ flex: 1, minWidth: 200 }}>
+        <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
           <Statistic
             title={<Flex align="center" gap={token.marginXS}><WalletOutlined style={{ color: token.colorPrimary, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>结余</span></Flex>}
             value={stats.balance}
@@ -106,7 +106,7 @@ export default function HomePage() {
 
       <Card title={`${monthText}收支趋势`} loading={loading}>
         <ResponsiveContainer width="100%" height={320}>
-          <AreaChart data={chartData} margin={{ top: 8, right: 16, bottom: 0, left: -8 }}>
+          <AreaChart data={chartData} margin={{ top: 8, right: 16, bottom: 0, left: -16 }}>
             <defs>
               <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={token.colorSuccess} stopOpacity={0.3} />

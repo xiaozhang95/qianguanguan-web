@@ -180,13 +180,14 @@ export default function AdminLayout() {
               ) : (
                 <UserOutlined style={{ marginRight: 8, fontSize: 18, color: token.colorTextTertiary }} />
               )}
-              {userInfo?.name || userInfo?.username || ''} <DownOutlined />
+              <span className="hide-on-mobile">{userInfo?.name || userInfo?.username || ''} <DownOutlined /></span>
+              <DownOutlined className="show-on-mobile" />
             </Button>
           </Dropdown>
           </Flex>
         </Header>
 
-        <Content style={{ padding: token.paddingLG, overflow: 'auto' }}>
+        <Content className="layout-content" style={{ padding: token.paddingLG, overflow: 'auto' }}>
           <Suspense fallback={<Loading />}>
             <ErrorBoundary>
               <Outlet />
@@ -202,7 +203,7 @@ export default function AdminLayout() {
         open={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
         styles={{ body: { padding: 0, background: token.colorBgContainer }, header: { background: token.colorBgContainer, borderBottom: `1px solid ${token.colorBorderSecondary}` } }}
-        width={220}
+        size={220}
         title={
           <Flex align="center" gap={token.marginSM}>
             <div

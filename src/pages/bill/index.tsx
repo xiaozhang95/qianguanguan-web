@@ -116,7 +116,7 @@ export default function BillPage() {
 
   return (
     <Flex vertical gap={token.marginLG}>
-      <Flex justify="space-between" align="center" wrap gap={token.marginSM}>
+      <Flex justify="space-between" align="center" wrap gap={token.marginSM} className="page-header">
         <Space wrap>
           <DatePicker
             value={filterDate}
@@ -127,11 +127,12 @@ export default function BillPage() {
               }
             }}
             allowClear={false}
+            style={{ width: 160 }}
           />
           <Select
             placeholder="全部类型"
             allowClear
-            style={{ width: 100 }}
+            style={{ width: 160 }}
             value={filterType}
             onChange={(v) => {
               setFilterType(v)
@@ -146,7 +147,7 @@ export default function BillPage() {
             placeholder="全部分类"
             allowClear
             showSearch
-            style={{ width: 140 }}
+            style={{ width: 160 }}
             value={filterCategoryId}
             onChange={(v) => {
               setFilterCategoryId(v)
@@ -171,7 +172,7 @@ export default function BillPage() {
       </Flex>
 
       <Flex gap={token.marginLG} wrap>
-        <Card style={{ flex: 1, minWidth: 200 }}>
+        <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
           <Statistic
             title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined style={{ color: token.colorSuccess, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>收入</span></Flex>}
             value={stats.totalIncome}
@@ -180,7 +181,7 @@ export default function BillPage() {
             styles={{ value: { color: token.colorSuccess, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
           />
         </Card>
-        <Card style={{ flex: 1, minWidth: 200 }}>
+        <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
           <Statistic
             title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined style={{ color: token.colorError, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>支出</span></Flex>}
             value={stats.totalExpense}
@@ -189,7 +190,7 @@ export default function BillPage() {
             styles={{ value: { color: token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
           />
         </Card>
-        <Card style={{ flex: 1, minWidth: 200 }}>
+        <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
           <Statistic
             title={<Flex align="center" gap={token.marginXS}><WalletOutlined style={{ color: token.colorPrimary, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorTextSecondary }}>结余</span></Flex>}
             value={stats.balance}

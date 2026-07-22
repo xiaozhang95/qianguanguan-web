@@ -96,9 +96,10 @@ export default function Page() {
         <div style={{ width: 1, height: '100%', background: token.colorBorderSecondary }} />
       </Flex>
 
-      <Flex flex={1} vertical align="center" style={{ padding: token.paddingXL, position: 'relative', zIndex: 1 }}>
+      <Flex flex={1} vertical align="center" className="login-form-area" style={{ padding: token.paddingXL, position: 'relative', zIndex: 1 }}>
         <Flex
           vertical
+          className="login-form-card"
           style={{
             width: 440,
             maxWidth: '100%',
@@ -206,6 +207,7 @@ export default function Page() {
                     alt="验证码"
                     src={captchaImage}
                     onClick={fetchCaptcha}
+                    className="login-captcha-img"
                     style={{
                       height: token.controlHeightLG,
                       width: 130,
