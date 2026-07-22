@@ -1,62 +1,99 @@
 ---
 name: qianguanguan-web
-description: Use when working with the qianguanguan-web (钱罐罐) React + TypeScript + Vite frontend. Covers TypeScript types for Snowflake IDs, antd Table conventions, message API usage, and request patterns.
+description: Use when writing or modifying React frontend code in qianguanguan-web/. Covers TypeScript, Ant Design v6, Redux, Vite, and project conventions.
 ---
 
-# qianguanguan-web 前端规范
+# 钱罐罐 前端规范
 
-## 项目技术栈
+## 项目栈
 
-React 19 + TypeScript 7 + Vite 8 + Ant Design 6 + Redux Toolkit + React Router
+- React 19 + TypeScript
+- Vite + pnpm
+- Ant Design v6 (`"antd": "^6.5.1"`)
+- Redux Toolkit (react-redux)
+- React Router v7
+- dayjs
 
-## TypeScript 类型规范
+## 项目结构
 
-- **所有后端 Snowflake ID（id / userId / categoryId 等）必须声明为 `string` 类型**，不得使用 `number`
-- 后端 Jackson 已将 Long 序列化为 String，前端直接以 string 接收和传递
-
-## antd Table 规范
-
-- 所有 Table **必须**加 `scroll={{ x: 'max-content' }}`，保证表头与内容区域共用滚动容器，缩小屏幕时不会错位
-- 操作列 **必须**加 `fixed: 'right' as const`，固定在右侧
-```tsx
-<Table
-  rowKey="id"
-  scroll={{ x: 'max-content' }}
-  columns={columns}
-  dataSource={data}
-  loading={loading}
-/>
+```
+qianguanguan-web/src/
+├── api/            # 接口请求，按模块分文件
+├── components/     # 公共组件，每个组件一个文件夹 (index.tsx)
+├── constants/      # 常量定义
+├── layouts/        # 布局组件
+├── pages/          # 页面组件，每个页面一个文件夹
+├── router/         # 路由配置
+├── store/          # Redux store (token, userInfo)
+└── utils/          # 工具函数 (request.ts 等)
 ```
 
-## antd message 使用规范
+## API 函数命名规则
 
-- 组件内**必须**使用 `App.useApp()` 获取 message 实例，禁止 `import { message } from 'antd'` 静态调用：
-```tsx
-import { App } from 'antd'
+**函数名 = URL 路径的驼峰形式**
 
-export default function MyPage() {
-  const { message } = App.useApp()
-  message.success('操作成功')
-}
-```
-- 非 React 工具函数（如 `request.ts`）通过 `msgHolder` 持有 message 实例：
-  - `utils/msgHolder.ts`：`setMsgApi()` / `getMsgApi()`
-  - `request.ts` 中调用 `getMsgApi().error(msg)` 代替 `message.error(msg)`
-  - `App.tsx` 中必须包含 `<MsgInject />` 组件初始化 message 实例
+| URL | 函数名 |
+|-----|--------|
+| `/user/info` | `userInfo()` |
+| `/user/list` | `userList()` |
+| `/user/password` | `userPassword()` |
+| `/user/profile` | `userProfile()` |
+| `/user/toggle/{id}` | `userToggle()` |
+| `/bill/list` | `billList()` |
+| `/bill/save` | `billSave()` |
+| `/bill/stats` | `billStats()` |
+| `/login` | `login()` |
+| `/register` | `register()` |
+| `/upload` | `upload()` |
 
-## API 接口规范
+## API 请求写法
 
-- **URL 必须包含语义化动作后缀**（与后端一致）：
-  - 新增：`/bill/save`、`/category/save`
-  - 更新：`/bill/update/${id}`、`/category/update/${id}`
-  - 删除：`/bill/delete/${id}`、`/category/delete/${id}`
-- 删除类接口返回 void，调用 `create(...)` 时**不传泛型**，禁止 `create<null>` 或 `create<CtmResponse<null>>`
-```ts
-export async function billDelete(id: string) {
+```typescript
+import create from '@/utils/request'
+
+export async function userPassword(data: { oldPassword: string; newPassword: string }) {
   return create({
-    url: `/bill/delete/${id}`,
-    method: 'DELETE'
+    url: '/user/password',
+    method: 'PUT',
+    data
   })
 }
 ```
-- 请求统一通过 `create<T>(options)` 发送，返回 `Promise<CtmResponse<T>>`
+
+- 统一使用 `create<T>()` 发起请求
+- 请求/响应类型定义在同一文件中
+- `file` 上传设置 `requestType: 'blob'`，不使用 `Content-Type`
+- **提示信息必须使用后端返回的 `msg`，禁止前端硬编码文案**：`message.success(msg)`
+
+## 组件/页面规范
+
+- 组件: `src/components/ComponentName/index.tsx`
+- 页面: `src/pages/PageName/index.tsx`
+- Props 接口定义在组件文件内: `interface Props { ... }`
+
+## Ant Design 使用规范
+
+- `App.useApp()` 获取 `message` / `modal` / `notification` 实例
+- `theme.useToken()` 获取设计令牌
+- `Form.useForm()` + `form.validateFields().then()` 处理表单提交
+- Modal 使用 `open` + `onCancel` + `onOk` 模式
+
+## Ant Design 废弃属性替换
+
+| 废弃属性 | 替换为 |
+|----------|--------|
+| `Modal destroyOnClose` | `destroyOnHidden` |
+| `Divider type="vertical"` | 自定义 `<div>` 实现垂直分割线 |
+| `Divider type` | `orientation`（仅对文字方向有效） |
+
+## Token & 用户信息
+
+- `token` 存储在 Redux store + localStorage
+- `userInfo` 存储在 Redux store
+- 退出登录/修改密码后: `dispatch(setToken(''))` + `dispatch(setUserInfo(null))` + 跳转登录页
+- 请求拦截器自动从 Redux store 附加 `Authorization: Bearer {token}` 头
+
+## 样式
+
+全局样式统一放在 `src/app.scss` 中，通过 `App.tsx` 引入。`index.html` 不写内联样式。
+响应式使用 CSS 媒体查询，不写 JS 监听 `window.innerWidth`。
