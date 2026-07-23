@@ -9,7 +9,7 @@ description: Use when writing or modifying React frontend code in qianguanguan-w
 
 - **框架**: React 19 + TypeScript + Vite
 - **UI 库**: Ant Design 6.x
-- **图表库**: recharts
+- **图表库**: @ant-design/charts
 - **图标**: @ant-design/icons
 - **状态管理**: Redux Toolkit
 - **路由**: React Router 7 (HashRouter)
@@ -69,13 +69,12 @@ export const UserStatusLabel: Record<UserStatus, string> = {
 
 - 路由路径从 `RoutePath` 常量引用，禁止硬编码
 - 菜单分组用 `type: 'group'`，字段名 `roles`（`Role[]`）
-- **首页、账单管理、分类管理** 使用 `import` 直接导入（无需懒加载）
-- **系统设置（用户列表）** 使用 `React.lazy()` 懒加载
+- 所有页面使用 `React.lazy()` 懒加载
 - 404 兜底路由 `path="*"`
 
 ```typescript
-const Home = import('@/pages/home')          // 直接导入
-const Users = lazy(() => import('@/pages/settings/users'))  // 懒加载
+const Home = lazy(() => import('@/pages/home'))
+const Bill = lazy(() => import('@/pages/bill'))
 
 interface RouteItem {
   Component: ComponentType | LazyExoticComponent<ComponentType>

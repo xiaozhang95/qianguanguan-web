@@ -1,10 +1,11 @@
 import { Role } from '@/constants'
 import { AppstoreOutlined, HomeOutlined, SettingOutlined, TeamOutlined, WalletOutlined } from '@ant-design/icons'
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
-import Home from '@/pages/home'
-import Bill from '@/pages/bill'
-import Category from '@/pages/category'
 import { RoutePath } from './routes'
+
+const Home = lazy(() => import('@/pages/home'))
+const Bill = lazy(() => import('@/pages/bill'))
+const Category = lazy(() => import('@/pages/category'))
 
 interface RouteMeta {
   title: string

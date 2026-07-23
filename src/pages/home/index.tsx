@@ -1,7 +1,7 @@
 import { billList, billStats, type BillVO } from '@/api/bill'
 import { BillType } from '@/constants'
-import { ArrowDownOutlined, ArrowUpOutlined, WalletOutlined } from '@ant-design/icons'
 import { Area, Pie } from '@ant-design/charts'
+import { ArrowDownOutlined, ArrowUpOutlined, WalletOutlined } from '@ant-design/icons'
 import { Card, DatePicker, Flex, Grid, Statistic, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
@@ -32,10 +32,7 @@ export default function HomePage() {
 
     setLoading(true)
 
-    Promise.all([
-      billStats(year, month),
-      billList({ startDate, endDate, pageNum: 1, pageSize: daysInMonth * 2 }),
-    ])
+    Promise.all([billStats(year, month), billList({ startDate, endDate, pageNum: 1, pageSize: daysInMonth * 2 })])
       .then(([statsRes, listRes]) => {
         setStats(statsRes.data)
 
@@ -55,7 +52,7 @@ export default function HomePage() {
           Array.from(dailyMap.entries()).map(([date, v]) => ({
             date: dayjs(date).format('D日'),
             income: v.income,
-            expense: v.expense,
+            expense: v.expense
           }))
         )
 
@@ -85,7 +82,7 @@ export default function HomePage() {
   const areaData = useMemo(() => {
     return chartData.flatMap((d) => [
       { date: d.date, type: '支出', value: d.expense },
-      { date: d.date, type: '收入', value: d.income },
+      { date: d.date, type: '收入', value: d.income }
     ])
   }, [chartData])
 
@@ -95,13 +92,24 @@ export default function HomePage() {
   return (
     <Flex vertical gap={token.marginLG}>
       <Flex justify="space-between" align="center" className="page-header">
-        <MonthPicker value={filterMonth} onChange={(v) => { if (v) setFilterMonth(v) }} allowClear={false} />
+        <MonthPicker
+          value={filterMonth}
+          onChange={(v) => {
+            if (v) setFilterMonth(v)
+          }}
+          allowClear={false}
+        />
       </Flex>
 
       <Flex gap={token.marginLG} wrap>
         <Card className="stat-card home-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined className="home-stat-icon home-stat-icon--expense" /><span className="home-stat-title">支出</span></Flex>}
+            title={
+              <Flex align="center" gap={token.marginXS}>
+                <ArrowDownOutlined className="home-stat-icon home-stat-icon--expense" />
+                <span className="home-stat-title">支出</span>
+              </Flex>
+            }
             value={stats.totalExpense}
             prefix="¥"
             precision={2}
@@ -110,7 +118,12 @@ export default function HomePage() {
         </Card>
         <Card className="stat-card home-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined className="home-stat-icon home-stat-icon--income" /><span className="home-stat-title">收入</span></Flex>}
+            title={
+              <Flex align="center" gap={token.marginXS}>
+                <ArrowUpOutlined className="home-stat-icon home-stat-icon--income" />
+                <span className="home-stat-title">收入</span>
+              </Flex>
+            }
             value={stats.totalIncome}
             prefix="¥"
             precision={2}
@@ -119,7 +132,12 @@ export default function HomePage() {
         </Card>
         <Card className="stat-card home-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><WalletOutlined className="home-stat-icon home-stat-icon--balance" /><span className="home-stat-title">结余</span></Flex>}
+            title={
+              <Flex align="center" gap={token.marginXS}>
+                <WalletOutlined className="home-stat-icon home-stat-icon--balance" />
+                <span className="home-stat-title">结余</span>
+              </Flex>
+            }
             value={stats.balance}
             prefix="¥"
             precision={2}
@@ -129,28 +147,30 @@ export default function HomePage() {
       </Flex>
 
       <Card title={<span className="home-chart-title">{`${monthText}收支趋势`}</span>} loading={loading}>
-        <Area {...{
-          data: areaData,
-          xField: 'date',
-          yField: 'value',
-          seriesField: 'type',
-          autoFit: true,
-          height: 320,
-          shapeField: 'smooth',
-          colorField: 'type',
-          scale: { color: { range: [token.colorError, token.colorSuccess] } },
-          line: { shapeField: 'smooth', style: { strokeWidth: 2 } },
-          style: { fillOpacity: 0.2 },
-          axis: {
-            x: { labelFill: token.colorWhite, labelOpacity: 1, lineStroke: token.colorWhite, tickStroke: token.colorWhite, tickOpacity: 1 },
-            y: { labelFill: token.colorWhite, labelOpacity: 1, gridStroke: token.colorWhite, gridStrokeOpacity: 1, lineStroke: token.colorWhite, lineStrokeOpacity: 1, tickOpacity: 1 },
-          },
-          legend: { color: { itemLabelFill: token.colorWhite, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } },
-          tooltip: {
-            channel: 'y',
-            valueFormatter: (v: unknown) => `¥${Number(v).toFixed(2)}`,
-          },
-        } as any} />
+        <Area
+          {...({
+            data: areaData,
+            xField: 'date',
+            yField: 'value',
+            seriesField: 'type',
+            autoFit: true,
+            height: 320,
+            shapeField: 'smooth',
+            colorField: 'type',
+            scale: { color: { range: [token.colorError, token.colorSuccess] } },
+            line: { shapeField: 'smooth', style: { strokeWidth: 2 } },
+            style: { fillOpacity: 0.2 },
+            axis: {
+              x: { labelFill: token.colorWhite, labelOpacity: 1, lineStroke: token.colorWhite, tickStroke: token.colorWhite, tickOpacity: 1 },
+              y: { labelFill: token.colorWhite, labelOpacity: 1, gridStroke: token.colorWhite, gridStrokeOpacity: 1, lineStroke: token.colorWhite, lineStrokeOpacity: 1, tickOpacity: 1 }
+            },
+            legend: { color: { itemLabelFill: token.colorWhite, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } },
+            tooltip: {
+              channel: 'y',
+              valueFormatter: (v: unknown) => `¥${Number(v).toFixed(2)}`
+            }
+          } as any)}
+        />
       </Card>
 
       {(incomePieData.length > 0 || expensePieData.length > 0) && (
@@ -165,27 +185,23 @@ export default function HomePage() {
                 height={isMobile ? 280 : 360}
                 innerRadius={isMobile ? 0.6 : 0.45}
                 scale={{ color: { range: expenseColors } }}
-                label={isMobile ? {
-                  text: (d: { value: number }) => `¥${d.value.toFixed(2)}`,
-                  position: 'inside',
-                  style: { fill: token.colorWhite, fillOpacity: 1, fontSize: 11, fontWeight: 'bold' },
-                } : {
-                  text: (d: { value: number }) => `¥${d.value.toFixed(2)}`,
-                  position: 'outside',
-                  style: { fill: token.colorWhite, fillOpacity: 1, fontSize: token.fontSize, fontWeight: 'bold' },
-                  connectorStroke: token.colorWhite,
-                  connectorLineWidth: 2,
-                  connectorStrokeOpacity: 1,
-                  background: false,
-                }}
+                label={
+                  isMobile
+                    ? false
+                    : {
+                        text: (d: { value: number }) => `¥${d.value.toFixed(2)}`,
+                        position: 'outside',
+                        style: { fill: token.colorWhite, fillOpacity: 1, fontSize: token.fontSize, fontWeight: 'bold' },
+                      }
+                }
                 legend={{ color: { itemLabelFill: token.colorWhite, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
                 tooltip={{
                   items: [
                     (d: { name: string; value: number }) => ({
                       name: d.name,
-                      value: `¥${d.value.toFixed(2)}`,
-                    }),
-                  ],
+                      value: `¥${d.value.toFixed(2)}`
+                    })
+                  ]
                 }}
                 style={{ stroke: token.colorBgContainer, lineWidth: 2 }}
               />
@@ -201,27 +217,23 @@ export default function HomePage() {
                 height={isMobile ? 280 : 360}
                 innerRadius={isMobile ? 0.6 : 0.45}
                 scale={{ color: { range: incomeColors } }}
-                label={isMobile ? {
-                  text: (d: { value: number }) => `¥${d.value.toFixed(2)}`,
-                  position: 'inside',
-                  style: { fill: token.colorWhite, fillOpacity: 1, fontSize: 11, fontWeight: 'bold' },
-                } : {
-                  text: (d: { value: number }) => `¥${d.value.toFixed(2)}`,
-                  position: 'outside',
-                  style: { fill: token.colorWhite, fillOpacity: 1, fontSize: token.fontSize, fontWeight: 'bold' },
-                  connectorStroke: token.colorWhite,
-                  connectorLineWidth: 2,
-                  connectorStrokeOpacity: 1,
-                  background: false,
-                }}
+                label={
+                  isMobile
+                    ? false
+                    : {
+                        text: (d: { value: number }) => `¥${d.value.toFixed(2)}`,
+                        position: 'outside',
+                        style: { fill: token.colorWhite, fillOpacity: 1, fontSize: token.fontSize, fontWeight: 'bold' },
+                      }
+                }
                 legend={{ color: { itemLabelFill: token.colorWhite, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
                 tooltip={{
                   items: [
                     (d: { name: string; value: number }) => ({
                       name: d.name,
-                      value: `¥${d.value.toFixed(2)}`,
-                    }),
-                  ],
+                      value: `¥${d.value.toFixed(2)}`
+                    })
+                  ]
                 }}
                 style={{ stroke: token.colorBgContainer, lineWidth: 2 }}
               />
