@@ -1,8 +1,9 @@
 import type { UserInfo } from '@/api/login'
 import { userProfile, upload } from '@/api/user'
 import { PlusOutlined } from '@ant-design/icons'
-import { App, Form, Input, Modal, Upload, theme } from 'antd'
+import { App, Form, Input, Modal, Upload } from 'antd'
 import { useEffect, useState } from 'react'
+import './index.scss'
 
 interface Props {
   open: boolean
@@ -12,7 +13,6 @@ interface Props {
 }
 
 export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Props) {
-  const { token } = theme.useToken()
   const [form] = Form.useForm()
   const { message } = App.useApp()
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
@@ -44,8 +44,8 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
         })
       }}
     >
-      <Form form={form} layout="vertical" style={{ marginTop: token.margin }}>
-        <Form.Item label="头像" style={{ textAlign: 'center' }}>
+      <Form form={form} layout="vertical" className="profile-form">
+        <Form.Item label="头像" className="profile-upload-label">
           <Upload
             listType="picture-circle"
             maxCount={1}
@@ -53,7 +53,7 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
             beforeUpload={(file) => { setAvatarFile(file); setAvatarPreview(URL.createObjectURL(file)); return false }}
             onRemove={() => { setAvatarFile(null); setAvatarPreview(userInfo?.avatar || '') }}
           >
-            {avatarPreview ? <img src={avatarPreview} alt="" style={{ width: '100%', borderRadius: '50%' }} /> : <PlusOutlined />}
+            {avatarPreview ? <img src={avatarPreview} alt="" className="profile-avatar-img" /> : <PlusOutlined />}
           </Upload>
         </Form.Item>
         <Form.Item name="name" label="姓名">

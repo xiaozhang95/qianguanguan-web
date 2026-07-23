@@ -16,11 +16,11 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: var(--ant-color-fill-secondary);
 }
 
 ::-webkit-scrollbar-corner {
-  background: #1a1a1a;
+  background: var(--ant-color-fill-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -40,21 +40,21 @@ input:-webkit-autofill:active,
 .ant-input:-webkit-autofill:hover,
 .ant-input:-webkit-autofill:focus,
 .ant-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px #141414 inset !important;
-  box-shadow: 0 0 0 30px #141414 inset !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.85) !important;
-  background-color: #141414 !important;
+  -webkit-box-shadow: 0 0 0 30px var(--ant-color-bg-container) inset !important;
+  box-shadow: 0 0 0 30px var(--ant-color-bg-container) inset !important;
+  -webkit-text-fill-color: var(--ant-color-text) !important;
+  background-color: var(--ant-color-bg-container) !important;
   transition: background-color 5000s ease-in-out 0s;
-  caret-color: rgba(255, 255, 255, 0.85);
+  caret-color: var(--ant-color-text);
 }
 
 .ant-input-affix-wrapper:-webkit-autofill,
 .ant-input-affix-wrapper:-webkit-autofill:hover,
 .ant-input-affix-wrapper:-webkit-autofill:focus,
 .ant-input-affix-wrapper:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px #141414 inset !important;
-  box-shadow: 0 0 0 30px #141414 inset !important;
-  background-color: #141414 !important;
+  -webkit-box-shadow: 0 0 0 30px var(--ant-color-bg-container) inset !important;
+  box-shadow: 0 0 0 30px var(--ant-color-bg-container) inset !important;
+  background-color: var(--ant-color-bg-container) !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -71,23 +71,6 @@ input:-webkit-autofill:active,
     margin-left: 0 !important;
   }
 
-  .login-form-area {
-    padding: 12px !important;
-  }
-
-  .login-form-card {
-    width: 100% !important;
-    padding: 16px !important;
-  }
-
-  .login-captcha-img {
-    width: 100px !important;
-  }
-
-  .layout-content {
-    padding: 12px !important;
-  }
-
   .stat-card {
     min-width: 140px !important;
   }
@@ -95,7 +78,7 @@ input:-webkit-autofill:active,
   .page-header {
     flex-direction: column !important;
     align-items: flex-start !important;
-    gap: 8px !important;
+    gap: var(--ant-padding-xs) !important;
   }
 }
 

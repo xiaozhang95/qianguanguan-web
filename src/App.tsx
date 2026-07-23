@@ -51,19 +51,11 @@ export default function App() {
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const routes = flattenRoutes(userInfo?.role as Role)
 
-  useEffect(() => {
-    const style = document.createElement('style')
-    style.textContent = '.ant-menu-submenu-selected > .ant-menu-submenu-title { color: #fff !important; }'
-    document.head.appendChild(style)
-    return () => {
-      document.head.removeChild(style)
-    }
-  }, [])
-
   return (
     <ConfigProvider
       locale={zhCN}
       theme={{
+        cssVar: { prefix: 'ant' },
         algorithm: theme.darkAlgorithm,
         token: { borderRadius: 6 },
         components: {

@@ -1,18 +1,9 @@
-import { Flex, Spin, theme } from 'antd'
+import { Flex, Spin } from 'antd'
+import './index.scss'
 
 export default function Loading() {
-  const { token } = theme.useToken()
-
   return (
-    <Flex
-      justify="center"
-      align="center"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: token.colorBgContainer
-      }}
-    >
+    <Flex justify="center" align="center" className="loading-overlay">
       <Spin />
     </Flex>
   )

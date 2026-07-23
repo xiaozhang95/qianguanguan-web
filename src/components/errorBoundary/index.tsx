@@ -1,5 +1,6 @@
 import { Button, Flex, Result } from 'antd'
 import { Component, type ReactNode } from 'react'
+import './index.scss'
 
 interface Props {
   children: ReactNode
@@ -26,7 +27,7 @@ export default class ErrorBoundary extends Component<Props, State> {
 
 function ErrorFallback({ onReset }: { error: Error; onReset: () => void }) {
   return (
-    <Flex justify="center" align="center" style={{ minHeight: 400 }}>
+    <Flex justify="center" align="center" className="error-fallback">
       <Result
         status="error"
         title="页面出错了"

@@ -14,6 +14,7 @@ import { Button, Drawer, Dropdown, Flex, Layout, Menu, theme } from 'antd'
 import { Suspense, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import './index.scss'
 
 const { Sider, Content, Header } = Layout
 
@@ -77,37 +78,15 @@ export default function AdminLayout() {
   }
 
   return (
-    <Layout style={{ height: '100vh', overflow: 'hidden', background: token.colorBgLayout }}>
-      <Sider className="layout-sider" style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0, zIndex: 10, background: token.colorBgContainer }}>
-        <Flex
-          align="center"
-          gap={token.marginSM}
-          style={{
-            height: 64,
-            borderBottom: `1px solid ${token.colorBorderSecondary}`,
-            padding: `0 ${token.paddingMD}px`,
-            userSelect: 'none',
-            overflow: 'hidden'
-          }}
-        >
-          <div
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: 10,
-              background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryActive})`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: `0 2px 8px ${token.colorPrimary}40`,
-              flexShrink: 0
-            }}
-          >
-            <Icon name="logo" size={24} fill="#fff" />
+    <Layout className="layout-root">
+      <Sider className="layout-sider">
+        <Flex align="center" gap={token.marginSM} className="layout-sider-brand">
+          <div className="layout-logo">
+            <Icon name="logo" size={24} fill={token.colorWhite} />
           </div>
-          <Flex vertical gap={0} style={{ lineHeight: 1.2 }}>
-            <span style={{ fontWeight: token.fontWeightStrong, fontSize: token.fontSizeLG, whiteSpace: 'nowrap', color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
-            <span style={{ fontSize: token.fontSizeSM, color: token.colorTextTertiary, whiteSpace: 'nowrap' }}>好好记账，天天向上</span>
+          <Flex vertical gap={0} className="layout-sider-brand-name">
+            <span className="layout-brand-title">{import.meta.env.VITE_NAME}</span>
+            <span className="layout-brand-subtitle">好好记账，天天向上</span>
           </Flex>
         </Flex>
         <Menu
@@ -122,33 +101,21 @@ export default function AdminLayout() {
               nav(key)
             }
           }}
-          style={{ borderRight: 0 }}
+          className="layout-menu"
         />
       </Sider>
 
       <Layout className="layout-main">
-        <Header
-          style={{
-            padding: `0 ${token.paddingLG}px`,
-            background: token.colorBgContainer,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-            boxShadow: token.boxShadowTertiary,
-            position: 'sticky',
-            top: 0,
-            zIndex: 9
-          }}
-        >
-          <Flex align="center" gap={token.marginSM} className="show-on-mobile">
+        <Header className="layout-header">
+          <Flex align="center" gap={token.marginXS} className="show-on-mobile">
             <Button
               type="text"
               icon={<MenuOutlined />}
               onClick={() => setMobileMenuOpen(true)}
             />
-            <span style={{ fontWeight: token.fontWeightStrong, fontSize: token.fontSizeLG, color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
+            <span className="layout-brand-title">{import.meta.env.VITE_NAME}</span>
           </Flex>
-          <Flex style={{ marginLeft: 'auto' }}>
+          <Flex className="layout-header-user">
             <Dropdown
               menu={{
               items: [
@@ -174,20 +141,19 @@ export default function AdminLayout() {
             }}
             placement="bottomRight"
           >
-            <Button type="text" style={{ color: token.colorText }}>
+            <Button type="text" className="layout-user-btn">
               {userInfo?.avatar ? (
-                <img src={userInfo.avatar} alt="" style={{ width: 24, height: 24, borderRadius: '50%', marginRight: token.marginXS, verticalAlign: 'middle' }} />
+                <img src={userInfo.avatar} alt="" className="layout-user-avatar-img" />
               ) : (
-                <UserOutlined style={{ marginRight: token.marginXS, fontSize: token.fontSizeXL, color: token.colorTextTertiary }} />
+                <UserOutlined className="layout-user-avatar-icon" />
               )}
               <span className="hide-on-mobile">{userInfo?.name || userInfo?.username || ''} <DownOutlined /></span>
-              <DownOutlined className="show-on-mobile" />
             </Button>
           </Dropdown>
           </Flex>
         </Header>
 
-        <Content className="layout-content" style={{ padding: token.paddingLG, overflow: 'auto' }}>
+        <Content className="layout-content">
           <Suspense fallback={<Loading />}>
             <ErrorBoundary>
               <Outlet />
@@ -202,28 +168,16 @@ export default function AdminLayout() {
         placement="left"
         open={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
-        styles={{ body: { padding: 0, background: token.colorBgContainer }, header: { background: token.colorBgContainer, borderBottom: `1px solid ${token.colorBorderSecondary}` } }}
+        styles={{ body: { padding: 0, background: 'var(--ant-color-bg-container)' }, header: { background: 'var(--ant-color-bg-container)', borderBottom: '1px solid var(--ant-color-border-secondary)' } }}
         size={220}
         title={
           <Flex align="center" gap={token.marginSM}>
-            <div
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: 8,
-                background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryActive})`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: `0 2px 8px ${token.colorPrimary}40`,
-                flexShrink: 0
-              }}
-            >
-              <Icon name="logo" size={20} fill="#fff" />
+            <div className="layout-drawer-logo">
+              <Icon name="logo" size={20} fill={token.colorWhite} />
             </div>
-            <Flex vertical gap={0} style={{ lineHeight: 1.2 }}>
-              <span style={{ fontWeight: token.fontWeightStrong, fontSize: token.fontSize, whiteSpace: 'nowrap', color: token.colorText }}>{import.meta.env.VITE_NAME}</span>
-              <span style={{ fontSize: token.fontSizeSM, color: token.colorTextTertiary, whiteSpace: 'nowrap' }}>好好记账，天天向上</span>
+            <Flex vertical gap={0} className="layout-sider-brand-name">
+              <span className="layout-drawer-brand-title">{import.meta.env.VITE_NAME}</span>
+              <span className="layout-drawer-brand-subtitle">好好记账，天天向上</span>
             </Flex>
           </Flex>
         }
@@ -241,7 +195,7 @@ export default function AdminLayout() {
             }
             setMobileMenuOpen(false)
           }}
-          style={{ borderRight: 0 }}
+          className="layout-menu"
         />
       </Drawer>
     </Layout>

@@ -1,0 +1,64 @@
+.home-stat-card {
+  flex: 1;
+  min-width: 200px;
+  overflow: hidden;
+
+  .ant-statistic-content-value {
+    word-break: break-all;
+  }
+}
+
+.home-stat-title {
+  font-size: var(--ant-font-size-xl);
+  color: var(--ant-color-text);
+  font-weight: var(--ant-font-weight-strong);
+}
+
+.home-stat-icon {
+  font-size: var(--ant-font-size-lg);
+}
+
+.home-stat-icon--income {
+  color: var(--ant-color-success);
+}
+
+.home-stat-icon--expense {
+  color: var(--ant-color-error);
+}
+
+.home-stat-icon--balance {
+  color: var(--ant-color-primary);
+}
+
+.home-stat-value {
+  font-weight: var(--ant-font-weight-strong);
+  font-size: var(--ant-font-size-heading-3);
+}
+
+.home-chart-title {
+  font-weight: var(--ant-font-weight-strong);
+  color: var(--ant-color-text);
+  font-size: var(--ant-font-size-lg);
+}
+
+.home-pie-card {
+  flex: 1;
+  min-width: 300px;
+}
+
+.home-tooltip {
+  background: var(--ant-color-bg-elevated);
+  border: var(--ant-line-width) solid var(--ant-color-border);
+  border-radius: var(--ant-border-radius);
+  box-shadow: var(--ant-box-shadow-secondary);
+}
+
+.home-legend-text {
+  color: var(--ant-color-text);
+}
+
+@media (max-width: 767px) {
+  .home-stat-card .ant-statistic-content-value {
+    font-size: var(--ant-font-size-heading-4) !important;
+  }
+}

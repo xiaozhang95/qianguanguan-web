@@ -6,6 +6,7 @@ import { ArrowDownOutlined, ArrowUpOutlined, PlusOutlined, WalletOutlined } from
 import { App, Button, Card, DatePicker, Flex, Form, Input, InputNumber, Modal, Popconfirm, Select, Space, Statistic, Table, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
+import './index.scss'
 
 export default function BillPage() {
   const { token } = theme.useToken()
@@ -68,7 +69,7 @@ export default function BillPage() {
       dataIndex: 'amount',
       width: 130,
       render: (amount: number, record: BillVO) => (
-        <span style={{ color: record.type === BillType.INCOME ? token.colorSuccess : token.colorError, fontWeight: token.fontWeightStrong }}>
+        <span className={record.type === BillType.INCOME ? 'bill-amount-income' : 'bill-amount-expense'}>
           {record.type === BillType.INCOME ? '+' : '-'}¥{amount.toFixed(2)}
         </span>
       )
@@ -127,12 +128,12 @@ export default function BillPage() {
               }
             }}
             allowClear={false}
-            style={{ width: 160 }}
+            className="bill-filter-date"
           />
           <Select
             placeholder="全部类型"
             allowClear
-            style={{ width: 160 }}
+            className="bill-filter-type"
             value={filterType}
             onChange={(v) => {
               setFilterType(v)
@@ -146,7 +147,7 @@ export default function BillPage() {
           <Select
             placeholder="全部分类"
             allowClear
-            style={{ width: 160 }}
+            className="bill-filter-category"
             value={filterCategoryId}
             onChange={(v) => {
               setFilterCategoryId(v)
@@ -171,27 +172,27 @@ export default function BillPage() {
       </Flex>
 
       <Flex gap={token.marginLG} wrap>
-        <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
+        <Card className="stat-card bill-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined style={{ color: token.colorSuccess, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorText, fontWeight: token.fontWeightStrong }}>收入</span></Flex>}
+            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined className="bill-stat-icon bill-stat-icon--income" /><span className="bill-stat-title">收入</span></Flex>}
             value={stats.totalIncome}
             prefix="¥"
             precision={2}
             styles={{ value: { color: token.colorSuccess, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
           />
         </Card>
-        <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
+        <Card className="stat-card bill-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined style={{ color: token.colorError, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorText, fontWeight: token.fontWeightStrong }}>支出</span></Flex>}
+            title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined className="bill-stat-icon bill-stat-icon--expense" /><span className="bill-stat-title">支出</span></Flex>}
             value={stats.totalExpense}
             prefix="¥"
             precision={2}
             styles={{ value: { color: token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
           />
         </Card>
-        <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
+        <Card className="stat-card bill-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><WalletOutlined style={{ color: token.colorPrimary, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorText, fontWeight: token.fontWeightStrong }}>结余</span></Flex>}
+            title={<Flex align="center" gap={token.marginXS}><WalletOutlined className="bill-stat-icon bill-stat-icon--balance" /><span className="bill-stat-title">结余</span></Flex>}
             value={stats.balance}
             prefix="¥"
             precision={2}
@@ -267,10 +268,10 @@ export default function BillPage() {
             }}
           </Form.Item>
           <Form.Item name="amount" label="金额" rules={[{ required: true, message: '请输入金额' }]}>
-            <InputNumber min={0.01} precision={2} prefix="¥" style={{ width: '100%' }} placeholder="0.00" />
+            <InputNumber min={0.01} precision={2} prefix="¥" className="bill-amount-input" placeholder="0.00" />
           </Form.Item>
           <Form.Item name="billDate" label="日期" rules={[{ required: true }]}>
-            <DatePicker style={{ width: '100%' }} />
+            <DatePicker className="bill-date-input" />
           </Form.Item>
           <Form.Item name="remark" label="备注">
             <Input.TextArea placeholder="选填" rows={2} maxLength={200} />

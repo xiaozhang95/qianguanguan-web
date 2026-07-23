@@ -6,6 +6,7 @@ import { App, Button, Flex, Input, Popconfirm, Select, Space, Table, Tag, theme 
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import './index.scss'
 
 export default function UserListPage() {
   const { token } = theme.useToken()
@@ -42,14 +43,16 @@ export default function UserListPage() {
     fetchList()
   }, [pageNum, pageSize])
 
+  const roleTagColor: Record<string, string> = { [Role.SUPER_ADMIN]: token.orange, [Role.ADMIN]: token.colorPrimary, [Role.USER]: token.colorTextQuaternary }
+
   return (
-    <Flex vertical gap={token.marginLG}>
-      <Flex justify="space-between" wrap gap={token.marginSM}>
+    <Flex vertical gap={token.margin}>
+      <Flex justify="space-between" wrap gap={token.marginXS}>
         <Space wrap>
           <Select
             placeholder="全部角色"
             allowClear
-            style={{ width: 160 }}
+            className="users-filter-select"
             value={filterRole}
             onChange={(v) => {
               setFilterRole(v)
@@ -61,7 +64,7 @@ export default function UserListPage() {
           <Select
             placeholder="全部状态"
             allowClear
-            style={{ width: 160 }}
+            className="users-filter-select"
             value={filterStatus}
             onChange={(v) => {
               setFilterStatus(v)
@@ -76,7 +79,7 @@ export default function UserListPage() {
           <Input.Search
             placeholder="搜索用户名"
             allowClear
-            style={{ width: 160 }}
+            className="users-filter-select"
             value={searchUsername}
             onChange={(e) => setSearchUsername(e.target.value)}
             onSearch={(value) => {
@@ -102,7 +105,7 @@ export default function UserListPage() {
                 return (
                   <Select
                     size="small"
-                    style={{ width: 120 }}
+                    className="users-role-select"
                     value={role}
                     onChange={(v) => {
                       userUpdateRole(record.id, v).then(({ msg }) => {
@@ -114,8 +117,7 @@ export default function UserListPage() {
                   />
                 )
               }
-              const colors: Record<string, string> = { [Role.SUPER_ADMIN]: token.orange, [Role.ADMIN]: token.colorPrimary, [Role.USER]: token.colorTextQuaternary }
-              return <Tag color={colors[role]}>{RoleLabel[role as Role] || role}</Tag>
+              return <Tag color={roleTagColor[role]}>{RoleLabel[role as Role] || role}</Tag>
             }
           },
           { title: '手机号', dataIndex: 'phone', width: 140 },

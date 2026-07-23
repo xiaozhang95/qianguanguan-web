@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Area, AreaChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import './index.scss'
 
 const { MonthPicker } = DatePicker
 
@@ -85,28 +86,28 @@ export default function HomePage() {
         <MonthPicker value={filterMonth} onChange={(v) => { if (v) setFilterMonth(v) }} allowClear={false} />
       </Flex>
 
-      <Flex gap={token.marginLG} wrap>
-        <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
+        <Flex gap={token.marginLG} wrap>
+        <Card className="stat-card home-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined style={{ color: token.colorSuccess, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorText, fontWeight: token.fontWeightStrong }}>收入</span></Flex>}
+            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined className="home-stat-icon home-stat-icon--income" /><span className="home-stat-title">收入</span></Flex>}
             value={stats.totalIncome}
             prefix="¥"
             precision={2}
             styles={{ value: { color: token.colorSuccess, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
           />
         </Card>
-        <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
+        <Card className="stat-card home-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined style={{ color: token.colorError, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorText, fontWeight: token.fontWeightStrong }}>支出</span></Flex>}
+            title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined className="home-stat-icon home-stat-icon--expense" /><span className="home-stat-title">支出</span></Flex>}
             value={stats.totalExpense}
             prefix="¥"
             precision={2}
             styles={{ value: { color: token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
           />
         </Card>
-        <Card className="stat-card" style={{ flex: 1, minWidth: 200 }}>
+        <Card className="stat-card home-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><WalletOutlined style={{ color: token.colorPrimary, fontSize: token.fontSizeLG }} /><span style={{ fontSize: token.fontSizeXL, color: token.colorText, fontWeight: token.fontWeightStrong }}>结余</span></Flex>}
+            title={<Flex align="center" gap={token.marginXS}><WalletOutlined className="home-stat-icon home-stat-icon--balance" /><span className="home-stat-title">结余</span></Flex>}
             value={stats.balance}
             prefix="¥"
             precision={2}
@@ -115,9 +116,9 @@ export default function HomePage() {
         </Card>
       </Flex>
 
-      <Card title={<span style={{ fontWeight: token.fontWeightStrong, color: token.colorText, fontSize: token.fontSizeLG }}>{`${monthText}收支趋势`}</span>} loading={loading}>
+      <Card title={<span className="home-chart-title">{`${monthText}收支趋势`}</span>} loading={loading}>
         <ResponsiveContainer width="100%" height={320}>
-          <AreaChart data={chartData} margin={{ top: token.marginXS, right: token.margin, bottom: 0, left: -token.margin }}>
+          <AreaChart data={chartData} margin={{ top: 4, right: 12, bottom: 0, left: -12 }}>
             <defs>
               <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={token.colorSuccess} stopOpacity={0.3} />
@@ -148,9 +149,9 @@ export default function HomePage() {
       </Card>
 
       {(incomePieData.length > 0 || expensePieData.length > 0) && (
-        <Flex gap={token.marginLG} wrap>
+      <Flex gap={token.marginLG} wrap>
           {incomePieData.length > 0 && (
-            <Card title={<span style={{ fontWeight: token.fontWeightStrong, color: token.colorText, fontSize: token.fontSizeLG }}>{`${monthText}收入分类占比`}</span>} loading={loading} style={{ flex: 1, minWidth: 300 }}>
+            <Card title={<span className="home-chart-title">{`${monthText}收入分类占比`}</span>} loading={loading} className="home-pie-card">
               <ResponsiveContainer width="100%" height={360}>
                 <PieChart>
                   <Pie
@@ -180,14 +181,14 @@ export default function HomePage() {
                     labelStyle={{ color: token.colorText }}
                   />
                   <Legend
-                    formatter={(value: string) => <span style={{ color: token.colorText }}>{value}</span>}
+                    formatter={(value: string) => <span className="home-legend-text">{value}</span>}
                   />
                 </PieChart>
               </ResponsiveContainer>
             </Card>
           )}
           {expensePieData.length > 0 && (
-            <Card title={<span style={{ fontWeight: token.fontWeightStrong, color: token.colorText, fontSize: token.fontSizeLG }}>{`${monthText}支出分类占比`}</span>} loading={loading} style={{ flex: 1, minWidth: 300 }}>
+            <Card title={<span className="home-chart-title">{`${monthText}支出分类占比`}</span>} loading={loading} className="home-pie-card">
               <ResponsiveContainer width="100%" height={360}>
                 <PieChart>
                   <Pie
@@ -217,7 +218,7 @@ export default function HomePage() {
                     labelStyle={{ color: token.colorText }}
                   />
                   <Legend
-                    formatter={(value: string) => <span style={{ color: token.colorText }}>{value}</span>}
+                    formatter={(value: string) => <span className="home-legend-text">{value}</span>}
                   />
                 </PieChart>
               </ResponsiveContainer>

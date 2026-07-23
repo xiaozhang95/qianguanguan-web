@@ -1,6 +1,9 @@
 import { Role } from '@/constants'
 import { AppstoreOutlined, HomeOutlined, SettingOutlined, TeamOutlined, WalletOutlined } from '@ant-design/icons'
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
+import Home from '@/pages/home'
+import Bill from '@/pages/bill'
+import Category from '@/pages/category'
 import { RoutePath } from './routes'
 
 interface RouteMeta {
@@ -13,7 +16,7 @@ export interface RouteItem {
   type?: 'item'
   path: string
   meta: RouteMeta
-  Component: LazyExoticComponent<ComponentType>
+  Component: ComponentType | LazyExoticComponent<ComponentType>
 }
 
 export interface RouteGroup {
@@ -24,9 +27,6 @@ export interface RouteGroup {
 
 export type RouteDefinition = RouteItem | RouteGroup
 
-const Home = lazy(() => import('@/pages/home'))
-const Bill = lazy(() => import('@/pages/bill'))
-const Category = lazy(() => import('@/pages/category'))
 const Users = lazy(() => import('@/pages/settings/users'))
 
 const routes: RouteDefinition[] = [

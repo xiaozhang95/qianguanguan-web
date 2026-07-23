@@ -1,0 +1,66 @@
+.bill-filter-date {
+  width: 160px;
+}
+
+.bill-filter-type {
+  width: 160px;
+}
+
+.bill-filter-category {
+  width: 160px;
+}
+
+.bill-amount-income {
+  color: var(--ant-color-success);
+  font-weight: var(--ant-font-weight-strong);
+}
+
+.bill-amount-expense {
+  color: var(--ant-color-error);
+  font-weight: var(--ant-font-weight-strong);
+}
+
+.bill-amount-input {
+  width: 100%;
+}
+
+.bill-date-input {
+  width: 100%;
+}
+
+.bill-stat-card {
+  flex: 1;
+  min-width: 200px;
+
+  .ant-statistic-content-value {
+    word-break: break-all;
+  }
+}
+
+.bill-stat-title {
+  font-size: var(--ant-font-size-xl);
+  color: var(--ant-color-text);
+  font-weight: var(--ant-font-weight-strong);
+}
+
+.bill-stat-icon {
+  font-size: var(--ant-font-size-lg);
+}
+
+.bill-stat-icon--income {
+  color: var(--ant-color-success);
+}
+
+.bill-stat-icon--expense {
+  color: var(--ant-color-error);
+}
+
+.bill-stat-icon--balance {
+  color: var(--ant-color-primary);
+}
+
+@media (max-width: 767px) {
+  .bill-stat-card .ant-statistic-content-value {
+    font-size: var(--ant-font-size-heading-4) !important;
+  }
+}

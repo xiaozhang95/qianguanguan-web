@@ -1,5 +1,6 @@
 import { userPassword } from '@/api/user'
-import { App, Form, Input, Modal, theme } from 'antd'
+import { App, Form, Input, Modal } from 'antd'
+import './index.scss'
 
 interface Props {
   open: boolean
@@ -8,7 +9,6 @@ interface Props {
 }
 
 export default function PasswordModal({ open, onClose, onSuccess }: Props) {
-  const { token } = theme.useToken()
   const [form] = Form.useForm()
   const { message } = App.useApp()
 
@@ -30,7 +30,7 @@ export default function PasswordModal({ open, onClose, onSuccess }: Props) {
 
   return (
     <Modal title="修改密码" open={open} onCancel={handleCancel} onOk={handleOk} destroyOnHidden>
-      <Form form={form} layout="vertical" style={{ marginTop: token.margin }} autoComplete="off">
+      <Form form={form} layout="vertical" className="password-form" autoComplete="off">
         <Form.Item name="oldPassword" label="原密码" rules={[{ required: true, message: '请输入原密码' }]}>
           <Input.Password />
         </Form.Item>

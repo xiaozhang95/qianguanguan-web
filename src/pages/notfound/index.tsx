@@ -2,6 +2,7 @@ import { RoutePath } from '@/router/routes'
 import { Button, Empty, Flex } from 'antd'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import './index.scss'
 
 export default function NotFoundPage() {
   const nav = useNavigate()
@@ -11,7 +12,7 @@ export default function NotFoundPage() {
   }, [])
 
   return (
-    <Flex justify="center" align="center" style={{ minHeight: '60vh' }}>
+    <Flex justify="center" align="center" className="notfound-wrapper">
       <Empty
         description="抱歉，您访问的页面不存在"
         image={Empty.PRESENTED_IMAGE_SIMPLE}

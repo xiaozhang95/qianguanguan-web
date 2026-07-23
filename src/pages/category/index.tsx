@@ -3,6 +3,7 @@ import { BillType, BillTypeLabel } from '@/constants'
 import { PlusOutlined } from '@ant-design/icons'
 import { App, Button, Flex, Form, Input, InputNumber, Modal, Popconfirm, Radio, Space, Table, Tag, theme } from 'antd'
 import { useEffect, useState } from 'react'
+import './index.scss'
 
 export default function CategoryPage() {
   const { token } = theme.useToken()
@@ -55,7 +56,7 @@ export default function CategoryPage() {
   ]
 
   return (
-    <Flex vertical gap={token.marginLG}>
+    <Flex vertical gap={token.margin}>
       <Flex>
         <Button type="primary" icon={<PlusOutlined />} onClick={() => { setEditingCategory(null); form.resetFields(); form.setFieldsValue({ type: BillType.EXPENSE, sort: 0 }); setModalOpen(true) }}>新增分类</Button>
       </Flex>
@@ -78,7 +79,7 @@ export default function CategoryPage() {
         }}
         onCancel={() => setModalOpen(false)}
       >
-        <Form form={form} layout="vertical" style={{ marginTop: token.marginMD }}>
+        <Form form={form} layout="vertical" className="category-form">
           <Form.Item name="name" label="名称" rules={[{ required: true, message: '请输入名称' }]}>
             <Input placeholder="如：餐饮" />
           </Form.Item>
@@ -92,7 +93,7 @@ export default function CategoryPage() {
             </Radio.Group>
           </Form.Item>
           <Form.Item name="sort" label="排序">
-            <InputNumber min={0} style={{ width: '100%' }} />
+            <InputNumber min={0} className="category-input-full" />
           </Form.Item>
         </Form>
       </Modal>
