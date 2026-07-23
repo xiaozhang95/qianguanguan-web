@@ -58,7 +58,16 @@
 }
 
 @media (max-width: 767px) {
+  .home-stat-card {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+
   .home-stat-card .ant-statistic-content-value {
     font-size: var(--ant-font-size-heading-4) !important;
+  }
+
+  .home-pie-card {
+    min-width: 100%;
   }
 }

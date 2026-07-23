@@ -5,6 +5,7 @@ export interface Category {
   name: string
   icon: string
   type: string
+  userId: string | null
   sort: number
   createtime: string
 }

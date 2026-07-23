@@ -117,7 +117,7 @@ export default function UserListPage() {
                   />
                 )
               }
-              return <Tag color={roleTagColor[role]}>{RoleLabel[role as Role] || role}</Tag>
+              return <Tag variant="solid" color={roleTagColor[role]}>{RoleLabel[role as Role] || role}</Tag>
             }
           },
           { title: '手机号', dataIndex: 'phone', width: 140 },
@@ -126,7 +126,7 @@ export default function UserListPage() {
             title: '状态',
             dataIndex: 'status',
             width: 80,
-            render: (s: number) => <Tag color={s === UserStatus.ENABLED ? token.colorSuccess : token.colorError}>{UserStatusLabel[s as UserStatus]}</Tag>
+            render: (s: number) => <Tag variant="solid" color={s === UserStatus.ENABLED ? token.colorSuccess : token.colorError}>{UserStatusLabel[s as UserStatus]}</Tag>
           },
           {
             title: '创建时间',

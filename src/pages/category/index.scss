@@ -5,3 +5,12 @@
 .category-input-full {
   width: 100%;
 }
+
+.category-icon-input {
+  flex: 1;
+}
+
+.category-icon-img {
+  border-radius: var(--ant-border-radius-sm);
+  object-fit: cover;
+}

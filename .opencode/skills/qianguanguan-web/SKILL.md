@@ -140,6 +140,17 @@ const { token } = theme.useToken()
 <Icon name="logo" fill="#fff" />
 ```
 
+### Tag 组件规范
+
+**所有 Tag 必须添加 `variant="solid"`：**
+
+```tsx
+// 正确
+<Tag variant="solid" color={token.colorSuccess}>收入</Tag>
+// 错误
+<Tag color={token.colorSuccess}>收入</Tag>
+```
+
 ### Tag 颜色映射
 
 | 语义         | 使用                          | 禁止                         |
@@ -149,6 +160,29 @@ const { token } = theme.useToken()
 | 超管角色     | `token.orange`                | `'orange'`                   |
 | 管理员角色   | `token.colorPrimary`          | `'processing'`               |
 | 普通用户     | `token.colorTextQuaternary`   | `'default'`                  |
+
+### 收入/支出展示顺序
+
+**所有 UI 中收入/支出同时出现时，支出在前、收入在后：**
+
+- 统计卡片：支出 → 收入 → 结余
+- 图表（饼图、趋势图）：支出系列在前
+- Select 选项（类型筛选、记账表单）：EXPENSE 在前，INCOME 在后
+- Radio.Group 选项：支出在前，收入在后
+
+### SCSS 禁止硬编码值
+
+**SCSS 中禁止硬编码 `px` 值，必须使用 `var(--ant-xxx)` CSS 变量：**
+
+```scss
+// 正确
+font-size: var(--ant-font-size);
+padding: var(--ant-padding-xs);
+
+// 错误
+font-size: 14px;
+padding: 8px;
+```
 
 ### SCSS 中使用 `color-mix()` 处理渐变和透明度
 
@@ -184,6 +218,21 @@ background: linear-gradient(135deg, var(--ant-color-primary), var(--ant-color-pr
 - Drawer: `width` → `size`
 - Flex 替代 `Row`/`Col` 和 `style={{ display: 'flex' }}`
 - **Icon 组件**：用 `size` / `fill` 属性，禁止 `className`
+- **收支类型 Select**：用 `labelRender` + `<Tag variant="solid">` 展示选中值
+
+```tsx
+<Select
+  options={[
+    { label: BillTypeLabel[BillType.EXPENSE], value: BillType.EXPENSE },
+    { label: BillTypeLabel[BillType.INCOME], value: BillType.INCOME }
+  ]}
+  labelRender={(option) => (
+    <Tag variant="solid" color={option.value === BillType.INCOME ? token.colorSuccess : token.colorError}>
+      {option.label}
+    </Tag>
+  )}
+/>
+```
 
 ## API 调用规范
 

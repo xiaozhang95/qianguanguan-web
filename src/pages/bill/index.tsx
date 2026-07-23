@@ -3,7 +3,7 @@ import { categoryList, type Category } from '@/api/category'
 import { BillType, BillTypeLabel } from '@/constants'
 import { DefaultPagination } from '@/utils/request'
 import { ArrowDownOutlined, ArrowUpOutlined, PlusOutlined, WalletOutlined } from '@ant-design/icons'
-import { App, Button, Card, DatePicker, Flex, Form, Input, InputNumber, Modal, Popconfirm, Select, Space, Statistic, Table, theme } from 'antd'
+import { App, Button, Card, DatePicker, Flex, Form, Input, InputNumber, Modal, Popconfirm, Select, Space, Statistic, Table, Tag, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import './index.scss'
@@ -38,7 +38,7 @@ export default function BillPage() {
   }
 
   const fetchStats = () => {
-    billStats(filterDate.format('YYYY'), filterDate.format('M'), filterDate.format('D')).then(({ data }) => setStats(data))
+    billStats(filterDate.format('YYYY'), filterDate.format('M'), filterDate.format('D'), filterType, filterCategoryId).then(({ data }) => setStats(data))
   }
 
   useEffect(() => {
@@ -53,14 +53,24 @@ export default function BillPage() {
   const incomeCategories = categories.filter((c) => c.type === BillType.INCOME)
   const expenseCategories = categories.filter((c) => c.type === BillType.EXPENSE)
 
+  const isImageUrl = (icon: string) => icon.startsWith('/upload/') || icon.startsWith('http')
+
+  const categoryOptionLabel = (c: Category) => (
+    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+      {isImageUrl(c.icon) ? <img src={c.icon} width={16} height={16} style={{ borderRadius: 2, objectFit: 'cover' }} /> : <span>{c.icon}</span>}
+      <span>{c.name}</span>
+    </span>
+  )
+
   const columns = [
     { title: '日期', dataIndex: 'billDate', width: 120, render: (d: string) => dayjs(d).format('YYYY-MM-DD') },
     {
       title: '分类',
       width: 140,
       render: (_: unknown, record: BillVO) => (
-        <span>
-          {record.categoryIcon} {record.categoryName}
+        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          {isImageUrl(record.categoryIcon) ? <img src={record.categoryIcon} width={16} height={16} style={{ borderRadius: 2, objectFit: 'cover' }} /> : <span>{record.categoryIcon}</span>}
+          <span>{record.categoryName}</span>
         </span>
       )
     },
@@ -140,9 +150,14 @@ export default function BillPage() {
               setPageNum(DefaultPagination.PageNum as number)
             }}
             options={[
-              { label: BillTypeLabel[BillType.INCOME], value: BillType.INCOME },
-              { label: BillTypeLabel[BillType.EXPENSE], value: BillType.EXPENSE }
+              { label: BillTypeLabel[BillType.EXPENSE], value: BillType.EXPENSE },
+              { label: BillTypeLabel[BillType.INCOME], value: BillType.INCOME }
             ]}
+            labelRender={(option) => (
+              <Tag variant="solid" color={option.value === BillType.INCOME ? token.colorSuccess : token.colorError}>
+                {option.label}
+              </Tag>
+            )}
           />
           <Select
             placeholder="全部分类"
@@ -154,7 +169,11 @@ export default function BillPage() {
               setPageNum(DefaultPagination.PageNum as number)
             }}
             optionFilterProp="label"
-            options={categories.map((c) => ({ label: `${c.icon} ${c.name}`, value: c.id }))}
+            options={categories.map((c) => ({ label: c.name, value: c.id }))}
+            optionRender={(option) => {
+              const cat = categories.find((c) => c.id === option.value)
+              return cat ? categoryOptionLabel(cat) : option.label
+            }}
           />
         </Space>
         <Button
@@ -174,20 +193,20 @@ export default function BillPage() {
       <Flex gap={token.marginLG} wrap>
         <Card className="stat-card bill-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined className="bill-stat-icon bill-stat-icon--income" /><span className="bill-stat-title">收入</span></Flex>}
-            value={stats.totalIncome}
-            prefix="¥"
-            precision={2}
-            styles={{ value: { color: token.colorSuccess, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
-          />
-        </Card>
-        <Card className="stat-card bill-stat-card">
-          <Statistic
             title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined className="bill-stat-icon bill-stat-icon--expense" /><span className="bill-stat-title">支出</span></Flex>}
             value={stats.totalExpense}
             prefix="¥"
             precision={2}
             styles={{ value: { color: token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
+          />
+        </Card>
+        <Card className="stat-card bill-stat-card">
+          <Statistic
+            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined className="bill-stat-icon bill-stat-icon--income" /><span className="bill-stat-title">收入</span></Flex>}
+            value={stats.totalIncome}
+            prefix="¥"
+            precision={2}
+            styles={{ value: { color: token.colorSuccess, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
           />
         </Card>
         <Card className="stat-card bill-stat-card">
@@ -250,19 +269,28 @@ export default function BillPage() {
           <Form.Item name="type" label="类型" rules={[{ required: true }]}>
             <Select
               options={[
-                { label: BillTypeLabel[BillType.INCOME], value: BillType.INCOME },
-                { label: BillTypeLabel[BillType.EXPENSE], value: BillType.EXPENSE }
+                { label: BillTypeLabel[BillType.EXPENSE], value: BillType.EXPENSE },
+                { label: BillTypeLabel[BillType.INCOME], value: BillType.INCOME }
               ]}
               onChange={() => form.setFieldValue('categoryId', undefined)}
+              labelRender={(option) => (
+                <Tag variant="solid" color={option.value === BillType.INCOME ? token.colorSuccess : token.colorError}>
+                  {option.label}
+                </Tag>
+              )}
             />
           </Form.Item>
           <Form.Item noStyle shouldUpdate={(prev, cur) => prev.type !== cur.type}>
             {({ getFieldValue }) => {
               const type = getFieldValue('type')
-              const options = (type === BillType.INCOME ? incomeCategories : expenseCategories).map((c) => ({ label: `${c.icon} ${c.name}`, value: c.id }))
+              const options = (type === BillType.INCOME ? incomeCategories : expenseCategories).map((c) => ({ label: c.name, value: c.id }))
               return (
                 <Form.Item name="categoryId" label="分类" rules={[{ required: true, message: '请选择分类' }]}>
-                  <Select placeholder="选择分类" options={options} />
+                  <Select placeholder="选择分类" options={options} optionRender={(option) => {
+                    const all = type === BillType.INCOME ? incomeCategories : expenseCategories
+                    const cat = all.find((c) => c.id === option.value)
+                    return cat ? categoryOptionLabel(cat) : option.label
+                  }} />
                 </Form.Item>
               )
             }}

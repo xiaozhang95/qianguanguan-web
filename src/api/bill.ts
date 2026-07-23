@@ -74,10 +74,10 @@ export async function billDelete(id: string) {
   })
 }
 
-export async function billStats(year: string, month: string, day?: string) {
+export async function billStats(year: string, month: string, day?: string, type?: string, categoryId?: string) {
   return create<BillStats>({
     url: '/bill/stats',
     method: 'POST',
-    data: { year, month, day }
+    data: { year, month, day, type, categoryId }
   })
 }
