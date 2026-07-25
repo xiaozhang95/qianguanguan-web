@@ -33,7 +33,7 @@ export default function Page() {
   const [qrImage, setQrImage] = useState('')
   const [sceneId, setSceneId] = useState('')
   const [qrStatus, setQrStatus] = useState('')
-  const pollingRef = useRef<ReturnType<typeof setInterval>>()
+  const pollingRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
 
   const fetchCaptcha = useCallback(() => {
     captcha().then((res) => {
