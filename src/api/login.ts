@@ -35,6 +35,16 @@ export interface CaptchaResult {
   captchaImage: string
 }
 
+export interface QrSceneResult {
+  sceneId: string
+  qrImage: string
+}
+
+export interface QrStatusResult {
+  status: string
+  token?: string
+}
+
 export async function captcha() {
   return create<CaptchaResult>({
     url: '/captcha',
@@ -55,5 +65,20 @@ export async function register(params: RegisterParams) {
     url: '/register',
     method: 'POST',
     data: params
+  })
+}
+
+export async function getQrScene() {
+  return create<QrSceneResult>({
+    url: '/qr-login/scene',
+    method: 'GET'
+  })
+}
+
+export async function checkQrStatus(sceneId: string) {
+  return create<QrStatusResult>({
+    url: '/qr-login/status',
+    method: 'GET',
+    params: { sceneId }
   })
 }

@@ -120,6 +120,22 @@
   font-size: var(--ant-font-size-sm);
 }
 
+.login-qr-entry {
+  margin-bottom: var(--ant-margin-xs);
+}
+
+.login-qr-section {
+  padding: var(--ant-padding-md) 0;
+}
+
+.login-qr-img {
+  width: 220px;
+  height: 220px;
+  border: var(--ant-line-width) solid var(--ant-color-border);
+  border-radius: var(--ant-border-radius-lg);
+  margin-bottom: var(--ant-margin-md);
+}
+
 .login-mobile-brand {
   margin-bottom: var(--ant-margin-lg);
 }
