@@ -201,6 +201,7 @@ background: linear-gradient(135deg, var(--ant-color-primary), var(--ant-color-pr
 - `hide-on-mobile` — 桌面端可见，移动端隐藏
 - `show-on-mobile` — 移动端可见，桌面端隐藏
 - 禁止 JS 监听 `window.innerWidth`
+- 如需在 JSX 中判断移动端，使用 `Grid.useBreakpoint()`：`const screens = Grid.useBreakpoint(); const isMobile = !screens.md`
 
 ## 布局
 
@@ -218,6 +219,57 @@ background: linear-gradient(135deg, var(--ant-color-primary), var(--ant-color-pr
 - Flex 替代 `Row`/`Col` 和 `style={{ display: 'flex' }}`
 - **Icon 组件**：用 `size` / `fill` 属性，禁止 `className`
 - **收支类型 Select**：用 `labelRender` + `<Tag variant="solid">` 展示选中值
+
+### Statistic 统计卡片
+
+收支统计使用 `Card` + `Statistic`，值颜色通过 `styles` API 设置：
+
+```tsx
+<Statistic
+  title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined /><span>支出</span></Flex>}
+  value={stats.totalExpense}
+  prefix="¥"
+  precision={2}
+  styles={{ value: { color: token.colorError, fontWeight: token.fontWeightStrong, fontSize: token.fontSizeHeading3 } }}
+/>
+```
+
+三张卡片顺序：支出 → 收入 → 结余。
+
+### Table 组件
+
+```tsx
+<Table
+  rowKey="id"
+  columns={columns}
+  dataSource={data}
+  loading={loading}
+  scroll={{ x: 'max-content' }}
+  pagination={{
+    current: pageNum,
+    pageSize,
+    total,
+    showSizeChanger: true,
+    showTotal: (t) => `共 ${t} 条`,
+    onChange: (p, s) => { setPageNum(p); setPageSize(s) }
+  }}
+/>
+```
+
+### 表单默认类型
+
+记账表单和分类表单新建时默认类型为 `BillType.EXPENSE`：
+
+```tsx
+form.setFieldsValue({ type: BillType.EXPENSE })
+```
+
+### 分类图标上传
+
+分类页面支持 emoji 文本图标和上传图片两种方式：
+- 图片用 `Upload` + `beforeUpload` 返回 `false` 阻止自动上传，保存时通过 `upload()` API 上传
+- 选中图片后显示预览和"移除图片"按钮
+- 未上传图片时，Input 右侧显示 Upload 按钮
 
 ```tsx
 <Select
@@ -258,7 +310,65 @@ background: linear-gradient(135deg, var(--ant-color-primary), var(--ant-color-pr
 | 变量                    | 说明           |
 | ----------------------- | -------------- |
 | `VITE_NAME`             | 应用名称       |
+| `VITE_REQUEST_API`      | API 域名       |
 | `VITE_REQUEST_BASE_URL` | API 基础路径   |
+| `VITE_REQUEST_TIMEOUT`  | 请求超时(ms)   |
+| `VITE_REQUEST_TARGET`   | 代理目标地址   |
+
+## 图表
+
+图表使用 `@ant-design/charts` v2 API，主题色和文字色从 `token` 读取。
+
+### 面积图/趋势图
+
+```tsx
+<Area
+  data={areaData}
+  xField="date"
+  yField="value"
+  seriesField="type"
+  autoFit
+  height={320}
+  shapeField="smooth"
+  colorField="type"
+  scale={{ color: { range: [token.colorError, token.colorSuccess] } }}
+  line={{ shapeField: 'smooth', style: { strokeWidth: 2 } }}
+  style={{ fillOpacity: 0.2 }}
+  axis={{
+    x: { labelFill: token.colorWhite, labelOpacity: 1, lineStroke: token.colorWhite, tickStroke: token.colorWhite, tickOpacity: 1 },
+    y: { labelFill: token.colorWhite, labelOpacity: 1, gridStroke: token.colorWhite, gridStrokeOpacity: 1, lineStroke: token.colorWhite, lineStrokeOpacity: 1, tickOpacity: 1 }
+  }}
+  legend={{ color: { itemLabelFill: token.colorWhite, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
+  tooltip={{ channel: 'y', valueFormatter: (v) => `¥${Number(v).toFixed(2)}` }}
+/>
+```
+
+### 饼图
+
+```tsx
+<Pie
+  data={pieData}
+  angleField="value"
+  colorField="name"
+  autoFit
+  height={360}
+  innerRadius={0.45}
+  scale={{ color: { range: colors } }}
+  label={{ text: (d) => `¥${d.value.toFixed(2)}`, position: 'outside', style: { fill: token.colorWhite, fillOpacity: 1, fontSize: token.fontSize, fontWeight: 'bold' } }}
+  legend={{ color: { itemLabelFill: token.colorWhite, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
+  tooltip={{ items: [(d) => ({ name: d.name, value: `¥${d.value.toFixed(2)}` })] }}
+  style={{ stroke: token.colorBgContainer, lineWidth: 2 }}
+/>
+```
+
+### 移动端图表适配
+
+用 `Grid.useBreakpoint()` 判断 `isMobile = !screens.md`，调整图表 `height`、`innerRadius`、`label`。
+
+```tsx
+const screens = Grid.useBreakpoint()
+const isMobile = !screens.md
+```
 
 ## 登录/注册
 
@@ -266,6 +376,22 @@ background: linear-gradient(135deg, var(--ant-color-primary), var(--ant-color-pr
 - 注册表单：邮箱 → 邮箱验证码（60秒倒计时发送按钮）→ 密码 → 确认密码 → 图形验证码
 - 注册成功直接拿到 token 跳转首页，不再需要二次登录
 - 邮箱验证码输入框使用 `autoComplete="one-time-code"` 禁止浏览器自动填充
+
+### 微信扫码登录
+
+- 页面加载后自动获取二维码场景
+- 二维码每 2 秒轮询状态
+- 状态变化：`loading` → `pending` → `confirmed` / `expired`
+- 过期后显示遮罩，点击重新获取
+- 底部提供"使用邮箱密码登录"返回按钮
+
+### 微信绑定
+
+`WechatBindModal` 组件，扫码绑定模式：
+- 模态框打开时获取绑定二维码
+- 每 2 秒轮询绑定状态
+- 绑定成功后回调刷新用户信息
+- 已绑定微信的用户菜单中不显示"绑定微信"选项
 
 ### 验证码倒计时
 

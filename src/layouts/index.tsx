@@ -10,7 +10,7 @@ import { RoutePath } from '@/router/routes'
 import type { RootState } from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
-import { userInfo } from '@/api/user'
+import { userInfo as fetchUserInfo } from '@/api/user'
 import { DownOutlined, LockOutlined, LogoutOutlined, MenuOutlined, UserOutlined, WechatOutlined } from '@ant-design/icons'
 import { Button, Drawer, Dropdown, Flex, Layout, Menu, theme } from 'antd'
 import { Suspense, useEffect, useState } from 'react'
@@ -171,7 +171,7 @@ export default function AdminLayout() {
 
       <ProfileModal open={profileOpen} userInfo={userInfo} onClose={() => setProfileOpen(false)} onSuccess={(info) => dispatch(setUserInfo(info))} />
       <PasswordModal open={passwordOpen} onClose={() => setPasswordOpen(false)} onSuccess={logout} />
-      <WechatBindModal open={wechatBindOpen} onClose={() => setWechatBindOpen(false)} onSuccess={() => userInfo().then(({ data }) => dispatch(setUserInfo(data)))} />
+      <WechatBindModal open={wechatBindOpen} onClose={() => setWechatBindOpen(false)} onSuccess={() => fetchUserInfo().then(({ data }) => dispatch(setUserInfo(data)))} />
       <Drawer
         placement="left"
         open={mobileMenuOpen}

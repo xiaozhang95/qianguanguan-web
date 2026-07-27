@@ -16,7 +16,7 @@ export default function WechatBindModal({ open, onClose, onSuccess }: Props) {
   const [qrImage, setQrImage] = useState('')
   const [sceneId, setSceneId] = useState('')
   const [qrStatus, setQrStatus] = useState('')
-  const pollingRef = useRef<ReturnType<typeof setInterval>>()
+  const pollingRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
 
   const stopPolling = useCallback(() => {
     if (pollingRef.current) {
