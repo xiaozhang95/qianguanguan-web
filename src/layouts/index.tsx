@@ -1,3 +1,4 @@
+import logo from '@/assets/images/logo.png'
 import ErrorBoundary from '@/components/errorBoundary'
 import Loading from '@/components/loading'
 import PasswordModal from '@/components/passwordModal'
@@ -80,7 +81,7 @@ export default function AdminLayout() {
     <Layout className="layout-root">
       <Sider className="layout-sider">
         <Flex align="center" gap={token.marginSM} className="layout-sider-brand">
-          <img src="/logo.png" className="layout-logo-img" alt="logo" />
+          <img src={logo} className="layout-logo-img" alt="logo" />
           <Flex vertical gap={0} className="layout-sider-brand-name">
             <span className="layout-brand-title">{import.meta.env.VITE_NAME}</span>
             <span className="layout-brand-subtitle">好好记账，天天向上</span>
@@ -105,48 +106,42 @@ export default function AdminLayout() {
       <Layout className="layout-main">
         <Header className="layout-header">
           <Flex align="center" gap={token.marginXS} className="show-on-mobile">
-            <Button
-              type="text"
-              icon={<MenuOutlined />}
-              onClick={() => setMobileMenuOpen(true)}
-            />
+            <Button type="text" icon={<MenuOutlined />} onClick={() => setMobileMenuOpen(true)} />
             <span className="layout-brand-title">{import.meta.env.VITE_NAME}</span>
           </Flex>
           <Flex className="layout-header-user">
             <Dropdown
               menu={{
-              items: [
-                {
-                  key: 'profile',
-                  icon: <UserOutlined />,
-                  label: '个人信息',
-                  onClick: () => setProfileOpen(true)
-                },
-                {
-                  key: 'password',
-                  icon: <LockOutlined />,
-                  label: '修改密码',
-                  onClick: () => setPasswordOpen(true)
-                },
-                {
-                  key: 'logout',
-                  icon: <LogoutOutlined />,
-                  label: '退出登录',
-                  onClick: logout
-                }
-              ]
-            }}
-            placement="bottomRight"
-          >
-            <Button type="text" className="layout-user-btn">
-              {userInfo?.avatar ? (
-                <img src={userInfo.avatar} alt="" className="layout-user-avatar-img" />
-              ) : (
-                <UserOutlined className="layout-user-avatar-icon" />
-              )}
-              <span className="hide-on-mobile">{userInfo?.name || userInfo?.username || ''} <DownOutlined /></span>
-            </Button>
-          </Dropdown>
+                items: [
+                  {
+                    key: 'profile',
+                    icon: <UserOutlined />,
+                    label: '个人信息',
+                    onClick: () => setProfileOpen(true)
+                  },
+                  {
+                    key: 'password',
+                    icon: <LockOutlined />,
+                    label: '修改密码',
+                    onClick: () => setPasswordOpen(true)
+                  },
+                  {
+                    key: 'logout',
+                    icon: <LogoutOutlined />,
+                    label: '退出登录',
+                    onClick: logout
+                  }
+                ]
+              }}
+              placement="bottomRight"
+            >
+              <Button type="text" className="layout-user-btn">
+                {userInfo?.avatar ? <img src={userInfo.avatar} alt="" className="layout-user-avatar-img" /> : <UserOutlined className="layout-user-avatar-icon" />}
+                <span className="hide-on-mobile">
+                  {userInfo?.name || userInfo?.username || ''} <DownOutlined />
+                </span>
+              </Button>
+            </Dropdown>
           </Flex>
         </Header>
 
@@ -165,11 +160,14 @@ export default function AdminLayout() {
         placement="left"
         open={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
-        styles={{ body: { padding: 0, background: 'var(--ant-color-bg-container)' }, header: { background: 'var(--ant-color-bg-container)', borderBottom: '1px solid var(--ant-color-border-secondary)' } }}
+        styles={{
+          body: { padding: 0, background: 'var(--ant-color-bg-container)' },
+          header: { background: 'var(--ant-color-bg-container)', borderBottom: '1px solid var(--ant-color-border-secondary)' }
+        }}
         size={220}
         title={
           <Flex align="center" gap={token.marginSM}>
-            <img src="/logo.png" className="layout-drawer-logo-img" alt="logo" />
+            <img src={logo} className="layout-drawer-logo-img" alt="logo" />
             <Flex vertical gap={0} className="layout-sider-brand-name">
               <span className="layout-drawer-brand-title">{import.meta.env.VITE_NAME}</span>
               <span className="layout-drawer-brand-subtitle">好好记账，天天向上</span>
