@@ -20,6 +20,7 @@ export interface UserInfo {
   phone: string
   email: string
   avatar: string
+  wid: string
   createtime: string
 }
 

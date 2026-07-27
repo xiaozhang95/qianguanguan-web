@@ -89,6 +89,17 @@
   color: var(--ant-color-text-tertiary);
 }
 
+.layout-user-name {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ant-margin-xxs);
+}
+
+.layout-wechat-icon {
+  color: #52c41a;
+  font-size: var(--ant-font-size);
+}
+
 .layout-content {
   padding: var(--ant-padding-lg);
   overflow: auto;

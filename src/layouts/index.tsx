@@ -9,7 +9,7 @@ import { RoutePath } from '@/router/routes'
 import type { RootState } from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
-import { DownOutlined, LockOutlined, LogoutOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons'
+import { DownOutlined, LockOutlined, LogoutOutlined, MenuOutlined, UserOutlined, WechatOutlined } from '@ant-design/icons'
 import { Button, Drawer, Dropdown, Flex, Layout, Menu, theme } from 'antd'
 import { Suspense, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -137,8 +137,10 @@ export default function AdminLayout() {
             >
               <Button type="text" className="layout-user-btn">
                 {userInfo?.avatar ? <img src={userInfo.avatar} alt="" className="layout-user-avatar-img" /> : <UserOutlined className="layout-user-avatar-icon" />}
-                <span className="hide-on-mobile">
-                  {userInfo?.name || userInfo?.username || ''} <DownOutlined />
+                <span className="hide-on-mobile layout-user-name">
+                  {userInfo?.name || userInfo?.username || ''}
+                  {userInfo?.wid && <WechatOutlined className="layout-wechat-icon" />}
+                  <DownOutlined />
                 </span>
               </Button>
             </Dropdown>

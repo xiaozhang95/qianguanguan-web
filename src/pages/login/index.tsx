@@ -152,10 +152,10 @@ export default function Page() {
 
       <Flex vertical align="center" className="login-form-area">
         <Flex vertical className="login-form-card">
-          <Flex justify="center" className="hide-on-mobile login-logo-wrapper">
+          {!qrMode && <Flex justify="center" className="hide-on-mobile login-logo-wrapper">
             <img src={logo} className="login-logo-img" alt="logo" />
-          </Flex>
-          <Flex align="center" gap={token.marginSM} className="show-on-mobile login-mobile-brand">
+          </Flex>}
+          {!qrMode && <Flex align="center" gap={token.marginSM} className="show-on-mobile login-mobile-brand">
             <img src={logo} className="login-logo-img" alt="logo" />
             <Flex vertical gap={0}>
               <Title level={3} className="login-mobile-name">
@@ -163,7 +163,7 @@ export default function Page() {
               </Title>
               <Paragraph className="login-mobile-tagline">让每一笔收支都有迹可循</Paragraph>
             </Flex>
-          </Flex>
+          </Flex>}
 
           {qrMode ? (
             <Flex vertical align="center" className="login-qr-section">
@@ -252,7 +252,7 @@ export default function Page() {
                     { type: 'email', message: '请输入正确的邮箱地址' }
                   ]}
                 >
-                  <Input prefix={<MailOutlined />} placeholder="邮箱" />
+                  <Input prefix={<MailOutlined />} placeholder="邮箱" autoComplete="off" />
                 </Form.Item>
                 {isRegister && (
                   <Form.Item>
@@ -273,7 +273,7 @@ export default function Page() {
                     { min: 6, message: '密码至少6位' }
                   ]}
                 >
-                  <Input.Password prefix={<LockOutlined />} placeholder="密码" />
+                  <Input.Password prefix={<LockOutlined />} placeholder="密码" autoComplete="new-password" />
                 </Form.Item>
                 {isRegister && (
                   <Form.Item
@@ -291,7 +291,7 @@ export default function Page() {
                       })
                     ]}
                   >
-                    <Input.Password prefix={<LockOutlined />} placeholder="确认密码" />
+                    <Input.Password prefix={<LockOutlined />} placeholder="确认密码" autoComplete="new-password" />
                   </Form.Item>
                 )}
                 <Form.Item>
