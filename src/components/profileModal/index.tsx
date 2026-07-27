@@ -1,5 +1,5 @@
 import type { UserInfo } from '@/api/login'
-import { userProfile, upload } from '@/api/user'
+import { upload, userProfile } from '@/api/user'
 import { PlusOutlined } from '@ant-design/icons'
 import { App, Form, Input, Modal, Upload } from 'antd'
 import { useEffect, useState } from 'react'
@@ -50,20 +50,27 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
             listType="picture-circle"
             maxCount={1}
             showUploadList={{ showPreviewIcon: true }}
-            beforeUpload={(file) => { setAvatarFile(file); setAvatarPreview(URL.createObjectURL(file)); return false }}
-            onRemove={() => { setAvatarFile(null); setAvatarPreview(userInfo?.avatar || '') }}
+            beforeUpload={(file) => {
+              setAvatarFile(file)
+              setAvatarPreview(URL.createObjectURL(file))
+              return false
+            }}
+            onRemove={() => {
+              setAvatarFile(null)
+              setAvatarPreview(userInfo?.avatar || '')
+            }}
           >
             {avatarPreview ? <img src={avatarPreview} alt="" className="profile-avatar-img" /> : <PlusOutlined />}
           </Upload>
         </Form.Item>
         <Form.Item name="name" label="姓名">
-          <Input />
+          <Input placeholder="请输入姓名" />
         </Form.Item>
         <Form.Item name="phone" label="手机号" rules={[{ pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }]}>
-          <Input />
+          <Input placeholder="请输入手机号" />
         </Form.Item>
         <Form.Item name="email" label="邮箱" rules={[{ type: 'email', message: '请输入正确的邮箱格式' }]}>
-          <Input />
+          <Input placeholder="请输入邮箱" />
         </Form.Item>
       </Form>
     </Modal>

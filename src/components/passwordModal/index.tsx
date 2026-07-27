@@ -32,10 +32,17 @@ export default function PasswordModal({ open, onClose, onSuccess }: Props) {
     <Modal title="修改密码" open={open} onCancel={handleCancel} onOk={handleOk} destroyOnHidden>
       <Form form={form} layout="vertical" className="password-form" autoComplete="off">
         <Form.Item name="oldPassword" label="原密码" rules={[{ required: true, message: '请输入原密码' }]}>
-          <Input.Password />
+          <Input.Password placeholder="请输入原密码" />
         </Form.Item>
-        <Form.Item name="newPassword" label="新密码" rules={[{ required: true, message: '请输入新密码' }, { min: 6, message: '密码至少6位' }]}>
-          <Input.Password />
+        <Form.Item
+          name="newPassword"
+          label="新密码"
+          rules={[
+            { required: true, message: '请输入新密码' },
+            { min: 6, message: '密码至少6位' }
+          ]}
+        >
+          <Input.Password placeholder="请输入新密码" />
         </Form.Item>
         <Form.Item
           name="confirmPassword"
@@ -53,7 +60,7 @@ export default function PasswordModal({ open, onClose, onSuccess }: Props) {
             })
           ]}
         >
-          <Input.Password />
+          <Input.Password placeholder="请确认新密码" />
         </Form.Item>
       </Form>
     </Modal>
