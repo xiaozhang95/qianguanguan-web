@@ -47,7 +47,7 @@ export async function userUpdateRole(id: string, role: string) {
   })
 }
 
-export async function userProfile(data: { name: string; phone: string; email: string; avatar?: string }) {
+export async function userProfile(data: { name: string; phone: string; email: string; emailCode?: string; avatar?: string }) {
   return create<UserInfo>({
     url: '/user/profile',
     method: 'PUT',

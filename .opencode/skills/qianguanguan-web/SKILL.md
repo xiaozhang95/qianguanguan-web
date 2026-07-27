@@ -258,9 +258,38 @@ background: linear-gradient(135deg, var(--ant-color-primary), var(--ant-color-pr
 | 变量                    | 说明           |
 | ----------------------- | -------------- |
 | `VITE_NAME`             | 应用名称       |
-| `VITE_USERNAME`         | 默认登录用户名 |
-| `VITE_PASSWORD`         | 默认登录密码   |
 | `VITE_REQUEST_BASE_URL` | API 基础路径   |
+
+## 登录/注册
+
+- 使用邮箱 + 密码登录，不再使用用户名
+- 注册表单：邮箱 → 邮箱验证码（60秒倒计时发送按钮）→ 密码 → 确认密码 → 图形验证码
+- 注册成功直接拿到 token 跳转首页，不再需要二次登录
+- 邮箱验证码输入框使用 `autoComplete="one-time-code"` 禁止浏览器自动填充
+
+### 验证码倒计时
+
+```tsx
+const [codeCountdown, setCodeCountdown] = useState(0)
+
+useEffect(() => {
+  if (codeCountdown <= 0) return
+  const timer = setInterval(() => setCodeCountdown((prev) => prev - 1), 1000)
+  return () => clearInterval(timer)
+}, [codeCountdown])
+
+<Button disabled={codeCountdown > 0}>
+  {codeCountdown > 0 ? `${codeCountdown}s` : '获取验证码'}
+</Button>
+```
+
+### 修改个人信息
+
+`ProfileModal` 邮箱字段变更时动态显示验证码区域：
+- 邮箱未变更 → 隐藏验证码输入框和发送按钮
+- 邮箱已变更 → 显示验证码输入框（带红色 * 必填标记）和发送按钮
+- 使用 `Form.Item shouldUpdate` + 函数子节点实现条件渲染
+- `userProfile()` 传参包含 `emailCode`（仅邮箱变更时有值）
 
 ## Token & 用户信息
 

@@ -111,6 +111,12 @@
   border: var(--ant-line-width) solid var(--ant-color-border);
 }
 
+.login-captcha-btn {
+  height: var(--ant-control-height-lg);
+  width: 130px;
+  flex-shrink: 0;
+}
+
 .login-switch-hint {
   font-size: var(--ant-font-size-sm);
 }

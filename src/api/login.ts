@@ -1,10 +1,15 @@
 import create from '@/utils/request'
 
 export interface RegisterParams {
-  username: string
   password: string
+  email: string
+  emailCode: string
   captchaKey: string
   captchaCode: string
+}
+
+export interface SendEmailCodeParams {
+  email: string
 }
 
 export interface UserInfo {
@@ -19,7 +24,7 @@ export interface UserInfo {
 }
 
 export interface LoginParams {
-  username: string
+  email: string
   password: string
   captchaKey: string
   captchaCode: string
@@ -61,8 +66,16 @@ export async function login(params: LoginParams) {
 }
 
 export async function register(params: RegisterParams) {
-  return create({
+  return create<LoginResult>({
     url: '/register',
+    method: 'POST',
+    data: params
+  })
+}
+
+export async function sendEmailCode(params: SendEmailCodeParams) {
+  return create({
+    url: '/send-email-code',
     method: 'POST',
     data: params
   })

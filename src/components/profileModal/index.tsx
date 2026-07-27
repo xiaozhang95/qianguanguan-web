@@ -1,8 +1,9 @@
 import type { UserInfo } from '@/api/login'
+import { sendEmailCode } from '@/api/login'
 import { upload, userProfile } from '@/api/user'
 import { PlusOutlined } from '@ant-design/icons'
-import { App, Form, Input, Modal, Upload } from 'antd'
-import { useEffect, useState } from 'react'
+import { App, Button, Flex, Form, Input, Modal, Upload } from 'antd'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './index.scss'
 
 interface Props {
@@ -17,14 +18,57 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
   const { message } = App.useApp()
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState('')
+  const [sendCodeLoading, setSendCodeLoading] = useState(false)
+  const [codeCountdown, setCodeCountdown] = useState(0)
+  const originalEmail = useRef('')
 
   useEffect(() => {
     if (open && userInfo) {
-      form.setFieldsValue({ name: userInfo.name, phone: userInfo.phone, email: userInfo.email })
+      form.setFieldsValue({ name: userInfo.name, phone: userInfo.phone, email: userInfo.email, emailCode: '' })
       setAvatarFile(null)
       setAvatarPreview(userInfo.avatar || '')
+      originalEmail.current = userInfo.email || ''
+      setCodeCountdown(0)
     }
   }, [open, userInfo, form])
+
+  useEffect(() => {
+    if (codeCountdown <= 0) return
+    const timer = setInterval(() => {
+      setCodeCountdown((prev) => prev - 1)
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [codeCountdown])
+
+  const handleSendCode = useCallback(() => {
+    const email = form.getFieldValue('email')
+    if (!email) {
+      message.warning('请先输入邮箱')
+      return
+    }
+    if (email === originalEmail.current) {
+      message.warning('邮箱未变更，无需验证')
+      return
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      message.warning('请输入正确的邮箱地址')
+      return
+    }
+    setSendCodeLoading(true)
+    sendEmailCode({ email })
+      .then(() => {
+        message.success('验证码已发送')
+        setCodeCountdown(60)
+      })
+      .catch(() => {})
+      .finally(() => setSendCodeLoading(false))
+  }, [form, message])
+
+  const emailChanged = () => {
+    const currentEmail = form.getFieldValue('email')
+    return currentEmail && currentEmail !== originalEmail.current
+  }
 
   return (
     <Modal
@@ -35,7 +79,16 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
         form.validateFields().then((values) => {
           const avatarPromise = avatarFile ? upload(avatarFile) : Promise.resolve({ data: { url: userInfo?.avatar || '' } })
           avatarPromise.then(({ data: avatarData }) => {
-            userProfile({ ...values, avatar: avatarData.url }).then(({ data, msg }) => {
+            const payload: { name: string; phone: string; email: string; emailCode?: string; avatar?: string } = {
+              name: values.name,
+              phone: values.phone,
+              email: values.email,
+              avatar: avatarData.url
+            }
+            if (emailChanged() && values.emailCode) {
+              payload.emailCode = values.emailCode
+            }
+            userProfile(payload).then(({ data, msg }) => {
               message.success(msg)
               onSuccess(data)
               onClose()
@@ -60,17 +113,55 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
               setAvatarPreview(userInfo?.avatar || '')
             }}
           >
-            {avatarPreview ? <img src={avatarPreview} alt="" className="profile-avatar-img" /> : <PlusOutlined />}
+            {avatarPreview ? (
+              <div className="profile-avatar-wrapper">
+                <img src={avatarPreview} alt="" className="profile-avatar-img" />
+                <div className="profile-avatar-overlay">点击更换头像</div>
+              </div>
+            ) : (
+              <PlusOutlined />
+            )}
           </Upload>
         </Form.Item>
-        <Form.Item name="name" label="姓名">
-          <Input placeholder="请输入姓名" />
+        <Form.Item name="name" label="用户名" rules={[{ required: true, message: '请输入用户名' }]}>
+          <Input placeholder="请输入用户名" />
         </Form.Item>
-        <Form.Item name="phone" label="手机号" rules={[{ pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }]}>
-          <Input placeholder="请输入手机号" />
-        </Form.Item>
-        <Form.Item name="email" label="邮箱" rules={[{ type: 'email', message: '请输入正确的邮箱格式' }]}>
+        <Form.Item name="email" label="邮箱" rules={[{ required: true, message: '请输入邮箱' }, { type: 'email', message: '请输入正确的邮箱格式' }]}>
           <Input placeholder="请输入邮箱" />
+        </Form.Item>
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const needsVerify = emailChanged()
+            if (!needsVerify) return null
+            return (
+              <Form.Item label="邮箱验证码" required>
+                <Flex gap={8}>
+                  <Form.Item
+                    noStyle
+                    name="emailCode"
+                    rules={[
+                      {
+                        required: true,
+                        message: '请输入邮箱验证码'
+                      }
+                    ]}
+                  >
+                    <Input placeholder="请输入验证码" autoComplete="one-time-code" style={{ flex: 1 }} />
+                  </Form.Item>
+                  <Button
+                    type="primary"
+                    ghost
+                    loading={sendCodeLoading}
+                    disabled={codeCountdown > 0}
+                    onClick={handleSendCode}
+                    style={{ flexShrink: 0 }}
+                  >
+                    {codeCountdown > 0 ? `${codeCountdown}s` : '获取验证码'}
+                  </Button>
+                </Flex>
+              </Form.Item>
+            )
+          }}
         </Form.Item>
       </Form>
     </Modal>

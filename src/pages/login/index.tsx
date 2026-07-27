@@ -1,8 +1,8 @@
-import { captcha, checkQrStatus, getQrScene, login, register } from '@/api/login'
+import { captcha, checkQrStatus, getQrScene, login, register, sendEmailCode } from '@/api/login'
 import logo from '@/assets/images/logo.png'
 import { RoutePath } from '@/router/routes'
 import { setToken } from '@/store/token'
-import { LockOutlined, SafetyOutlined, UserOutlined, WechatOutlined } from '@ant-design/icons'
+import { LockOutlined, MailOutlined, SafetyOutlined, WechatOutlined } from '@ant-design/icons'
 import { App, Button, Divider, Flex, Form, Input, Spin, Typography, theme } from 'antd'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
@@ -29,6 +29,9 @@ export default function Page() {
   const [captchaImage, setCaptchaImage] = useState('')
   const [captchaKey, setCaptchaKey] = useState('')
 
+  const [sendCodeLoading, setSendCodeLoading] = useState(false)
+  const [codeCountdown, setCodeCountdown] = useState(0)
+
   const [qrMode, setQrMode] = useState(false)
   const [qrImage, setQrImage] = useState('')
   const [sceneId, setSceneId] = useState('')
@@ -42,6 +45,35 @@ export default function Page() {
       form.setFieldValue('captchaCode', '')
     })
   }, [form])
+
+  useEffect(() => {
+    if (codeCountdown <= 0) return
+    const timer = setInterval(() => {
+      setCodeCountdown((prev) => prev - 1)
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [codeCountdown])
+
+  const handleSendCode = useCallback(() => {
+    const email = form.getFieldValue('email')
+    if (!email) {
+      message.warning('请先输入邮箱')
+      return
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      message.warning('请输入正确的邮箱地址')
+      return
+    }
+    setSendCodeLoading(true)
+    sendEmailCode({ email })
+      .then(() => {
+        message.success('验证码已发送，请查收邮件')
+        setCodeCountdown(60)
+      })
+      .catch(() => {})
+      .finally(() => setSendCodeLoading(false))
+  }, [form, message])
 
   const startQrLogin = useCallback(() => {
     setQrMode(true)
@@ -162,7 +194,7 @@ export default function Page() {
                   stopPolling()
                 }}
               >
-                使用账号密码登录
+                使用邮箱密码登录
               </Button>
             </Flex>
           ) : (
@@ -177,35 +209,26 @@ export default function Page() {
               <Form
                 size="large"
                 form={form}
-                initialValues={
-                  isRegister
-                    ? undefined
-                    : {
-                        username: import.meta.env.VITE_USERNAME,
-                        password: import.meta.env.VITE_PASSWORD
-                      }
-                }
-                onFinish={(values: { username: string; password: string; confirmPassword?: string; captchaCode: string }) => {
+                onFinish={(values: { email: string; emailCode: string; password: string; confirmPassword?: string; captchaCode: string }) => {
                   setLoading(true)
                   if (isRegister) {
                     register({
-                      username: values.username,
+                      email: values.email,
+                      emailCode: values.emailCode,
                       password: values.password,
                       captchaKey,
                       captchaCode: values.captchaCode
                     })
-                      .then(({ msg }) => {
-                        message.success(msg)
-                        setIsRegister(false)
-                        form.setFieldsValue({ username: values.username, password: '', captchaCode: '' })
-                        fetchCaptcha()
+                      .then(({ data }) => {
+                        dispatch(setToken(data.token))
+                        nav(RoutePath.Home, { replace: true })
                       })
                       .catch(() => fetchCaptcha())
                       .finally(() => setLoading(false))
                     return
                   }
                   login({
-                    username: values.username,
+                    email: values.email,
                     password: values.password,
                     captchaKey,
                     captchaCode: values.captchaCode
@@ -222,9 +245,27 @@ export default function Page() {
                     })
                 }}
               >
-                <Form.Item name="username" rules={[{ required: true, message: '请输入用户名' }]}>
-                  <Input prefix={<UserOutlined />} placeholder="用户名" />
+                <Form.Item
+                  name="email"
+                  rules={[
+                    { required: true, message: '请输入邮箱' },
+                    { type: 'email', message: '请输入正确的邮箱地址' }
+                  ]}
+                >
+                  <Input prefix={<MailOutlined />} placeholder="邮箱" />
                 </Form.Item>
+                {isRegister && (
+                  <Form.Item>
+                    <Flex gap={token.marginXS}>
+                      <Form.Item noStyle name="emailCode" rules={[{ required: true, message: '请输入邮箱验证码' }]}>
+                        <Input prefix={<SafetyOutlined />} placeholder="邮箱验证码" className="login-captcha-input" autoComplete="one-time-code" />
+                      </Form.Item>
+                      <Button type="primary" ghost loading={sendCodeLoading} disabled={codeCountdown > 0} onClick={handleSendCode} className="login-captcha-btn">
+                        {codeCountdown > 0 ? `${codeCountdown}s` : '获取验证码'}
+                      </Button>
+                    </Flex>
+                  </Form.Item>
+                )}
                 <Form.Item
                   name="password"
                   rules={[
@@ -285,6 +326,7 @@ export default function Page() {
                         onClick={() => {
                           setIsRegister(false)
                           form.resetFields()
+                          setCodeCountdown(0)
                         }}
                       >
                         去登录
@@ -299,6 +341,7 @@ export default function Page() {
                         onClick={() => {
                           setIsRegister(true)
                           form.resetFields()
+                          setCodeCountdown(0)
                         }}
                       >
                         去注册
