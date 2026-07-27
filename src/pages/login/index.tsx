@@ -1,5 +1,4 @@
 import { captcha, checkQrStatus, getQrScene, login, register } from '@/api/login'
-import Icon from '@/components/icon'
 import { RoutePath } from '@/router/routes'
 import { setToken } from '@/store/token'
 import { LockOutlined, SafetyOutlined, UserOutlined, WechatOutlined } from '@ant-design/icons'
@@ -117,14 +116,10 @@ export default function Page() {
       <Flex vertical align="center" className="login-form-area">
         <Flex vertical className="login-form-card">
           <Flex justify="center" className="hide-on-mobile login-logo-wrapper">
-            <div className="login-logo">
-              <Icon name="logo" size={36} fill={token.colorWhite} />
-            </div>
+            <img src="/logo.png" className="login-logo-img" alt="logo" />
           </Flex>
           <Flex align="center" gap={token.marginSM} className="show-on-mobile login-mobile-brand">
-            <div className="login-logo">
-              <Icon name="logo" size={36} fill={token.colorWhite} />
-            </div>
+            <img src="/logo.png" className="login-logo-img" alt="logo" />
             <Flex vertical gap={0}>
               <Title level={3} className="login-mobile-name">{import.meta.env.VITE_NAME}</Title>
               <Paragraph className="login-mobile-tagline">让每一笔收支都有迹可循</Paragraph>

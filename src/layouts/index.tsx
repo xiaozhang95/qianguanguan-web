@@ -1,5 +1,4 @@
 import ErrorBoundary from '@/components/errorBoundary'
-import Icon from '@/components/icon'
 import Loading from '@/components/loading'
 import PasswordModal from '@/components/passwordModal'
 import ProfileModal from '@/components/profileModal'
@@ -81,9 +80,7 @@ export default function AdminLayout() {
     <Layout className="layout-root">
       <Sider className="layout-sider">
         <Flex align="center" gap={token.marginSM} className="layout-sider-brand">
-          <div className="layout-logo">
-            <Icon name="logo" size={24} fill={token.colorWhite} />
-          </div>
+          <img src="/logo.png" className="layout-logo-img" alt="logo" />
           <Flex vertical gap={0} className="layout-sider-brand-name">
             <span className="layout-brand-title">{import.meta.env.VITE_NAME}</span>
             <span className="layout-brand-subtitle">好好记账，天天向上</span>
@@ -172,9 +169,7 @@ export default function AdminLayout() {
         size={220}
         title={
           <Flex align="center" gap={token.marginSM}>
-            <div className="layout-drawer-logo">
-              <Icon name="logo" size={20} fill={token.colorWhite} />
-            </div>
+            <img src="/logo.png" className="layout-drawer-logo-img" alt="logo" />
             <Flex vertical gap={0} className="layout-sider-brand-name">
               <span className="layout-drawer-brand-title">{import.meta.env.VITE_NAME}</span>
               <span className="layout-drawer-brand-subtitle">好好记账，天天向上</span>

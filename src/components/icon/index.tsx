@@ -1,10 +1,6 @@
 import type { CSSProperties, FunctionComponent, SVGProps } from 'react'
 
-import LogoSvg from '@/assets/images/logo.svg?react'
-
-const iconMap: Record<string, FunctionComponent<SVGProps<SVGSVGElement>>> = {
-  logo: LogoSvg
-}
+const iconMap: Record<string, FunctionComponent<SVGProps<SVGSVGElement>>> = {}
 
 export interface IconProps {
   name: string

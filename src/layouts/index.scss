@@ -23,16 +23,11 @@
   overflow: hidden;
 }
 
-.layout-logo {
+.layout-logo-img {
   width: var(--ant-control-height);
   height: var(--ant-control-height);
-  border-radius: var(--ant-border-radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--ant-color-primary) 25%, transparent);
-  background: linear-gradient(135deg, var(--ant-color-primary), var(--ant-color-primary-active));
 }
 
 .layout-sider-brand-name {
@@ -109,16 +104,11 @@
   border-bottom: var(--ant-line-width) solid var(--ant-color-border-secondary);
 }
 
-.layout-drawer-logo {
+.layout-drawer-logo-img {
   width: var(--ant-control-height);
   height: var(--ant-control-height);
-  border-radius: var(--ant-border-radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--ant-color-primary) 25%, transparent);
-  background: linear-gradient(135deg, var(--ant-color-primary), var(--ant-color-primary-active));
 }
 
 .layout-drawer-brand-title {

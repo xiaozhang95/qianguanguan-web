@@ -81,15 +81,10 @@
   margin-bottom: var(--ant-margin-md);
 }
 
-.login-logo {
+.login-logo-img {
   width: 56px;
   height: 56px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--ant-color-primary) 25%, transparent);
-  background: linear-gradient(135deg, var(--ant-color-primary), var(--ant-color-primary-active));
+  display: block;
 }
 
 .login-form-title {
