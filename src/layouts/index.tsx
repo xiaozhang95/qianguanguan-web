@@ -122,15 +122,15 @@ export default function AdminLayout() {
                     label: '个人信息',
                     onClick: () => setProfileOpen(true)
                   },
-                  {
-                    key: 'password',
-                    icon: <LockOutlined />,
-                    label: '修改密码',
-                    onClick: () => setPasswordOpen(true)
-                  },
                   ...(userInfo?.wid
                     ? []
                     : [
+                        {
+                          key: 'password',
+                          icon: <LockOutlined />,
+                          label: '修改密码',
+                          onClick: () => setPasswordOpen(true)
+                        },
                         {
                           key: 'bindWechat',
                           icon: <WechatOutlined />,
