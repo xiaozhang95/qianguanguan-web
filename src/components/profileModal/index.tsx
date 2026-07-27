@@ -126,13 +126,15 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
         <Form.Item name="name" label="用户名" rules={[{ required: true, message: '请输入用户名' }]}>
           <Input placeholder="请输入用户名" />
         </Form.Item>
-        <Form.Item name="email" label="邮箱" rules={[{ required: true, message: '请输入邮箱' }, { type: 'email', message: '请输入正确的邮箱格式' }]}>
-          <Input placeholder="请输入邮箱" />
+        <Form.Item name="email" label="邮箱" rules={[{ required: !userInfo?.wid, message: '请输入邮箱' }, { type: 'email', message: '请输入正确的邮箱格式' }]}>
+          <Input placeholder={userInfo?.wid ? '请输入邮箱（选填）' : '请输入邮箱'} />
         </Form.Item>
         <Form.Item shouldUpdate noStyle>
           {() => {
             const needsVerify = emailChanged()
             if (!needsVerify) return null
+            const currentEmail = form.getFieldValue('email')
+            const emailValid = currentEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(currentEmail)
             return (
               <Form.Item label="邮箱验证码" required>
                 <Flex gap={8}>
@@ -152,7 +154,7 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
                     type="primary"
                     ghost
                     loading={sendCodeLoading}
-                    disabled={codeCountdown > 0}
+                    disabled={codeCountdown > 0 || !emailValid}
                     onClick={handleSendCode}
                     style={{ flexShrink: 0 }}
                   >

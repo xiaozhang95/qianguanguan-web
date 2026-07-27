@@ -73,3 +73,27 @@ export async function upload(file: File) {
     requestType: 'blob'
   })
 }
+
+export interface QrBindSceneResult {
+  sceneId: string
+  qrImage: string
+}
+
+export interface QrBindStatusResult {
+  status: string
+}
+
+export async function getWechatBindScene() {
+  return create<QrBindSceneResult>({
+    url: '/wechat-bind/scene',
+    method: 'GET'
+  })
+}
+
+export async function checkWechatBindStatus(sceneId: string) {
+  return create<QrBindStatusResult>({
+    url: '/wechat-bind/status',
+    method: 'GET',
+    params: { sceneId }
+  })
+}

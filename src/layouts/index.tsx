@@ -3,12 +3,14 @@ import ErrorBoundary from '@/components/errorBoundary'
 import Loading from '@/components/loading'
 import PasswordModal from '@/components/passwordModal'
 import ProfileModal from '@/components/profileModal'
+import WechatBindModal from '@/components/wechatBindModal'
 import { Role } from '@/constants'
 import { getPermittedRoutes, isGroup, type RouteDefinition } from '@/router'
 import { RoutePath } from '@/router/routes'
 import type { RootState } from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
+import { userInfo } from '@/api/user'
 import { DownOutlined, LockOutlined, LogoutOutlined, MenuOutlined, UserOutlined, WechatOutlined } from '@ant-design/icons'
 import { Button, Drawer, Dropdown, Flex, Layout, Menu, theme } from 'antd'
 import { Suspense, useEffect, useState } from 'react'
@@ -30,6 +32,7 @@ export default function AdminLayout() {
   const [openKeys, setOpenKeys] = useState<string[]>([])
   const [profileOpen, setProfileOpen] = useState(false)
   const [passwordOpen, setPasswordOpen] = useState(false)
+  const [wechatBindOpen, setWechatBindOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const logout = () => {
@@ -125,6 +128,16 @@ export default function AdminLayout() {
                     label: '修改密码',
                     onClick: () => setPasswordOpen(true)
                   },
+                  ...(userInfo?.wid
+                    ? []
+                    : [
+                        {
+                          key: 'bindWechat',
+                          icon: <WechatOutlined />,
+                          label: '绑定微信',
+                          onClick: () => setWechatBindOpen(true)
+                        }
+                      ]),
                   {
                     key: 'logout',
                     icon: <LogoutOutlined />,
@@ -158,6 +171,7 @@ export default function AdminLayout() {
 
       <ProfileModal open={profileOpen} userInfo={userInfo} onClose={() => setProfileOpen(false)} onSuccess={(info) => dispatch(setUserInfo(info))} />
       <PasswordModal open={passwordOpen} onClose={() => setPasswordOpen(false)} onSuccess={logout} />
+      <WechatBindModal open={wechatBindOpen} onClose={() => setWechatBindOpen(false)} onSuccess={() => userInfo().then(({ data }) => dispatch(setUserInfo(data)))} />
       <Drawer
         placement="left"
         open={mobileMenuOpen}

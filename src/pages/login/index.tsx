@@ -60,11 +60,6 @@ export default function Page() {
       message.warning('请先输入邮箱')
       return
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      message.warning('请输入正确的邮箱地址')
-      return
-    }
     setSendCodeLoading(true)
     sendEmailCode({ email })
       .then(() => {
@@ -123,6 +118,10 @@ export default function Page() {
   }, [isRegister])
 
   useEffect(() => {
+    startQrLogin()
+  }, [startQrLogin])
+
+  useEffect(() => {
     fetchCaptcha()
   }, [fetchCaptcha])
 
@@ -152,50 +151,52 @@ export default function Page() {
 
       <Flex vertical align="center" className="login-form-area">
         <Flex vertical className="login-form-card">
-          {!qrMode && <Flex justify="center" className="hide-on-mobile login-logo-wrapper">
-            <img src={logo} className="login-logo-img" alt="logo" />
-          </Flex>}
-          {!qrMode && <Flex align="center" gap={token.marginSM} className="show-on-mobile login-mobile-brand">
-            <img src={logo} className="login-logo-img" alt="logo" />
-            <Flex vertical gap={0}>
-              <Title level={3} className="login-mobile-name">
-                {import.meta.env.VITE_NAME}
-              </Title>
-              <Paragraph className="login-mobile-tagline">让每一笔收支都有迹可循</Paragraph>
+          {!qrMode && (
+            <Flex justify="center" className="hide-on-mobile login-logo-wrapper">
+              <img src={logo} className="login-logo-img" alt="logo" />
             </Flex>
-          </Flex>}
+          )}
+          {!qrMode && (
+            <Flex align="center" gap={token.marginSM} className="show-on-mobile login-mobile-brand">
+              <img src={logo} className="login-logo-img" alt="logo" />
+              <Flex vertical gap={0}>
+                <Title level={3} className="login-mobile-name">
+                  {import.meta.env.VITE_NAME}
+                </Title>
+                <Paragraph className="login-mobile-tagline">让每一笔收支都有迹可循</Paragraph>
+              </Flex>
+            </Flex>
+          )}
 
           {qrMode ? (
             <Flex vertical align="center" className="login-qr-section">
               <Title level={4}>微信扫码登录</Title>
               {qrImage ? (
-                <>
+                <div className="login-qr-img-wrap">
                   <img src={qrImage} alt="登录二维码" className="login-qr-img" />
-                  {qrStatus === 'pending' && (
-                    <Flex align="center" gap={token.marginXS}>
-                      <Spin size="small" />
-                      <Text type="secondary">请使用微信扫码确认登录</Text>
-                    </Flex>
-                  )}
                   {qrStatus === 'expired' && (
-                    <Button type="link" onClick={startQrLogin}>
-                      已过期，点击刷新
-                    </Button>
+                    <div className="login-qr-overlay" onClick={startQrLogin}>
+                      <span>已过期</span>
+                      <span>点击刷新</span>
+                    </div>
                   )}
-                </>
+                </div>
               ) : (
                 <Spin size="large" />
               )}
-              <Divider style={{ width: '100%' }} />
-              <Button
-                type="link"
-                onClick={() => {
-                  setQrMode(false)
-                  stopPolling()
-                }}
-              >
-                使用邮箱密码登录
-              </Button>
+              {qrStatus === 'pending' && <Text type="secondary">请使用微信扫码确认登录</Text>}
+              <Divider plain>
+                <Button
+                  type="link"
+                  size="small"
+                  onClick={() => {
+                    setQrMode(false)
+                    stopPolling()
+                  }}
+                >
+                  使用邮箱密码登录
+                </Button>
+              </Divider>
             </Flex>
           ) : (
             <>
@@ -255,15 +256,23 @@ export default function Page() {
                   <Input prefix={<MailOutlined />} placeholder="邮箱" autoComplete="off" />
                 </Form.Item>
                 {isRegister && (
-                  <Form.Item>
-                    <Flex gap={token.marginXS}>
-                      <Form.Item noStyle name="emailCode" rules={[{ required: true, message: '请输入邮箱验证码' }]}>
-                        <Input prefix={<SafetyOutlined />} placeholder="邮箱验证码" className="login-captcha-input" autoComplete="one-time-code" />
-                      </Form.Item>
-                      <Button type="primary" ghost loading={sendCodeLoading} disabled={codeCountdown > 0} onClick={handleSendCode} className="login-captcha-btn">
-                        {codeCountdown > 0 ? `${codeCountdown}s` : '获取验证码'}
-                      </Button>
-                    </Flex>
+                  <Form.Item shouldUpdate noStyle>
+                    {() => {
+                      const email = form.getFieldValue('email')
+                      const emailValid = email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+                      return (
+                        <Form.Item>
+                          <Flex gap={token.marginXS}>
+                            <Form.Item noStyle name="emailCode" rules={[{ required: true, message: '请输入邮箱验证码' }]}>
+                              <Input prefix={<SafetyOutlined />} placeholder="邮箱验证码" className="login-captcha-input" autoComplete="one-time-code" />
+                            </Form.Item>
+                            <Button type="primary" ghost loading={sendCodeLoading} disabled={codeCountdown > 0 || !emailValid} onClick={handleSendCode} className="login-captcha-btn">
+                              {codeCountdown > 0 ? `${codeCountdown}s` : '获取验证码'}
+                            </Button>
+                          </Flex>
+                        </Form.Item>
+                      )
+                    }}
                   </Form.Item>
                 )}
                 <Form.Item
