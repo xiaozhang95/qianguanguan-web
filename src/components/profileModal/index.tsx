@@ -148,7 +148,7 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
                       }
                     ]}
                   >
-                    <Input placeholder="请输入验证码" autoComplete="one-time-code" style={{ flex: 1 }} />
+                    <Input placeholder="请输入验证码" autoComplete="off" readOnly onFocus={(e) => { e.target.readOnly = false }} style={{ flex: 1 }} />
                   </Form.Item>
                   <Button
                     type="primary"
