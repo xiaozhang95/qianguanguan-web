@@ -253,7 +253,7 @@ export default function Page() {
                     { type: 'email', message: '请输入正确的邮箱地址' }
                   ]}
                 >
-                  <Input prefix={<MailOutlined />} placeholder="邮箱" autoComplete="off" />
+                  <Input prefix={<MailOutlined />} placeholder="邮箱" autoComplete="email" />
                 </Form.Item>
                 {isRegister && (
                   <Form.Item shouldUpdate noStyle>
@@ -264,7 +264,7 @@ export default function Page() {
                         <Form.Item>
                           <Flex gap={token.marginXS}>
                             <Form.Item noStyle name="emailCode" rules={[{ required: true, message: '请输入邮箱验证码' }]}>
-                              <Input prefix={<SafetyOutlined />} placeholder="邮箱验证码" className="login-captcha-input" autoComplete="one-time-code" />
+                              <Input prefix={<SafetyOutlined />} placeholder="邮箱验证码" className="login-captcha-input" autoComplete="one-time-code" readOnly onFocus={(e) => { e.target.readOnly = false }} />
                             </Form.Item>
                             <Button type="primary" ghost loading={sendCodeLoading} disabled={codeCountdown > 0 || !emailValid} onClick={handleSendCode} className="login-captcha-btn">
                               {codeCountdown > 0 ? `${codeCountdown}s` : '获取验证码'}
@@ -282,7 +282,7 @@ export default function Page() {
                     { min: 6, message: '密码至少6位' }
                   ]}
                 >
-                  <Input.Password prefix={<LockOutlined />} placeholder="密码" autoComplete="new-password" />
+                  <Input.Password prefix={<LockOutlined />} placeholder="密码" autoComplete={isRegister ? 'new-password' : 'current-password'} readOnly={isRegister} onFocus={isRegister ? (e) => { e.target.readOnly = false } : undefined} />
                 </Form.Item>
                 {isRegister && (
                   <Form.Item
@@ -300,7 +300,7 @@ export default function Page() {
                       })
                     ]}
                   >
-                    <Input.Password prefix={<LockOutlined />} placeholder="确认密码" autoComplete="new-password" />
+                    <Input.Password prefix={<LockOutlined />} placeholder="确认密码" autoComplete="new-password" readOnly onFocus={(e) => { e.target.readOnly = false }} />
                   </Form.Item>
                 )}
                 <Form.Item>
