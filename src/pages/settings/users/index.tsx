@@ -94,8 +94,8 @@ export default function UserListPage() {
         rowKey="id"
         scroll={{ x: 'max-content' }}
         columns={[
-          { title: '用户名', dataIndex: 'username', width: 120 },
-          { title: '姓名', dataIndex: 'name', width: 120 },
+          { title: '用户名', dataIndex: 'username', width: 200 },
+          { title: '姓名', dataIndex: 'name', width: 200 },
           {
             title: '角色',
             dataIndex: 'role',
@@ -117,7 +117,11 @@ export default function UserListPage() {
                   />
                 )
               }
-              return <Tag variant="solid" color={roleTagColor[role]}>{RoleLabel[role as Role] || role}</Tag>
+              return (
+                <Tag variant="solid" color={roleTagColor[role]}>
+                  {RoleLabel[role as Role] || role}
+                </Tag>
+              )
             }
           },
           { title: '手机号', dataIndex: 'phone', width: 140 },
@@ -126,7 +130,11 @@ export default function UserListPage() {
             title: '状态',
             dataIndex: 'status',
             width: 80,
-            render: (s: number) => <Tag variant="solid" color={s === UserStatus.ENABLED ? token.colorSuccess : token.colorError}>{UserStatusLabel[s as UserStatus]}</Tag>
+            render: (s: number) => (
+              <Tag variant="solid" color={s === UserStatus.ENABLED ? token.colorSuccess : token.colorError}>
+                {UserStatusLabel[s as UserStatus]}
+              </Tag>
+            )
           },
           {
             title: '创建时间',

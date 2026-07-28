@@ -182,7 +182,9 @@ export default function Page() {
                   )}
                 </div>
               ) : (
-                <Spin size="large" />
+                <div className="login-qr-loading">
+                  <Spin size="large" />
+                </div>
               )}
               {qrStatus === 'pending' && <Text type="secondary">请使用微信扫码确认登录</Text>}
               <Divider plain>
@@ -306,7 +308,7 @@ export default function Page() {
                 <Form.Item>
                   <Flex gap={token.marginXS}>
                     <Form.Item noStyle name="captchaCode" rules={[{ required: true, message: '请输入验证码' }]}>
-                      <Input prefix={<SafetyOutlined />} placeholder="验证码" className="login-captcha-input" />
+                      <Input prefix={<SafetyOutlined />} placeholder="验证码" className="login-captcha-input" autoComplete="off" />
                     </Form.Item>
                     {captchaImage && <img alt="验证码" src={captchaImage} onClick={fetchCaptcha} className="login-captcha-img" />}
                   </Flex>

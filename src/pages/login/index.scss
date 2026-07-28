@@ -142,11 +142,20 @@
   display: block;
 }
 
+.login-qr-loading {
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--ant-margin-md);
+}
+
 .login-qr-overlay {
   position: absolute;
   inset: 0;
   border-radius: var(--ant-border-radius-lg);
-  background: rgba(255, 255, 255, 0.85);
+  background: color-mix(in srgb, var(--ant-color-white) 85%, transparent);
   display: flex;
   flex-direction: column;
   align-items: center;

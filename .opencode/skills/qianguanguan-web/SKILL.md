@@ -375,7 +375,28 @@ const isMobile = !screens.md
 - 使用邮箱 + 密码登录，不再使用用户名
 - 注册表单：邮箱 → 邮箱验证码（60秒倒计时发送按钮）→ 密码 → 确认密码 → 图形验证码
 - 注册成功直接拿到 token 跳转首页，不再需要二次登录
-- 邮箱验证码输入框使用 `autoComplete="one-time-code"` 禁止浏览器自动填充
+
+### 自动填充控制
+
+登录时允许浏览器自动填充，注册时仅邮箱允许自动填充，其余敏感字段禁止：
+
+```tsx
+// 邮箱 — 始终允许自动填充
+<Input autoComplete="email" />
+
+// 密码 — 注册时禁止（new-password + readOnly），登录时允许（current-password）
+<Input.Password
+  autoComplete={isRegister ? 'new-password' : 'current-password'}
+  readOnly={isRegister}
+  onFocus={isRegister ? (e) => { e.target.readOnly = false } : undefined}
+/>
+
+// 确认密码 / 邮箱验证码 / 图形验证码 — 注册时用 readOnly + onFocus 禁止自动填充
+<Input.Password autoComplete="new-password" readOnly onFocus={(e) => { e.target.readOnly = false }} />
+<Input autoComplete="off" readOnly onFocus={(e) => { e.target.readOnly = false }} />
+```
+
+`readOnly` 初始阻止浏览器填充只读字段，用户聚焦后自动移除 `readOnly` 恢复可编辑。
 
 ### 微信扫码登录
 
