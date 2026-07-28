@@ -1,7 +1,7 @@
 export const RoutePath = {
   Home: '/',
   Login: '/login',
-  HomePage: '/home',
+  Statistics: '/statistics',
   Bill: '/bill',
   Category: '/category',
   Users: '/settings/users'

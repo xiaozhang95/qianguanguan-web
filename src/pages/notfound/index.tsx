@@ -13,11 +13,8 @@ export default function NotFoundPage() {
 
   return (
     <Flex justify="center" align="center" className="notfound-wrapper">
-      <Empty
-        description="抱歉，您访问的页面不存在"
-        image={Empty.PRESENTED_IMAGE_SIMPLE}
-      >
-        <Button type="primary" onClick={() => nav(RoutePath.HomePage, { replace: true })}>
+      <Empty description="抱歉，您访问的页面不存在" image={Empty.PRESENTED_IMAGE_SIMPLE}>
+        <Button type="primary" onClick={() => nav(RoutePath.Statistics, { replace: true })}>
           返回首页
         </Button>
       </Empty>

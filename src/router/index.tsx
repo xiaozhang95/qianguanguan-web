@@ -1,5 +1,5 @@
 import { Role } from '@/constants'
-import { AppstoreOutlined, HomeOutlined, SettingOutlined, TeamOutlined, WalletOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, PieChartOutlined, SettingOutlined, TeamOutlined, WalletOutlined } from '@ant-design/icons'
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
 import { RoutePath } from './routes'
 
@@ -31,7 +31,7 @@ export type RouteDefinition = RouteItem | RouteGroup
 const Users = lazy(() => import('@/pages/settings/users'))
 
 const routes: RouteDefinition[] = [
-  { path: RoutePath.HomePage, meta: { title: '首页', Icon: HomeOutlined, roles: [Role.SUPER_ADMIN, Role.ADMIN, Role.USER] }, Component: Home },
+  { path: RoutePath.Statistics, meta: { title: '统计管理', Icon: PieChartOutlined, roles: [Role.SUPER_ADMIN, Role.ADMIN, Role.USER] }, Component: Home },
   { path: RoutePath.Bill, meta: { title: '账单管理', Icon: WalletOutlined, roles: [Role.SUPER_ADMIN, Role.ADMIN, Role.USER] }, Component: Bill },
   { path: RoutePath.Category, meta: { title: '分类管理', Icon: AppstoreOutlined, roles: [Role.SUPER_ADMIN, Role.ADMIN, Role.USER] }, Component: Category },
   {
