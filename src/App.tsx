@@ -34,7 +34,7 @@ export function LoadAuth() {
       .catch(() => {
         nav(RoutePath.Login)
       })
-  }, [token])
+  }, [])
 
   return token ? <Loading /> : <Navigate to={RoutePath.Login} replace />
 }

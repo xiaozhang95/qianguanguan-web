@@ -1,3 +1,4 @@
+import type { LoginResult } from '@/api/login'
 import store from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
@@ -150,7 +151,7 @@ class Request {
   }
 }
 
-export default async function create<T>(requestInfo: RequestOptions): Promise<CtmResponse<T>> {
+async function create<T>(requestInfo: RequestOptions): Promise<CtmResponse<T>> {
   //设置默认值
   const ro = Object.assign(
     {
@@ -181,11 +182,7 @@ export default async function create<T>(requestInfo: RequestOptions): Promise<Ct
         if (ro.responseType === 'json') {
           const json = (await response.json()) as CtmResponse<T>
           if (ResponseCode.SUCCESS !== json.code) {
-            // 错误处理
-            if (json.code === ResponseCode.SC_UNAUTHORIZED) {
-              store.dispatch(setToken(''))
-              store.dispatch(setUserInfo(null))
-            } else if (ro.errorMsg) {
+            if (ro.errorMsg && json.code !== ResponseCode.SC_UNAUTHORIZED) {
               getMsgApi().error(json.msg)
             }
             reject(json)
@@ -221,3 +218,59 @@ export default async function create<T>(requestInfo: RequestOptions): Promise<Ct
     )
   })
 }
+
+function tokenRefresh() {
+  return create<LoginResult>({
+    url: '/token/refresh',
+    method: 'POST',
+    errorMsg: false
+  })
+}
+
+let isRefreshing = false
+let requestQueue: Array<{
+  resolve: (value: any) => void
+  reject: (reason?: any) => void
+  requestInfo: RequestOptions
+}> = []
+
+function refreshRequest<T>(requestInfo: RequestOptions): Promise<CtmResponse<T>> {
+  return new Promise((resolve, reject) => {
+    create<T>(requestInfo)
+      .then(resolve)
+      .catch((err) => {
+        if (err?.code !== ResponseCode.SC_UNAUTHORIZED) {
+          return reject(err)
+        }
+
+        requestQueue.push({ resolve, reject, requestInfo })
+
+        // ✅ 只有第一个进入的人触发 refresh
+        if (!isRefreshing) {
+          isRefreshing = true
+
+          tokenRefresh()
+            .then(({ data }) => {
+              store.dispatch(setToken(data.token))
+
+              requestQueue.forEach(({ resolve, reject, requestInfo }) => {
+                create(requestInfo).then(resolve).catch(reject)
+              })
+
+              requestQueue = []
+            })
+            .catch((error) => {
+              store.dispatch(setToken(''))
+              store.dispatch(setUserInfo(null))
+
+              requestQueue.forEach(({ reject }) => reject(error))
+              requestQueue = []
+            })
+            .finally(() => {
+              isRefreshing = false
+            })
+        }
+      })
+  })
+}
+export default refreshRequest
