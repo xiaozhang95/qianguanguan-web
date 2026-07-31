@@ -58,7 +58,14 @@ export default function App() {
     return {
       cssVar: { prefix: 'ant' as const },
       algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-      token: { borderRadius: token.sizeXS },
+      token: {
+        borderRadius: token.sizeXS,
+        ...(isDark
+          ? {}
+          : {
+              colorBgLayout: token.colorFillTertiary
+            })
+      },
       components: {
         Menu: {
           subMenuItemBg: 'transparent',
