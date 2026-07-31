@@ -3,7 +3,7 @@ import './app.scss'
 
 import { App as AntdApp, ConfigProvider, theme } from 'antd'
 import zhCN from 'antd/es/locale/zh_CN'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, type ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { userInfo } from './api/user'
@@ -47,6 +47,29 @@ function MsgInject() {
   return null
 }
 
+function MenuThemeProvider({ children }: { children: ReactNode }) {
+  const { token } = theme.useToken()
+  const themeMode = useSelector((state: RootState) => state.theme)
+  const isDark = themeMode === 'dark'
+
+  return (
+    <ConfigProvider
+      theme={{
+        components: {
+          Menu: {
+            subMenuItemBg: 'transparent',
+            itemSelectedColor: isDark ? token.colorWhite : token.colorPrimary,
+            itemSelectedBg: isDark ? token.colorPrimary : token.colorPrimaryBg,
+            subMenuItemSelectedColor: isDark ? token.colorWhite : token.colorPrimary
+          }
+        }
+      }}
+    >
+      {children}
+    </ConfigProvider>
+  )
+}
+
 export default function App() {
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const themeMode = useSelector((state: RootState) => state.theme)
@@ -62,40 +85,35 @@ export default function App() {
         ...(isDark
           ? {}
           : {
-              colorBgLayout: '#ebeff5',
-              colorBgContainer: '#fafbfc',
-              colorBgElevated: '#fafbfc'
+              colorBgLayout: '#e8ecf1',
+              colorBgContainer: '#f7f8fa',
+              colorBgElevated: '#ffffff'
             })
-      },
-      components: {
-        Menu: {
-          subMenuItemBg: 'transparent',
-          itemSelectedColor: '#fff',
-          itemSelectedBg: tokenSlice.
-        }
       }
     }
   }, [themeMode])
 
   return (
     <ConfigProvider locale={zhCN} theme={themeConfig}>
-      <AntdApp>
-        <Routes>
-          <Route path={RoutePath.Login} element={<Login />} />
-          {!routes.length ? (
-            <Route path="/*" element={<LoadAuth />} />
-          ) : (
-            <Route path={RoutePath.Home} element={<Layout />}>
-              <Route path={RoutePath.Home} element={<Navigate to={routes[0]?.path} />} />
-              {routes.map(({ path, Component }) => (
-                <Route key={path} path={path} element={<Component />} />
-              ))}
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          )}
-        </Routes>
-        <MsgInject />
-      </AntdApp>
+      <MenuThemeProvider>
+        <AntdApp>
+          <Routes>
+            <Route path={RoutePath.Login} element={<Login />} />
+            {!routes.length ? (
+              <Route path="/*" element={<LoadAuth />} />
+            ) : (
+              <Route path={RoutePath.Home} element={<Layout />}>
+                <Route path={RoutePath.Home} element={<Navigate to={routes[0]?.path} />} />
+                {routes.map(({ path, Component }) => (
+                  <Route key={path} path={path} element={<Component />} />
+                ))}
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            )}
+          </Routes>
+          <MsgInject />
+        </AntdApp>
+      </MenuThemeProvider>
     </ConfigProvider>
   )
 }

@@ -5,7 +5,9 @@ import { ArrowDownOutlined, ArrowUpOutlined, WalletOutlined } from '@ant-design/
 import { Card, DatePicker, Flex, Grid, Statistic, theme } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
+import type { RootState } from '@/store'
 import './index.scss'
 
 const { MonthPicker } = DatePicker
@@ -14,6 +16,8 @@ export default function HomePage() {
   const { token } = theme.useToken()
   const screens = Grid.useBreakpoint()
   const isMobile = !screens.md
+  const themeMode = useSelector((state: RootState) => state.theme)
+  const isDark = themeMode === 'dark'
   const location = useLocation()
   const [filterMonth, setFilterMonth] = useState<dayjs.Dayjs>(dayjs())
   const [stats, setStats] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 })
@@ -161,10 +165,10 @@ export default function HomePage() {
             line: { shapeField: 'smooth', style: { strokeWidth: 2 } },
             style: { fillOpacity: 0.2 },
             axis: {
-              x: { labelFill: token.colorWhite, labelOpacity: 1, lineStroke: token.colorWhite, tickStroke: token.colorWhite, tickOpacity: 1 },
-              y: { labelFill: token.colorWhite, labelOpacity: 1, gridStroke: token.colorWhite, gridStrokeOpacity: 1, lineStroke: token.colorWhite, lineStrokeOpacity: 1, tickOpacity: 1 }
+              x: { labelFill: isDark ? token.colorWhite : token.colorTextSecondary, labelOpacity: 1, lineStroke: isDark ? token.colorWhite : token.colorBorder, tickStroke: isDark ? token.colorWhite : token.colorBorder, tickOpacity: 1 },
+              y: { labelFill: isDark ? token.colorWhite : token.colorTextSecondary, labelOpacity: 1, gridStroke: isDark ? token.colorWhite : token.colorBorderSecondary, gridStrokeOpacity: isDark ? 1 : 0.5, lineStroke: isDark ? token.colorWhite : token.colorBorder, lineStrokeOpacity: 1, tickOpacity: 1 }
             },
-            legend: { color: { itemLabelFill: token.colorWhite, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } },
+            legend: { color: { itemLabelFill: isDark ? token.colorWhite : token.colorText, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } },
             tooltip: {
               channel: 'y',
               valueFormatter: (v: unknown) => `¥${Number(v).toFixed(2)}`
@@ -191,10 +195,10 @@ export default function HomePage() {
                     : {
                         text: (d: { value: number }) => `¥${d.value.toFixed(2)}`,
                         position: 'outside',
-                        style: { fill: token.colorWhite, fillOpacity: 1, fontSize: token.fontSize, fontWeight: 'bold' },
+                        style: { fill: isDark ? token.colorWhite : token.colorText, fillOpacity: 1, fontSize: token.fontSize, fontWeight: 'bold' },
                       }
                 }
-                legend={{ color: { itemLabelFill: token.colorWhite, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
+                legend={{ color: { itemLabelFill: isDark ? token.colorWhite : token.colorText, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
                 tooltip={{
                   items: [
                     (d: { name: string; value: number }) => ({
@@ -223,10 +227,10 @@ export default function HomePage() {
                     : {
                         text: (d: { value: number }) => `¥${d.value.toFixed(2)}`,
                         position: 'outside',
-                        style: { fill: token.colorWhite, fillOpacity: 1, fontSize: token.fontSize, fontWeight: 'bold' },
+                        style: { fill: isDark ? token.colorWhite : token.colorText, fillOpacity: 1, fontSize: token.fontSize, fontWeight: 'bold' },
                       }
                 }
-                legend={{ color: { itemLabelFill: token.colorWhite, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
+                legend={{ color: { itemLabelFill: isDark ? token.colorWhite : token.colorText, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
                 tooltip={{
                   items: [
                     (d: { name: string; value: number }) => ({

@@ -84,22 +84,10 @@ interface RouteItem {
 ## Ant Design 主题
 
 ```tsx
-<ConfigProvider
-  locale={zhCN}
-  theme={{
-    cssVar: { prefix: 'ant' },
-    algorithm: theme.darkAlgorithm,
-    token: { borderRadius: 6 },
-    components: {
-      Menu: {
-        subMenuItemBg: 'transparent',
-        itemSelectedColor: '#fff',
-        itemSelectedBg: '#1677ff80'
-      }
-    }
-  }}
->
+<ConfigProvider locale={zhCN} theme={themeConfig}>
 ```
+
+支持明暗双主题：`themeConfig` 由 `useMemo` 根据 Redux `theme` slice 计算，`themeMode === 'dark'` 使用 `theme.darkAlgorithm`，否则使用 `theme.defaultAlgorithm` 并覆盖亮色背景 token；布局中通过 `toggleTheme()` 切换，同时设置 `<html data-theme>` 供 SCSS 按主题覆盖样式。
 
 CSS 变量命名规则：驼峰转短横线，加 `--ant-` 前缀。`colorBgContainer` → `--ant-color-bg-container`。
 
@@ -441,4 +429,4 @@ useEffect(() => {
 ## Token & 用户信息
 
 - 退出登录: `dispatch(setToken(''))` + `dispatch(setUserInfo(null))` + 跳转登录页
-- 请求拦截器自动附加 `Authorization: Bearer {token}`
+- 后端签发的 token 已包含 `Bearer ` 前缀，请求拦截器直接透传为 `Authorization` 头（`ro.headers['Authorization'] = store.getState().token`）
