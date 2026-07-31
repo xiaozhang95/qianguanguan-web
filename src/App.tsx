@@ -48,7 +48,6 @@ function MsgInject() {
 }
 
 export default function App() {
-  const { token } = theme.useToken()
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const themeMode = useSelector((state: RootState) => state.theme)
   const routes = flattenRoutes(userInfo?.role as Role)
@@ -58,20 +57,9 @@ export default function App() {
     return {
       cssVar: { prefix: 'ant' as const },
       algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-      token: {
-        borderRadius: token.sizeXS,
-        ...(isDark
-          ? {}
-          : {
-              colorBgLayout: token.colorFillTertiary
-            })
-      },
       components: {
         Menu: {
-          subMenuItemBg: 'transparent',
-          itemSelectedColor: token.colorWhite,
-          itemSelectedBg: token.colorPrimary,
-          subMenuItemSelectedColor: isDark ? token.colorWhite : token.colorPrimary
+          subMenuItemBg: 'transparent'
         }
       }
     }
