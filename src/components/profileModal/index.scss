@@ -28,7 +28,7 @@
   justify-content: center;
   background: rgba(0, 0, 0, 0.45);
   color: var(--ant-color-white);
-  font-size: 12px;
+  font-size: var(--ant-font-size-sm);
   opacity: 0;
   transition: opacity 0.2s;
   border-radius: 50%;
@@ -36,4 +36,12 @@
 
 .profile-avatar-wrapper:hover .profile-avatar-overlay {
   opacity: 1;
+}
+
+.profile-email-code-input {
+  flex: 1;
+}
+
+.profile-email-code-btn {
+  flex-shrink: 0;
 }

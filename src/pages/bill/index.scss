@@ -20,6 +20,19 @@
   font-weight: var(--ant-font-weight-strong);
 }
 
+.bill-category-label {
+  display: flex;
+  align-items: center;
+  gap: var(--ant-margin-xxs);
+}
+
+.bill-category-icon {
+  width: var(--ant-font-size-lg);
+  height: var(--ant-font-size-lg);
+  border-radius: var(--ant-border-radius-xs);
+  object-fit: cover;
+}
+
 .bill-amount-input {
   width: 100%;
 }

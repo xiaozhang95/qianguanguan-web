@@ -19,15 +19,15 @@
   position: absolute;
   inset: 0;
   border-radius: var(--ant-border-radius-lg);
-  background: rgba(255, 255, 255, 0.85);
+  background: color-mix(in srgb, var(--ant-color-white) 85%, transparent);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  color: rgba(0, 0, 0, 0.88);
+  gap: var(--ant-margin-xxs);
+  color: var(--ant-color-primary);
   font-size: var(--ant-font-size);
-  font-weight: 600;
+  font-weight: var(--ant-font-weight-strong);
   cursor: pointer;
 }
 

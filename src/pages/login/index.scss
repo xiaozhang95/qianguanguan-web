@@ -160,10 +160,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: var(--ant-margin-xxs);
   color: var(--ant-color-primary);
   font-size: var(--ant-font-size);
-  font-weight: bold;
+  font-weight: var(--ant-font-weight-strong);
   cursor: pointer;
 }
 

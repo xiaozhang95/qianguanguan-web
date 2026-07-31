@@ -55,11 +55,15 @@ export default function BillPage() {
 
   const isImageUrl = (icon: string) => icon.startsWith('/upload/') || icon.startsWith('http')
 
-  const categoryOptionLabel = (c: Category) => (
-    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-      {isImageUrl(c.icon) ? <img src={c.icon} width={16} height={16} style={{ borderRadius: 2, objectFit: 'cover' }} /> : <span>{c.icon}</span>}
-      <span>{c.name}</span>
+  const CategoryCell = ({ icon, name }: { icon: string; name: string }) => (
+    <span className="bill-category-label">
+      {isImageUrl(icon) ? <img src={icon} className="bill-category-icon" alt="" /> : <span>{icon}</span>}
+      <span>{name}</span>
     </span>
+  )
+
+  const categoryOptionLabel = (c: Category) => (
+    <CategoryCell icon={c.icon} name={c.name} />
   )
 
   const columns = [
@@ -68,10 +72,7 @@ export default function BillPage() {
       title: '分类',
       width: 140,
       render: (_: unknown, record: BillVO) => (
-        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          {isImageUrl(record.categoryIcon) ? <img src={record.categoryIcon} width={16} height={16} style={{ borderRadius: 2, objectFit: 'cover' }} /> : <span>{record.categoryIcon}</span>}
-          <span>{record.categoryName}</span>
-        </span>
+        <CategoryCell icon={record.categoryIcon} name={record.categoryName} />
       )
     },
     {

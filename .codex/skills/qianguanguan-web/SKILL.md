@@ -84,10 +84,22 @@ interface RouteItem {
 ## Ant Design 主题
 
 ```tsx
-<ConfigProvider locale={zhCN} theme={themeConfig}>
+const themeConfig = useMemo(() => {
+  const isDark = themeMode === 'dark'
+  return {
+    cssVar: { prefix: 'ant' as const },
+    algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+    components: {
+      Menu: {
+        subMenuItemBg: 'transparent'
+      }
+    }
+  }
+}, [themeMode])
 ```
 
-支持明暗双主题：`themeConfig` 由 `useMemo` 根据 Redux `theme` slice 计算，`themeMode === 'dark'` 使用 `theme.darkAlgorithm`，否则使用 `theme.defaultAlgorithm` 并覆盖亮色背景 token；布局中通过 `toggleTheme()` 切换，同时设置 `<html data-theme>` 供 SCSS 按主题覆盖样式。
+- 明暗双主题：`themeMode` 来自 Redux `theme` slice（localStorage 持久化），布局中通过 `toggleTheme()` 切换，并设置 `<html data-theme>` 供 SCSS 按主题覆盖样式（如滚动条）
+- 主题不自定义颜色：明暗两套配色完全由 `darkAlgorithm` / `defaultAlgorithm` 的 token 决定，菜单选中态等用 antd 默认 token 样式，禁止硬编码 hex 或覆盖 `colorBg*` 背景
 
 CSS 变量命名规则：驼峰转短横线，加 `--ant-` 前缀。`colorBgContainer` → `--ant-color-bg-container`。
 
@@ -119,12 +131,12 @@ const { token } = theme.useToken()
 // 正确
 <Tag color={token.colorSuccess}>启用</Tag>
 <Flex gap={token.marginLG}>...</Flex>
-<Icon name="logo" fill={token.colorWhite} />
+<Button type="text" icon={<SunOutlined />} />
 
 // 错误
 <Tag color="var(--ant-color-success)">启用</Tag>
 <Flex gap="var(--ant-margin-lg)">...</Flex>
-<Icon name="logo" fill="#fff" />
+<Button type="text" icon={<SunOutlined />} className="layout-sun-icon" />
 ```
 
 ### Tag 组件规范
@@ -205,7 +217,6 @@ background: linear-gradient(135deg, var(--ant-color-primary), var(--ant-color-pr
 - Modal: `open` + `onCancel` + `onOk`，`destroyOnClose` → `destroyOnHidden`
 - Drawer: `width` → `size`
 - Flex 替代 `Row`/`Col` 和 `style={{ display: 'flex' }}`
-- **Icon 组件**：用 `size` / `fill` 属性，禁止 `className`
 - **收支类型 Select**：用 `labelRender` + `<Tag variant="solid">` 展示选中值
 
 ### Statistic 统计卡片
@@ -323,13 +334,15 @@ form.setFieldsValue({ type: BillType.EXPENSE })
   line={{ shapeField: 'smooth', style: { strokeWidth: 2 } }}
   style={{ fillOpacity: 0.2 }}
   axis={{
-    x: { labelFill: token.colorWhite, labelOpacity: 1, lineStroke: token.colorWhite, tickStroke: token.colorWhite, tickOpacity: 1 },
-    y: { labelFill: token.colorWhite, labelOpacity: 1, gridStroke: token.colorWhite, gridStrokeOpacity: 1, lineStroke: token.colorWhite, lineStrokeOpacity: 1, tickOpacity: 1 }
+    x: { labelFill: isDark ? token.colorWhite : token.colorTextSecondary, labelOpacity: 1, lineStroke: isDark ? token.colorWhite : token.colorBorder, tickStroke: isDark ? token.colorWhite : token.colorBorder, tickOpacity: 1 },
+    y: { labelFill: isDark ? token.colorWhite : token.colorTextSecondary, labelOpacity: 1, gridStroke: isDark ? token.colorWhite : token.colorBorderSecondary, gridStrokeOpacity: isDark ? 1 : 0.5, lineStroke: isDark ? token.colorWhite : token.colorBorder, lineStrokeOpacity: 1, tickOpacity: 1 }
   }}
-  legend={{ color: { itemLabelFill: token.colorWhite, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
+  legend={{ color: { itemLabelFill: isDark ? token.colorWhite : token.colorText, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
   tooltip={{ channel: 'y', valueFormatter: (v) => `¥${Number(v).toFixed(2)}` }}
 />
 ```
+
+图表文字色必须按主题取色：`isDark` 由 `themeMode === 'dark'` 得出，亮色下禁止使用 `token.colorWhite`（白底白字不可见），统一用 `isDark ? token.colorWhite : token.colorText/colorTextSecondary/colorBorder` 分支。
 
 ### 饼图
 
@@ -342,8 +355,8 @@ form.setFieldsValue({ type: BillType.EXPENSE })
   height={360}
   innerRadius={0.45}
   scale={{ color: { range: colors } }}
-  label={{ text: (d) => `¥${d.value.toFixed(2)}`, position: 'outside', style: { fill: token.colorWhite, fillOpacity: 1, fontSize: token.fontSize, fontWeight: 'bold' } }}
-  legend={{ color: { itemLabelFill: token.colorWhite, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
+  label={{ text: (d) => `¥${d.value.toFixed(2)}`, position: 'outside', style: { fill: isDark ? token.colorWhite : token.colorText, fillOpacity: 1, fontSize: token.fontSize, fontWeight: 'bold' } }}
+  legend={{ color: { itemLabelFill: isDark ? token.colorWhite : token.colorText, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
   tooltip={{ items: [(d) => ({ name: d.name, value: `¥${d.value.toFixed(2)}` })] }}
   style={{ stroke: token.colorBgContainer, lineWidth: 2 }}
 />

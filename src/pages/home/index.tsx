@@ -152,28 +152,26 @@ export default function HomePage() {
 
       <Card title={<span className="home-chart-title">{`${monthText}收支趋势`}</span>} loading={loading}>
         <Area
-          {...({
-            data: areaData,
-            xField: 'date',
-            yField: 'value',
-            seriesField: 'type',
-            autoFit: true,
-            height: 320,
-            shapeField: 'smooth',
-            colorField: 'type',
-            scale: { color: { range: [token.colorError, token.colorSuccess] } },
-            line: { shapeField: 'smooth', style: { strokeWidth: 2 } },
-            style: { fillOpacity: 0.2 },
-            axis: {
-              x: { labelFill: isDark ? token.colorWhite : token.colorTextSecondary, labelOpacity: 1, lineStroke: isDark ? token.colorWhite : token.colorBorder, tickStroke: isDark ? token.colorWhite : token.colorBorder, tickOpacity: 1 },
-              y: { labelFill: isDark ? token.colorWhite : token.colorTextSecondary, labelOpacity: 1, gridStroke: isDark ? token.colorWhite : token.colorBorderSecondary, gridStrokeOpacity: isDark ? 1 : 0.5, lineStroke: isDark ? token.colorWhite : token.colorBorder, lineStrokeOpacity: 1, tickOpacity: 1 }
-            },
-            legend: { color: { itemLabelFill: isDark ? token.colorWhite : token.colorText, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } },
-            tooltip: {
-              channel: 'y',
-              valueFormatter: (v: unknown) => `¥${Number(v).toFixed(2)}`
-            }
-          } as any)}
+          data={areaData}
+          xField="date"
+          yField="value"
+          seriesField="type"
+          autoFit
+          height={320}
+          shapeField="smooth"
+          colorField="type"
+          scale={{ color: { range: [token.colorError, token.colorSuccess] } }}
+          line={{ shapeField: 'smooth', style: { strokeWidth: 2 } }}
+          style={{ fillOpacity: 0.2 }}
+          axis={{
+            x: { labelFill: isDark ? token.colorWhite : token.colorTextSecondary, labelOpacity: 1, lineStroke: isDark ? token.colorWhite : token.colorBorder, tickStroke: isDark ? token.colorWhite : token.colorBorder, tickOpacity: 1 },
+            y: { labelFill: isDark ? token.colorWhite : token.colorTextSecondary, labelOpacity: 1, gridStroke: isDark ? token.colorWhite : token.colorBorderSecondary, gridStrokeOpacity: isDark ? 1 : 0.5, lineStroke: isDark ? token.colorWhite : token.colorBorder, lineStrokeOpacity: 1, tickOpacity: 1 }
+          }}
+          legend={{ color: { itemLabelFill: isDark ? token.colorWhite : token.colorText, itemLabelFillOpacity: 1, itemLabelFontSize: token.fontSizeSM } }}
+          tooltip={{
+            channel: 'y',
+            valueFormatter: (v: unknown) => `¥${Number(v).toFixed(2)}`
+          }}
         />
       </Card>
 

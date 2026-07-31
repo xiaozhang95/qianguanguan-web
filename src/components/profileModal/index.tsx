@@ -148,7 +148,7 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
                       }
                     ]}
                   >
-                    <Input placeholder="请输入验证码" autoComplete="off" readOnly onFocus={(e) => { e.target.readOnly = false }} style={{ flex: 1 }} />
+                    <Input placeholder="请输入验证码" autoComplete="off" readOnly onFocus={(e) => { e.target.readOnly = false }} className="profile-email-code-input" />
                   </Form.Item>
                   <Button
                     type="primary"
@@ -156,7 +156,7 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
                     loading={sendCodeLoading}
                     disabled={codeCountdown > 0 || !emailValid}
                     onClick={handleSendCode}
-                    style={{ flexShrink: 0 }}
+                    className="profile-email-code-btn"
                   >
                     {codeCountdown > 0 ? `${codeCountdown}s` : '获取验证码'}
                   </Button>
