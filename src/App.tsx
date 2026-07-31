@@ -3,7 +3,7 @@ import './app.scss'
 
 import { App as AntdApp, ConfigProvider, theme } from 'antd'
 import zhCN from 'antd/es/locale/zh_CN'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { userInfo } from './api/user'
@@ -49,24 +49,36 @@ function MsgInject() {
 
 export default function App() {
   const userInfo = useSelector((state: RootState) => state.userInfo)
+  const themeMode = useSelector((state: RootState) => state.theme)
   const routes = flattenRoutes(userInfo?.role as Role)
 
-  return (
-    <ConfigProvider
-      locale={zhCN}
-      theme={{
-        cssVar: { prefix: 'ant' },
-        algorithm: theme.darkAlgorithm,
-        token: { borderRadius: 6 },
-        components: {
-          Menu: {
-            subMenuItemBg: 'transparent',
-            itemSelectedColor: '#fff',
-            itemSelectedBg: '#1677ff80'
-          }
+  const themeConfig = useMemo(() => {
+    const isDark = themeMode === 'dark'
+    return {
+      cssVar: { prefix: 'ant' as const },
+      algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      token: {
+        borderRadius: 6,
+        ...(isDark
+          ? {}
+          : {
+              colorBgLayout: '#ebeff5',
+              colorBgContainer: '#fafbfc',
+              colorBgElevated: '#fafbfc'
+            })
+      },
+      components: {
+        Menu: {
+          subMenuItemBg: 'transparent',
+          itemSelectedColor: '#fff',
+          itemSelectedBg: tokenSlice.
         }
-      }}
-    >
+      }
+    }
+  }, [themeMode])
+
+  return (
+    <ConfigProvider locale={zhCN} theme={themeConfig}>
       <AntdApp>
         <Routes>
           <Route path={RoutePath.Login} element={<Login />} />

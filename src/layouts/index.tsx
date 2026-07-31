@@ -8,10 +8,11 @@ import { Role } from '@/constants'
 import { getPermittedRoutes, isGroup, type RouteDefinition } from '@/router'
 import { RoutePath } from '@/router/routes'
 import type { RootState } from '@/store'
+import { toggleTheme } from '@/store/theme'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
 import { userInfo as fetchUserInfo } from '@/api/user'
-import { DownOutlined, LockOutlined, LogoutOutlined, MenuOutlined, UserOutlined, WechatOutlined } from '@ant-design/icons'
+import { DownOutlined, LockOutlined, LogoutOutlined, MenuOutlined, MoonOutlined, SunOutlined, UserOutlined, WechatOutlined } from '@ant-design/icons'
 import { Button, Drawer, Dropdown, Flex, Layout, Menu, theme } from 'antd'
 import { Suspense, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -26,6 +27,7 @@ export default function AdminLayout() {
   const nav = useNavigate()
   const dispatch = useDispatch()
   const userInfo = useSelector((state: RootState) => state.userInfo)
+  const themeMode = useSelector((state: RootState) => state.theme)
   const routes = getPermittedRoutes(userInfo?.role as Role)
 
   const [activeKey, setActiveKey] = useState(location.pathname)
@@ -57,6 +59,10 @@ export default function AdminLayout() {
       }
     }
   }, [location.pathname])
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', themeMode)
+  }, [themeMode])
 
   const buildMenuItems = (defs: RouteDefinition[]) => {
     return defs.map((r) => {
@@ -113,6 +119,12 @@ export default function AdminLayout() {
             <span className="layout-brand-title">{import.meta.env.VITE_NAME}</span>
           </Flex>
           <Flex className="layout-header-user">
+            <Button
+              type="text"
+              icon={themeMode === 'dark' ? <SunOutlined /> : <MoonOutlined />}
+              onClick={() => dispatch(toggleTheme())}
+              title={themeMode === 'dark' ? '切换亮色主题' : '切换暗色主题'}
+            />
             <Dropdown
               menu={{
                 items: [
