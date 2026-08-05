@@ -33,7 +33,10 @@ export default function BillPage() {
     const startDate = filterDate.format('YYYY-MM-DD')
     const endDate = filterDate.format('YYYY-MM-DD')
     billList({ type: filterType, categoryId: filterCategoryId, startDate, endDate, pageNum, pageSize })
-      .then(({ data }) => { setBills(data.records); setTotal(data.total) })
+      .then(({ data }) => {
+        setBills(data.records)
+        setTotal(data.total)
+      })
       .finally(() => setLoading(false))
   }
 
@@ -62,18 +65,24 @@ export default function BillPage() {
     </span>
   )
 
-  const categoryOptionLabel = (c: Category) => (
-    <CategoryCell icon={c.icon} name={c.name} />
-  )
+  const categoryOptionLabel = (c: Category) => <CategoryCell icon={c.icon} name={c.name} />
+
+  // 选中态 / 编辑回显时渲染分类（含图标），分类列表未就绪时兜底用账单自带的名称与图标
+  const categoryValueLabel = (value: string) => {
+    const cat = categories.find((c) => c.id === value)
+    if (cat) return categoryOptionLabel(cat)
+    if (editingBill && editingBill.categoryId === value) {
+      return <CategoryCell icon={editingBill.categoryIcon} name={editingBill.categoryName} />
+    }
+    return value
+  }
 
   const columns = [
     { title: '日期', dataIndex: 'billDate', width: 120, render: (d: string) => dayjs(d).format('YYYY-MM-DD') },
     {
       title: '分类',
       width: 140,
-      render: (_: unknown, record: BillVO) => (
-        <CategoryCell icon={record.categoryIcon} name={record.categoryName} />
-      )
+      render: (_: unknown, record: BillVO) => <CategoryCell icon={record.categoryIcon} name={record.categoryName} />
     },
     {
       title: '金额',
@@ -171,6 +180,7 @@ export default function BillPage() {
             }}
             optionFilterProp="label"
             options={categories.map((c) => ({ label: c.name, value: c.id }))}
+            labelRender={(option) => categoryValueLabel(option.value as string)}
             optionRender={(option) => {
               const cat = categories.find((c) => c.id === option.value)
               return cat ? categoryOptionLabel(cat) : option.label
@@ -194,7 +204,12 @@ export default function BillPage() {
       <Flex gap={token.marginLG} wrap>
         <Card className="stat-card bill-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowDownOutlined className="bill-stat-icon bill-stat-icon--expense" /><span className="bill-stat-title">支出</span></Flex>}
+            title={
+              <Flex align="center" gap={token.marginXS}>
+                <ArrowDownOutlined className="bill-stat-icon bill-stat-icon--expense" />
+                <span className="bill-stat-title">支出</span>
+              </Flex>
+            }
             value={stats.totalExpense}
             prefix="¥"
             precision={2}
@@ -203,7 +218,12 @@ export default function BillPage() {
         </Card>
         <Card className="stat-card bill-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><ArrowUpOutlined className="bill-stat-icon bill-stat-icon--income" /><span className="bill-stat-title">收入</span></Flex>}
+            title={
+              <Flex align="center" gap={token.marginXS}>
+                <ArrowUpOutlined className="bill-stat-icon bill-stat-icon--income" />
+                <span className="bill-stat-title">收入</span>
+              </Flex>
+            }
             value={stats.totalIncome}
             prefix="¥"
             precision={2}
@@ -212,7 +232,12 @@ export default function BillPage() {
         </Card>
         <Card className="stat-card bill-stat-card">
           <Statistic
-            title={<Flex align="center" gap={token.marginXS}><WalletOutlined className="bill-stat-icon bill-stat-icon--balance" /><span className="bill-stat-title">结余</span></Flex>}
+            title={
+              <Flex align="center" gap={token.marginXS}>
+                <WalletOutlined className="bill-stat-icon bill-stat-icon--balance" />
+                <span className="bill-stat-title">结余</span>
+              </Flex>
+            }
             value={stats.balance}
             prefix="¥"
             precision={2}
@@ -256,7 +281,7 @@ export default function BillPage() {
                     message.success(msg)
                     setDrawerOpen(false)
                     fetchBills()
-                fetchStats()
+                    fetchStats()
                   })
                 })
               }}
@@ -287,11 +312,16 @@ export default function BillPage() {
               const options = (type === BillType.INCOME ? incomeCategories : expenseCategories).map((c) => ({ label: c.name, value: c.id }))
               return (
                 <Form.Item name="categoryId" label="分类" rules={[{ required: true, message: '请选择分类' }]}>
-                  <Select placeholder="选择分类" options={options} optionRender={(option) => {
-                    const all = type === BillType.INCOME ? incomeCategories : expenseCategories
-                    const cat = all.find((c) => c.id === option.value)
-                    return cat ? categoryOptionLabel(cat) : option.label
-                  }} />
+                  <Select
+                    placeholder="选择分类"
+                    options={options}
+                    labelRender={({ value }) => categoryValueLabel(value as string)}
+                    optionRender={(option) => {
+                      const all = type === BillType.INCOME ? incomeCategories : expenseCategories
+                      const cat = all.find((c) => c.id === option.value)
+                      return cat ? categoryOptionLabel(cat) : option.label
+                    }}
+                  />
                 </Form.Item>
               )
             }}
