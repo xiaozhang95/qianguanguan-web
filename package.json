@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "tsc --noEmit -p ./tsconfig.app.json && oxlint"
+    "lint": "tsc --noEmit -p ./tsconfig.app.json && oxlint",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@ant-design/charts": "^2.6.7",
@@ -20,11 +21,13 @@
     "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "oxlint": "^1.71.0",
+    "prettier": "^3.9.6",
     "sass": "^1.101.0",
     "typescript": "^7.0.2",
     "vite": "^8.1.1",

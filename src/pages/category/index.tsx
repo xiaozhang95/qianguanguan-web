@@ -1,9 +1,12 @@
-import { categoryDelete, categoryList, categorySave, categoryUpdate, type Category, type CategorySaveParams } from '@/api/category'
-import { upload } from '@/api/user'
-import { BillType, BillTypeLabel } from '@/constants'
+import { useEffect, useState } from 'react'
+
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons'
 import { App, Button, Flex, Form, Input, InputNumber, Modal, Popconfirm, Radio, Space, Table, Tag, Upload, theme } from 'antd'
-import { useEffect, useState } from 'react'
+
+import { type Category, type CategorySaveParams, categoryDelete, categoryList, categorySave, categoryUpdate } from '@/api/category'
+import { upload } from '@/api/user'
+import { BillType, BillTypeLabel } from '@/constants'
+
 import './index.scss'
 
 export default function CategoryPage() {

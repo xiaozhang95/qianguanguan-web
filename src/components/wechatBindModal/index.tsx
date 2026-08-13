@@ -1,6 +1,9 @@
-import { checkWechatBindStatus, getWechatBindScene } from '@/api/user'
-import { App, Flex, Modal, Spin, Typography } from 'antd'
 import { useCallback, useEffect, useRef, useState } from 'react'
+
+import { App, Flex, Modal, Spin, Typography } from 'antd'
+
+import { checkWechatBindStatus, getWechatBindScene } from '@/api/user'
+
 import './index.scss'
 
 const { Text } = Typography
@@ -85,9 +88,7 @@ export default function WechatBindModal({ open, onClose, onSuccess }: Props) {
             )}
           </div>
         )}
-        {qrStatus === 'pending' && (
-          <Text type="secondary">请使用微信扫码确认绑定</Text>
-        )}
+        {qrStatus === 'pending' && <Text type="secondary">请使用微信扫码确认绑定</Text>}
       </Flex>
     </Modal>
   )

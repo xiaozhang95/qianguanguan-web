@@ -2,6 +2,7 @@ import type { LoginResult } from '@/api/login'
 import store from '@/store'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
+
 import { getMsgApi } from './msgHolder'
 
 export type Params = Record<string, string | number | undefined>

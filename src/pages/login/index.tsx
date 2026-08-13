@@ -1,12 +1,15 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+
+import { LockOutlined, MailOutlined, SafetyOutlined, WechatOutlined } from '@ant-design/icons'
+import { App, Button, Divider, Flex, Form, Input, Spin, Typography, theme } from 'antd'
+
 import { captcha, checkQrStatus, getQrScene, login, register, sendEmailCode } from '@/api/login'
 import logo from '@/assets/images/logo.png'
 import { RoutePath } from '@/router/routes'
 import { setToken } from '@/store/token'
-import { LockOutlined, MailOutlined, SafetyOutlined, WechatOutlined } from '@ant-design/icons'
-import { App, Button, Divider, Flex, Form, Input, Spin, Typography, theme } from 'antd'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+
 import './index.scss'
 
 const { Title, Text, Paragraph } = Typography
@@ -266,7 +269,16 @@ export default function Page() {
                         <Form.Item>
                           <Flex gap={token.marginXS}>
                             <Form.Item noStyle name="emailCode" rules={[{ required: true, message: '请输入邮箱验证码' }]}>
-                              <Input prefix={<SafetyOutlined />} placeholder="邮箱验证码" className="login-captcha-input" autoComplete="off" readOnly onFocus={(e) => { e.target.readOnly = false }} />
+                              <Input
+                                prefix={<SafetyOutlined />}
+                                placeholder="邮箱验证码"
+                                className="login-captcha-input"
+                                autoComplete="off"
+                                readOnly
+                                onFocus={(e) => {
+                                  e.target.readOnly = false
+                                }}
+                              />
                             </Form.Item>
                             <Button type="primary" ghost loading={sendCodeLoading} disabled={codeCountdown > 0 || !emailValid} onClick={handleSendCode} className="login-captcha-btn">
                               {codeCountdown > 0 ? `${codeCountdown}s` : '获取验证码'}
@@ -284,7 +296,19 @@ export default function Page() {
                     { min: 6, message: '密码至少6位' }
                   ]}
                 >
-                  <Input.Password prefix={<LockOutlined />} placeholder="密码" autoComplete={isRegister ? 'new-password' : 'current-password'} readOnly={isRegister} onFocus={isRegister ? (e) => { e.target.readOnly = false } : undefined} />
+                  <Input.Password
+                    prefix={<LockOutlined />}
+                    placeholder="密码"
+                    autoComplete={isRegister ? 'new-password' : 'current-password'}
+                    readOnly={isRegister}
+                    onFocus={
+                      isRegister
+                        ? (e) => {
+                            e.target.readOnly = false
+                          }
+                        : undefined
+                    }
+                  />
                 </Form.Item>
                 {isRegister && (
                   <Form.Item
@@ -302,13 +326,30 @@ export default function Page() {
                       })
                     ]}
                   >
-                    <Input.Password prefix={<LockOutlined />} placeholder="确认密码" autoComplete="new-password" readOnly onFocus={(e) => { e.target.readOnly = false }} />
+                    <Input.Password
+                      prefix={<LockOutlined />}
+                      placeholder="确认密码"
+                      autoComplete="new-password"
+                      readOnly
+                      onFocus={(e) => {
+                        e.target.readOnly = false
+                      }}
+                    />
                   </Form.Item>
                 )}
                 <Form.Item>
                   <Flex gap={token.marginXS}>
                     <Form.Item noStyle name="captchaCode" rules={[{ required: true, message: '请输入验证码' }]}>
-                      <Input prefix={<SafetyOutlined />} placeholder="验证码" className="login-captcha-input" autoComplete="off" readOnly onFocus={(e) => { e.target.readOnly = false }} />
+                      <Input
+                        prefix={<SafetyOutlined />}
+                        placeholder="验证码"
+                        className="login-captcha-input"
+                        autoComplete="off"
+                        readOnly
+                        onFocus={(e) => {
+                          e.target.readOnly = false
+                        }}
+                      />
                     </Form.Item>
                     {captchaImage && <img alt="验证码" src={captchaImage} onClick={fetchCaptcha} className="login-captcha-img" />}
                   </Flex>

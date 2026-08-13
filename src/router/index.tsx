@@ -1,6 +1,9 @@
-import { Role } from '@/constants'
+import { type ComponentType, type LazyExoticComponent, lazy } from 'react'
+
 import { AppstoreOutlined, PieChartOutlined, SettingOutlined, TeamOutlined, WalletOutlined } from '@ant-design/icons'
-import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
+
+import { Role } from '@/constants'
+
 import { RoutePath } from './routes'
 
 const Home = lazy(() => import('@/pages/home'))

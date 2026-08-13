@@ -1,7 +1,10 @@
-import { RoutePath } from '@/router/routes'
-import { Button, Empty, Flex } from 'antd'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+
+import { Button, Empty, Flex } from 'antd'
+
+import { RoutePath } from '@/router/routes'
+
 import './index.scss'
 
 export default function NotFoundPage() {

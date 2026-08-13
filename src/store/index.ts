@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
+
 import themeReducer, { type ThemeMode } from './theme'
 import tokenReducer from './token'
 import userInfoSlice, { type UserInfo } from './userInfo'

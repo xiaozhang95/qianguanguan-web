@@ -1,5 +1,7 @@
-import { Button, Flex, Result } from 'antd'
 import { Component, type ReactNode } from 'react'
+
+import { Button, Flex, Result } from 'antd'
+
 import './index.scss'
 
 interface Props {

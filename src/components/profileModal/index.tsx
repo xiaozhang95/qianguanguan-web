@@ -1,9 +1,12 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+
+import { PlusOutlined } from '@ant-design/icons'
+import { App, Button, Flex, Form, Input, Modal, Upload } from 'antd'
+
 import type { UserInfo } from '@/api/login'
 import { sendEmailCode } from '@/api/login'
 import { upload, userProfile } from '@/api/user'
-import { PlusOutlined } from '@ant-design/icons'
-import { App, Button, Flex, Form, Input, Modal, Upload } from 'antd'
-import { useCallback, useEffect, useRef, useState } from 'react'
+
 import './index.scss'
 
 interface Props {
@@ -126,7 +129,14 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
         <Form.Item name="name" label="用户名" rules={[{ required: true, message: '请输入用户名' }]}>
           <Input placeholder="请输入用户名" />
         </Form.Item>
-        <Form.Item name="email" label="邮箱" rules={[{ required: !userInfo?.wid, message: '请输入邮箱' }, { type: 'email', message: '请输入正确的邮箱格式' }]}>
+        <Form.Item
+          name="email"
+          label="邮箱"
+          rules={[
+            { required: !userInfo?.wid, message: '请输入邮箱' },
+            { type: 'email', message: '请输入正确的邮箱格式' }
+          ]}
+        >
           <Input placeholder={userInfo?.wid ? '请输入邮箱（选填）' : '请输入邮箱'} />
         </Form.Item>
         <Form.Item shouldUpdate noStyle>
@@ -148,16 +158,17 @@ export default function ProfileModal({ open, userInfo, onClose, onSuccess }: Pro
                       }
                     ]}
                   >
-                    <Input placeholder="请输入验证码" autoComplete="off" readOnly onFocus={(e) => { e.target.readOnly = false }} className="profile-email-code-input" />
+                    <Input
+                      placeholder="请输入验证码"
+                      autoComplete="off"
+                      readOnly
+                      onFocus={(e) => {
+                        e.target.readOnly = false
+                      }}
+                      className="profile-email-code-input"
+                    />
                   </Form.Item>
-                  <Button
-                    type="primary"
-                    ghost
-                    loading={sendCodeLoading}
-                    disabled={codeCountdown > 0 || !emailValid}
-                    onClick={handleSendCode}
-                    className="profile-email-code-btn"
-                  >
+                  <Button type="primary" ghost loading={sendCodeLoading} disabled={codeCountdown > 0 || !emailValid} onClick={handleSendCode} className="profile-email-code-btn">
                     {codeCountdown > 0 ? `${codeCountdown}s` : '获取验证码'}
                   </Button>
                 </Flex>

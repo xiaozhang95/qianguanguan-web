@@ -1,11 +1,13 @@
 import 'antd/dist/reset.css'
 import './app.scss'
 
-import { App as AntdApp, ConfigProvider, theme } from 'antd'
-import zhCN from 'antd/es/locale/zh_CN'
 import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+
+import { App as AntdApp, ConfigProvider, theme } from 'antd'
+import zhCN from 'antd/es/locale/zh_CN'
+
 import { userInfo } from './api/user'
 import Loading from './components/loading'
 import { Role } from './constants'

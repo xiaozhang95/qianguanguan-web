@@ -1,11 +1,14 @@
-import { userList, userToggle, userUpdateRole, type UserInfo } from '@/api/user'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+
+import { App, Button, Flex, Input, Popconfirm, Select, Space, Table, Tag, theme } from 'antd'
+import dayjs from 'dayjs'
+
+import { type UserInfo, userList, userToggle, userUpdateRole } from '@/api/user'
 import { Role, RoleLabel, UserStatus, UserStatusLabel } from '@/constants'
 import type { RootState } from '@/store'
 import { DefaultPagination } from '@/utils/request'
-import { App, Button, Flex, Input, Popconfirm, Select, Space, Table, Tag, theme } from 'antd'
-import dayjs from 'dayjs'
-import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+
 import './index.scss'
 
 export default function UserListPage() {

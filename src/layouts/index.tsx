@@ -1,3 +1,11 @@
+import { Suspense, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+
+import { DownOutlined, LockOutlined, LogoutOutlined, MenuOutlined, MoonOutlined, SunOutlined, UserOutlined, WechatOutlined } from '@ant-design/icons'
+import { Button, Drawer, Dropdown, Flex, Layout, Menu, theme } from 'antd'
+
+import { userInfo as fetchUserInfo } from '@/api/user'
 import logo from '@/assets/images/logo.png'
 import ErrorBoundary from '@/components/errorBoundary'
 import Loading from '@/components/loading'
@@ -5,18 +13,13 @@ import PasswordModal from '@/components/passwordModal'
 import ProfileModal from '@/components/profileModal'
 import WechatBindModal from '@/components/wechatBindModal'
 import { Role } from '@/constants'
-import { getPermittedRoutes, isGroup, type RouteDefinition } from '@/router'
+import { type RouteDefinition, getPermittedRoutes, isGroup } from '@/router'
 import { RoutePath } from '@/router/routes'
 import type { RootState } from '@/store'
 import { toggleTheme } from '@/store/theme'
 import { setToken } from '@/store/token'
 import { setUserInfo } from '@/store/userInfo'
-import { userInfo as fetchUserInfo } from '@/api/user'
-import { DownOutlined, LockOutlined, LogoutOutlined, MenuOutlined, MoonOutlined, SunOutlined, UserOutlined, WechatOutlined } from '@ant-design/icons'
-import { Button, Drawer, Dropdown, Flex, Layout, Menu, theme } from 'antd'
-import { Suspense, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+
 import './index.scss'
 
 const { Sider, Content, Header } = Layout

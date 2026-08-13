@@ -1,5 +1,7 @@
-import { userPassword } from '@/api/user'
 import { App, Form, Input, Modal } from 'antd'
+
+import { userPassword } from '@/api/user'
+
 import './index.scss'
 
 interface Props {
